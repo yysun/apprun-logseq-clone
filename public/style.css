@@ -1,0 +1,66 @@
+h1, h2, h3, h4, h5, h6 {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#toolbar a {
+  color: rgb(180, 177, 177);
+  display: inline-block;
+  text-decoration: none;
+  z-index: 10;
+}
+
+#left-panel {
+  display: none;
+  transition: 1s;
+  width: 250px;
+  background-color: #eeeeee;
+  margin-top: -55px;
+  padding-top: 60px;
+}
+
+#left-panel.open {
+  display: block;
+  transition: 1s;
+}
+
+.page {
+  min-width: 300px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.block-list {
+  border-left: 1px solid #eeeeee;
+}
+
+.block-list:hover {
+  border-left: 1px solid #aaaaaa;
+}
+
+.block {
+  padding: 10px;
+}
+
+.bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: #aaaaaa;
+  margin-top: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.bullet.collapsed {
+  background: #718ef7;
+}
+
+.block-content img {
+  width: 580px;
+}
