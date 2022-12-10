@@ -9,6 +9,11 @@ ul {
   margin: 0;
 }
 
+a {
+  color: rgb(250, 175, 84);
+  text-decoration: none;
+
+}
 #toolbar a {
   color: rgb(180, 177, 177);
   display: inline-block;
