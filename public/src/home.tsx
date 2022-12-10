@@ -3,6 +3,8 @@ import _md from 'markdown-it';
 
 import data from './data.json';
 
+const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
+
 const toggle = el => {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
@@ -18,8 +20,11 @@ const toggle_block_list = e => {
 const md = _md({ html: true, breaks: true, linkify: true });
 
 const create_content = id => {
-  const content = data.blocks.find(b => b.id === id)?.content;
-  return safeHTML(md.render(content || ''))[0];
+  let content = data.blocks.find(b => b.id === id)?.content;
+  if (!content) return '';
+  content = md.render(content);
+  content = content.replace(wiki_link, (match, p1) => `<a href="#${p1}">${p1}</a>`);
+  return safeHTML(content)[0];
 }
 
 const create_block = page => {
