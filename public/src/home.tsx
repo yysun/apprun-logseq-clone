@@ -1,7 +1,6 @@
 import { app, Component, safeHTML } from 'apprun';
 import _md from 'markdown-it';
-
-import data from './data.json';
+import { data, open_file } from './data';
 
 const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
 
@@ -19,38 +18,51 @@ const toggle_block_list = e => {
 
 const md = _md({ html: true, breaks: true, linkify: true });
 
-const create_content = id => {
-  const block = data.blocks.find(b => b.id === id);
-  if (!block) return '';
+const create_content = block => {
   let content = block.content;
   content = block.type === 'page' ? `<h1>${content}</>` : md.render(content);
   content = content.replace(wiki_link, (match, p1) => `<a href="#${p1}">${p1}</a>`);
   return safeHTML(content)[0];
 }
 
-const create_block = page => {
+const create_block = (b, blocks) => {
 
-  const { id, name, children } = page;
+  const { id, children } = b;
+  let block = blocks.find(b => b.id === id);
+
   const ul = (children?.length) ? <div class="block-list">
-    {children.map(child => create_block(child))}
+    {children.map(child => create_block(child, blocks))}
   </div> : null;
 
-  return <div class="block d-flex flex-column" style={`padding-left: 20px`}>
+  return <div class={`block d-flex flex-column`} id={block.id}>
     <div class="d-flex">
       <div class="block-bullet">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content flex-grow-1">{create_content(id)}</div>
+      <div class="block-content flex-grow-1">{create_content(block)}</div>
     </div>
     {ul ?? ''}
   </div>;
 }
 
-export default class Comic extends Component {
-  state = data.pages.reverse();
+const getFile = async (state) => {
+  await open_file();
+  return state;
+}
 
-  view = state => <div class="page">
-    <h1>All Pages</h1>
-    {state.map(page => create_block(page))}
-  </div>;
+export default class extends Component {
+
+  state = data;
+
+  view = state => {
+    const pages = state.pages || [];
+    const blocks = state.blocks || [];
+
+    return pages.length > 0 ?
+      <div class="page">
+        <h1>All Pages</h1>
+        {pages.map(page => create_block(page, blocks)).filter(b => b)}
+      </div> :
+      <button $onclick={getFile}>Open...</button>
+  }
 }
