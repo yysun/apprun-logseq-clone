@@ -1,6 +1,14 @@
 import { app, Component, safeHTML } from 'apprun';
 import _md from 'markdown-it';
-import { data, open_file } from './data';
+import { data, fuse, open_file } from './data';
+
+
+const highlight = (value, indices = [], i = 1) => {
+  const pair = indices[indices.length - i];
+  return !pair ? value :
+    `${highlight(value.substring(0, pair[0]), indices, i + 1)}<mark>${value.substring(pair[0], pair[1] + 1)}</mark>${value.substring(pair[1] + 1)}`
+};
+
 
 const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
 
@@ -18,30 +26,37 @@ const toggle_block_list = e => {
 
 const md = _md({ html: true, breaks: true, linkify: true });
 
-const create_content = block => {
-  let content = block.content;
-  content = block.type === 'page' ? `<h1>${content}</>` : md.render(content);
+const create_content = content => {
+  content = md.render(content);
   content = content.replace(wiki_link, (match, p1) => `<a href="#${p1}">${p1}</a>`);
   return safeHTML(content)[0];
 }
 
-const create_block = (b, blocks) => {
+const create_block = (node, hits) => {
 
-  const { id, children } = b;
-  let block = blocks.find(b => b.id === id);
+  let { id, children } = node;
+  const block = data.blocks.find(b => b.id === id);
+  let list = children?.map(child => create_block(child, hits));
 
-  const ul = (children?.length) ? <div class="block-list">
-    {children.map(child => create_block(child, blocks))}
-  </div> : null;
+  const hit = !hits || hits.find(b => b.id === id);
+  node.show = hit ? true : children?.some(child => child.show);
 
-  return <div class={`block d-flex flex-column`} id={block.id}>
+  if (!node.show) return null;
+
+  let content = block.content;
+  content = hit?.matches ? highlight(content, hit.matches[0].indices) : content;
+  content = block.type === 'page' ? `<h1>${content}</h1>` : content;
+  content = create_content(content);
+
+  return <div class={`block d-flex flex-column`}
+    id={block.id}>
     <div class="d-flex">
       <div class="block-bullet">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content flex-grow-1">{create_content(block)}</div>
+      <div class="block-content flex-grow-1">{content}</div>
     </div>
-    {ul ?? ''}
+    {list && <div class="block-list">{list}</div>}
   </div>;
 }
 
@@ -50,18 +65,27 @@ const getFile = async (state) => {
   return state;
 }
 
+const search = state => {
+
+  const pattern = state.pattern ? null : '安迪';
+  if (!pattern)  return { ...state, hits: null, pattern : null };
+  const hits = fuse.search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
+  return { ...state, hits, pattern }
+}
+
 export default class extends Component {
 
   state = data;
 
   view = state => {
     const pages = state.pages || [];
-    const blocks = state.blocks || [];
+    const hits = state.hits;
+    const total = hits?.length || data.blocks.length;
 
     return pages.length > 0 ?
       <div class="page">
-        <h1>All Pages</h1>
-        {pages.map(page => create_block(page, blocks)).filter(b => b)}
+        <h1 $onclick={search}>All Pages ({ total })</h1>
+        {pages.map(page => create_block(page, hits))}
       </div> :
       <button $onclick={getFile}>Open...</button>
   }

@@ -9,14 +9,14 @@
     "dev":   "esbuild public/src/main.tsx --outdir=public/dist --bundle --sourcemap --watch"
   },
   "repository": "",
-  "keywords": [
-  ],
+  "keywords": [],
   "author": "Yiyi Sun",
   "license": "CC0-1.0",
   "devDependencies": {
     "apprun": "^3.28.15",
     "electron": "^22.0.0",
     "esbuild": "^0.16.3",
+    "fuse.js": "^6.6.2",
     "markdown-it": "^13.0.1",
     "punycode": "^2.1.1"
   }
