@@ -1,21 +1,39 @@
 import app from 'apprun';
 
-window.onkeydown = (e) => {
-  if (e.key === 'Enter') {
-    const sel = window.getSelection();
-    app.run('@search', sel?.toString());
+
+function select(sel, e) {
+  let el = document.querySelector('.block-content.selected');
+  if (!el) return;
+  e.preventDefault();
+  const all = Array.from(document.querySelectorAll('.block-content'));
+  el = all[all.indexOf(el) + sel];
+  if (el) {
+    document.querySelector('.block-content.selected')?.classList.remove('selected');
+    el.classList.add('selected');
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
-let last;
-window.onmousemove = (e) => {
-  const element = document.elementFromPoint(e.clientX, e.clientY).closest('.block');
-  last && last.classList.remove('active');
-  last = element;
+
+window.onkeydown = (e) => {
+  if (e.key === 'F1') {
+    e.preventDefault();
+    const sel = window.getSelection();
+    document.querySelector('#main-panel').scrollTop = 0;
+    app.run('@search', sel?.toString());
+  } else if (e.key === 'ArrowDown') {
+    select(1, e);
+  } else if (e.key === 'ArrowUp') {
+    select(-1, e);
+  }
+}
+
+window.onmousedown = (e) => {
+  const element = document.elementFromPoint(e.clientX, e.clientY).closest('.block-content');
   if (element) {
-    element.classList.add('active');
-    // console.log(element.querySelectorAll('.block-content')[0]);
-    // element.querySelectorAll('.block-content')[0]?.setAttribute('contenteditable', 'true');
+    document.querySelector('.block-content.selected')?.classList.remove('selected');
+    element.classList.add('selected');
+    element.setAttribute('contenteditable', 'true');
     e.stopPropagation();
   }
 }

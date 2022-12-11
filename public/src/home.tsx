@@ -55,7 +55,7 @@ const create_block = (node, hits) => {
 
   return <div class={`block d-flex flex-column`}
     id={block.id}>
-    <div class="d-flex">
+    <div class="block-header d-flex">
       <div class="block-bullet">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
