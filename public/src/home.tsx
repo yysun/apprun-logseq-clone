@@ -1,4 +1,4 @@
-import { app, Component, safeHTML } from 'apprun';
+import { app, Component, safeHTML, on } from 'apprun';
 import _md from 'markdown-it';
 import { data, fuse, open_file } from './data';
 
@@ -65,26 +65,26 @@ const getFile = async (state) => {
   return state;
 }
 
-const search = state => {
-
-  const pattern = state.pattern ? null : '安迪';
-  if (!pattern)  return { ...state, hits: null, pattern : null };
-  const hits = fuse.search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
-  return { ...state, hits, pattern }
-}
-
 export default class extends Component {
+
+  @on('@search')
+  search = (state, pattern) => {
+    if (!pattern) return { ...state, hits: null, pattern };
+    const hits = fuse.search('=' + pattern).map(r => ({ id: r.item.id, matches: r.matches }));
+    console.log(hits);
+    return { ...state, hits, pattern }
+  }
 
   state = data;
 
   view = state => {
     const pages = state.pages || [];
     const hits = state.hits;
-    const total = hits?.length || data.blocks.length;
+    const total = hits ? hits.length : data.blocks.length;
 
     return pages.length > 0 ?
       <div class="page">
-        <h1 $onclick={search}>All Pages ({ total })</h1>
+        <h1>All Pages ({total})</h1>
         {pages.map(page => create_block(page, hits))}
       </div> :
       <button $onclick={getFile}>Open...</button>
