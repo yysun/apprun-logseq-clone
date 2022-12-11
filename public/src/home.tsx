@@ -1,6 +1,6 @@
 import { app, Component, safeHTML, on } from 'apprun';
 import _md from 'markdown-it';
-import { data, fuse, open_file } from './data';
+import { data, search, open_file } from './data';
 
 const highlight = (value, indeics) => {
   let result = '', match = '';
@@ -9,7 +9,7 @@ const highlight = (value, indeics) => {
     result += value.substring(last, start);
     last = end + 1;
     match = value.substring(start, last);
-    result += (end - start > 0) ? `<mark>${match} ${end - start}</mark>` : match;
+    result += (end - start > 0) ? `<mark>${match}</mark>` : match;
   }
   result += value.substring(last);
   return result;
@@ -65,9 +65,9 @@ const create_block = (node, hits) => {
   </div>;
 }
 
-const getFile = async (state) => {
+const getFile = async () => {
   await open_file();
-  return state;
+  return data;
 }
 
 export default class extends Component {
@@ -75,7 +75,7 @@ export default class extends Component {
   @on('@search')
   search = (state, pattern) => {
     if (!pattern) return { ...state, hits: null, pattern };
-    const hits = fuse.search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
+    const hits = search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
     return { ...state, hits, pattern }
   }
 

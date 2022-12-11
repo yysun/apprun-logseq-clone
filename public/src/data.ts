@@ -38,3 +38,5 @@ export const open_file = async () => {
   data = JSON.parse(content);
   fuse = new Fuse(data?.blocks || [], options);
 };
+
+export const search = query => fuse.search(query);
