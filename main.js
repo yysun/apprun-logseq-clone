@@ -1,8 +1,8 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow, protocol } = require('electron')
 const path = require('path')
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -12,11 +12,12 @@ function createWindow () {
     // trafficLightPosition: {x: 16, y: 16},
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
+
     }
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('public/index.html')
+  mainWindow.loadFile('public/dist/index.html')
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -26,6 +27,14 @@ function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+
+  // protocol.interceptFileProtocol('file', function (req, callback) {
+  //   let url = req.url.substring(7)
+  //   if (url.startsWith('/index-')) url = url.substring(1)
+  //   const new_path = path.normalize(`file://${url}`)
+  //   callback({ path: new_path })
+  // })
+
   createWindow()
 
   app.on('activate', function () {
