@@ -2,13 +2,18 @@ import { app, Component, safeHTML, on } from 'apprun';
 import _md from 'markdown-it';
 import { data, fuse, open_file } from './data';
 
-
-const highlight = (value, indices = [], i = 1) => {
-  const pair = indices[indices.length - i];
-  return !pair ? value :
-    `${highlight(value.substring(0, pair[0]), indices, i + 1)}<mark>${value.substring(pair[0], pair[1] + 1)}</mark>${value.substring(pair[1] + 1)}`
-};
-
+const highlight = (value, indeics) => {
+  let result = '', match = '';
+  let last = 0;
+  for (const [start, end] of indeics) {
+    result += value.substring(last, start);
+    last = end + 1;
+    match = value.substring(start, last);
+    result += (end - start > 0) ? `<mark>${match} ${end - start}</mark>` : match;
+  }
+  result += value.substring(last);
+  return result;
+}
 
 const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
 
@@ -70,8 +75,7 @@ export default class extends Component {
   @on('@search')
   search = (state, pattern) => {
     if (!pattern) return { ...state, hits: null, pattern };
-    const hits = fuse.search('=' + pattern).map(r => ({ id: r.item.id, matches: r.matches }));
-    console.log(hits);
+    const hits = fuse.search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
     return { ...state, hits, pattern }
   }
 
@@ -80,7 +84,7 @@ export default class extends Component {
   view = state => {
     const pages = state.pages || [];
     const hits = state.hits;
-    const total = hits ? hits.length : data.blocks.length;
+    const total = hits ? hits.length : data?.blocks.length;
 
     return pages.length > 0 ?
       <div class="page">
