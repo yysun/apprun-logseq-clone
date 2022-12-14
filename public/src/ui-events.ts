@@ -1,39 +1,90 @@
 import app from 'apprun';
 
+let editing_block, selected_block;
 
-function select(sel, e) {
+
+function select(block) {
+  if (block === selected_block) return;
+  if (selected_block) {
+    selected_block.classList.remove('selected');
+  }
+  selected_block = block;
+  if (selected_block) {
+    selected_block.classList.add('selected');
+  }
+}
+
+function edit(block) {
+  if (editing_block) {
+    editing_block.setAttribute('contenteditable', 'false');
+    app.run('@save-block', editing_block);
+  }
+  editing_block = block;
+  if (editing_block) {
+    select(editing_block);
+    block.setAttribute('contenteditable', 'true');
+    block.focus();
+  }
+}
+
+function move(sel) {
   let el = document.querySelector('.block-content.selected');
+  if (!el) {
+    el = document.querySelector('.block-content:hover');
+    sel = 0;
+  }
   if (!el) return;
-  e.preventDefault();
   const all = Array.from(document.querySelectorAll('.block-content'));
   el = all[all.indexOf(el) + sel];
   if (el) {
-    document.querySelector('.block-content.selected')?.classList.remove('selected');
-    el.classList.add('selected');
+    select(el);
     el.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
-
 window.onkeydown = (e) => {
-  if (e.key === 'F1') {
-    e.preventDefault();
-    const sel = window.getSelection();
-    document.querySelector('#main-panel').scrollTop = 0;
-    app.run('@search', sel?.toString());
-  } else if (e.key === 'ArrowDown') {
-    select(1, e);
-  } else if (e.key === 'ArrowUp') {
-    select(-1, e);
+  if (editing_block) {
+    if (e.key === 'Escape') {
+      edit(null);
+    }
+  } else {
+    if (e.key === 'F1') {
+      e.preventDefault();
+      const sel = window.getSelection();
+      document.querySelector('#main-panel').scrollTop = 0;
+      app.run('@search', sel?.toString());
+    } else if (e.key === 'ArrowDown') {
+      move(1);
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      move(-1);
+      e.preventDefault();
+    } else if (e.key === 'Enter') {
+      const el = document.querySelector('.block-content.selected')
+        || document.querySelector('.block-content:hover');
+      if (el) {
+        edit(el);
+        e.preventDefault();
+      }
+    }
   }
 }
 
 window.onmousedown = (e) => {
   const element = document.elementFromPoint(e.clientX, e.clientY).closest('.block-content');
   if (element) {
-    document.querySelector('.block-content.selected')?.classList.remove('selected');
-    element.classList.add('selected');
-    element.setAttribute('contenteditable', 'true');
+    if (element === editing_block) return;
+    if (element === selected_block) {
+      edit(element);
+      return;
+    }
+    if (editing_block && element !== editing_block) {
+      edit(null);
+    }
+    select(element);
     e.stopPropagation();
+  } else {
+    edit(null);
+    select(null);
   }
 }

@@ -1,3 +1,4 @@
+import app from 'apprun';
 import { get, set } from 'idb-keyval';
 import { init_search } from './search';
 
@@ -42,3 +43,7 @@ export const open_file = async (fileHandle) => {
 export const search = query => fuse.search(query);
 
 await init_file();
+
+app.on('@save-block', b => {
+  console.log(b.innerText);
+})
