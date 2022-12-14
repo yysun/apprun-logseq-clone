@@ -1,7 +1,7 @@
 import app from 'apprun';
+import { open_editor, close_editor } from './editor';
 
 let editing_block, selected_block;
-
 
 function select(block) {
   if (block === selected_block) return;
@@ -16,14 +16,12 @@ function select(block) {
 
 function edit(block) {
   if (editing_block) {
-    editing_block.setAttribute('contenteditable', 'false');
-    app.run('@save-block', editing_block);
+    close_editor();
   }
   editing_block = block;
   if (editing_block) {
     select(editing_block);
-    block.setAttribute('contenteditable', 'true');
-    block.focus();
+    open_editor(editing_block);
   }
 }
 
@@ -71,6 +69,8 @@ window.onkeydown = (e) => {
 }
 
 window.onmousedown = (e) => {
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  if (target?.id === 'editor') return;
   const element = document.elementFromPoint(e.clientX, e.clientY).closest('.block-content');
   if (element) {
     if (element === editing_block) return;

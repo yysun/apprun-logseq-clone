@@ -1,6 +1,9 @@
-h1, h2, h3, h4, h5, h6 {
+/* h1, h2, h3, h4, h5, h6 {
   font-size: 1rem;
   font-weight: 800;
+} */
+*:focus {
+  outline: none;
 }
 
 ul {
@@ -14,6 +17,7 @@ a {
   text-decoration: none;
 
 }
+
 #toolbar a {
   color: rgb(180, 177, 177);
   display: inline-block;
@@ -40,6 +44,7 @@ a {
   max-width: 800px;
   margin: 0 auto;
 }
+
 .block-list {
   border-left: 1px solid #eeeeee;
 }
@@ -79,5 +84,17 @@ a {
 }
 
 .block-content img {
-  width: 700px;
+  width: 680px;
+}
+
+.editor {
+  border: 0;
+  padding: 5px;
+  flex-grow: 1;
+}
+
+pre {
+  background: #eeeeee;
+  padding: 10px;
+  border-radius: 5px;
 }
