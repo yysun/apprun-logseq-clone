@@ -1,5 +1,5 @@
 import { app, Component, safeHTML, on } from 'apprun';
-import _md from 'markdown-it';
+import md from './md';
 import { data, select_file } from './data';
 import  search  from './search';
 
@@ -16,8 +16,6 @@ const highlight = (value, indeics) => {
   return result;
 }
 
-const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
-
 const toggle = el => {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
@@ -30,11 +28,8 @@ const toggle_block_list = e => {
   }
 }
 
-const md = _md({ html: true, breaks: true, linkify: true });
-
 const create_content = content => {
-  content = md.render(content);
-  content = content.replace(wiki_link, (match, p1) => `<a href="#${p1}">${p1}</a>`);
+  content = md(content);
   return safeHTML(content)[0];
 }
 
@@ -60,7 +55,7 @@ const create_block = (node, hits) => {
       <div class="block-bullet">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content flex-grow-1">{content}</div>
+      <div class="block-content flex-grow-1" block={block}>{content}</div>
     </div>
     {list && <div class="block-list">{list}</div>}
   </div>;
