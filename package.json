@@ -18,6 +18,7 @@
     "apprun": "^3.28.15",
     "electron": "^22.0.0",
     "fuse.js": "^6.6.2",
+    "idb-keyval": "^6.2.0",
     "markdown-it": "^13.0.1",
     "punycode": "^2.1.1",
     "vite": "^4.0.0"

@@ -1,6 +1,7 @@
 import { app, Component, safeHTML, on } from 'apprun';
 import _md from 'markdown-it';
-import { data, search, open_file } from './data';
+import { data, select_file } from './data';
+import  search  from './search';
 
 const highlight = (value, indeics) => {
   let result = '', match = '';
@@ -66,7 +67,7 @@ const create_block = (node, hits) => {
 }
 
 const getFile = async () => {
-  await open_file();
+  await select_file();
   return data;
 }
 

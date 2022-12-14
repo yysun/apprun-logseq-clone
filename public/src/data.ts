@@ -1,42 +1,44 @@
-import Fuse from 'fuse.js';
-
-const options = {
-  // matchAllTokens: true,
-  // isCaseSensitive: false,
-  // includeScore: false,
-  // shouldSort: true,
-  includeMatches: true,
-  // findAllMatches: false,
-  // minMatchCharLength: 1,
-  // location: 0,
-  // threshold: 0.6,
-  // distance: 100,
-  // useExtendedSearch: false,
-  ignoreLocation: true,
-  // ignoreFieldNorm: false,
-  // fieldNormWeight: 1,
-  keys: [
-    "content"
-  ]
-};
+import { get, set } from 'idb-keyval';
+import { init_search } from './search';
 
 export let data;
 export let fuse;
 
-const content = localStorage.getItem("data");
-if (content) {
-  data = JSON.parse(content);
-}
-fuse = new Fuse(data?.blocks || [], options);
+export const init_file = async () => {
 
-export const open_file = async () => {
+  data = await get('data');
+  if (data) {
+    init_search(data);
+  } else {
+    let fileHandle = await get("file");
+    if (fileHandle) {
+      const options = { 'mode': 'readwrite' };
+      if (await fileHandle.queryPermission(options) !== 'granted') {
+        if (await fileHandle.requestPermission(options) !== 'granted') {
+          alert('no permission to read file');
+          return;
+        }
+        open_file(fileHandle);
+      }
+    }
+  }
+}
+
+export const select_file = async () => {
   const [fileHandle] = await window['showOpenFilePicker']();
-  console.log(JSON.stringify(fileHandle));
+  open_file(fileHandle);
+}
+
+export const open_file = async (fileHandle) => {
   const file = await fileHandle.getFile();
   const content = await file.text();
-  localStorage.setItem("data", content);
   data = JSON.parse(content);
-  fuse = new Fuse(data?.blocks || [], options);
+
+  await set("file", fileHandle);
+  await set("data", data);
+  init_search(data);
 };
 
 export const search = query => fuse.search(query);
+
+await init_file();
