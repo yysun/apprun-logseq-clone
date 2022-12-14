@@ -3,6 +3,9 @@ const { app, BrowserWindow, protocol } = require('electron')
 const path = require('path')
 
 function createWindow() {
+
+  app.commandLine.appendSwitch("enable-experimental-web-platform-features");
+  
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
