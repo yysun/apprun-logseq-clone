@@ -21,6 +21,7 @@
     "idb-keyval": "^6.2.0",
     "markdown-it": "^13.0.1",
     "punycode": "^2.1.1",
+    "turndown": "^7.1.1",
     "vite": "^4.0.0"
   }
 }

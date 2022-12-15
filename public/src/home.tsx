@@ -1,5 +1,5 @@
 import { app, Component, safeHTML, on } from 'apprun';
-import md from './md';
+import { to_html }  from './md';
 import { data, select_file } from './data';
 import  search  from './search';
 
@@ -29,7 +29,7 @@ const toggle_block_list = e => {
 }
 
 const create_content = content => {
-  content = md(content);
+  content = to_html(content);
   return safeHTML(content)[0];
 }
 
