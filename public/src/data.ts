@@ -45,5 +45,5 @@ export const search = query => fuse.search(query);
 await init_file();
 
 app.on('@save-block', b => {
-  console.log(b.innerText);
+  console.log(b.content);
 })
