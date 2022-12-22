@@ -49,13 +49,13 @@ const create_block = (node, hits) => {
   content = block.type === 'page' ? `<h1>${content}</h1>` : content;
   content = create_content(content);
 
-  return <div class={`block d-flex flex-column`}
+  return <div class={`block`}
     id={block.id}>
-    <div class="block-header d-flex">
+    <div class="block-header">
       <div class="block-bullet">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content flex-grow-1" block={block}>{content}</div>
+      <div class="block-content" block={block}>{content}</div>
     </div>
     {list && <div class="block-list">{list}</div>}
   </div>;
@@ -71,7 +71,7 @@ export default class extends Component {
   @on('@search')
   search = (state, pattern) => {
     if (!pattern) return { ...state, hits: null, pattern };
-    const hits = search(pattern).map(r => ({ id: r.item.id, matches: r.matches }));
+    const hits = search(pattern);//.map(r => ({ id: r.item.id, matches: r.matches }));
     return { ...state, hits, pattern }
   }
 

@@ -2,3 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+
+
+}
+
+/* *:focus {
+  outline: none;
+} */
+
+/* .page {
+  min-width: 300px;
+  max-width: 800px;
+  margin: 0 auto;
+} */
+
+.block-list {
+  border-left: 1px solid #eeeeee;
+}
+
+.block-list:hover {
+  border-left: 1px solid #aaaaaa;
+}
+
+.block {
+  display:flex;
+  flex-direction: column;
+  padding: 10px 0 0px 20px;
+}
+
+.block-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.block-content:hover {
+  background: #eeeeee;
+}
+
+.block-content.selected {
+  background: #eeffee;
+}
+
+.block-content {
+  padding: 5px;
+}
+
+.bullet {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background: #aaaaaa;
+  margin-top: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.bullet.collapsed {
+  background: #718ef7;
+}
+
+.block-content img {
+  width: 680px;
+}
+
+.editor {
+  border: 0;
+  padding: 5px;
+  flex-grow: 1;
+}
+
+pre {
+  background: #eeeeee;
+  padding: 10px;
+  border-radius: 5px;
+}
