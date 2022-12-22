@@ -5,6 +5,10 @@ const toggle_left_panel = () => {
 }
 
 export default () => <>
+  <div id="floating" class="absolute left-0 top-0 max-w-max hidden">
+    Tooltip
+    <div id="arrow" class="absolute"></div>
+  </div>
   <div class="toolbar w-full p-3 flex flex-row" id="toolbar">
     <a class="toolbar-button mx-1" onclick={toggle_left_panel}>
       <i class="">

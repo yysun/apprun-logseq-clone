@@ -77,3 +77,20 @@ pre {
   padding: 10px;
   border-radius: 5px;
 }
+
+#floating {
+  position: absolute;
+  background: gray;
+  padding: 0.5rem;
+  color: white;
+  box-sizing: border-box;
+}
+
+#arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent gray transparent;
+}
