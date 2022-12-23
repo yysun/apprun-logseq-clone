@@ -1,14 +1,14 @@
 import app from 'apprun';
 import Home from './home';
-import Layout from './layout';
+import Layout from './ui/layout';
 import './ui-events';
 import './data';
 
-import load_plugins from './plugins';
+// import load_plugins from './plugins';
+// await load_plugins();
 
-await load_plugins();
 
-app.render(document.body, <Layout />);
+new Layout().start(document.body);
 new Home().start('my-app');
 
 
