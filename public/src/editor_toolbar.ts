@@ -6,7 +6,7 @@ export default async () => {
   window.addEventListener('mousedown', (e) => {
     const floating = document.getElementById("floating");
     const arrowEl = document.getElementById("arrow");
-    const element = document.elementFromPoint(e.clientX, e.clientY).closest('.block-content');
+    const element = document.elementFromPoint(e.clientX, e.clientY)?.closest('.block-content');
 
     if (!element) {
       floating.style.display = "none";

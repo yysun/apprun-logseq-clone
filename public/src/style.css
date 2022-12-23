@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-
-
-}
+@layer components {}
 
 /* *:focus {
   outline: none;
@@ -26,7 +23,7 @@
 }
 
 .block {
-  display:flex;
+  display: flex;
   flex-direction: column;
   padding: 10px 0 0px 20px;
 }
@@ -93,4 +90,17 @@ pre {
   border-style: solid;
   border-width: 0 8px 8px 8px;
   border-color: transparent transparent gray transparent;
+}
+
+.resizer.active, .resizer:hover {
+  @apply bg-blue-300;
+}
+.resizer[data-direction='horizontal'] {
+  cursor: ew-resize;
+  width: 4px;
+}
+
+.resizer[data-direction='vertical'] {
+  cursor: ns-resize;
+  height: 4px;
 }
