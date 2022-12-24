@@ -1,12 +1,7 @@
 import { app, Component, on } from 'apprun';
-import { data, select_file } from './model';
+import { data, fileHandle, select_file, grant_access  } from './model';
 import search from './search';
 import Page from './ui/page';
-
-const getFile = async () => {
-  await select_file();
-  return data;
-}
 
 export default class extends Component {
 
@@ -27,7 +22,8 @@ export default class extends Component {
       <div class="page">
         <h1>All Pages ({total})</h1>
         {pages.map(page => <Page page={page} />)}
-      </div> :
-      <button $onclick={getFile}>Open...</button>
+      </div> : !fileHandle ?
+      <button $onclick={select_file}>Open...</button> :
+      <button $onclick={grant_access}>Grant access...</button>
   }
 }
