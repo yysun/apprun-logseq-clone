@@ -35,7 +35,7 @@
 // import './lunr/min/lunr.stemmer.support.min.js'
 // import './lunr/min/lunr.zh.min.js'
 
-import { data } from './model';
+import { data } from './store';
 
 declare const lunr;
 
