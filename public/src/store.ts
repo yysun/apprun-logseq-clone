@@ -1,6 +1,7 @@
 import app from 'apprun';
-import { get, set, setMany, values } from 'idb-keyval';
+import { get, set, values } from 'idb-keyval';
 import { to_markdown } from './md';
+import { get_page } from './model/page';
 
 let saved_html;
 const options = { 'mode': 'readwrite' };
@@ -13,7 +14,7 @@ app.on('@edit-block-begin', e => {
 app.on('@edit-block-end', async e => {
   const { block, innerHTML } = e.target;
   if (innerHTML === saved_html) return;
-  const md = to_markdown(innerHTML);
+  const md = to_markdown(innerHTML).replace(/\s+/g, ' ');
   block.content = md;
   await set(`b:${block.id}`, block);
   await save_file(block);
@@ -31,13 +32,6 @@ const get_data = async () => {
   return data;
 }
 export let dirHandle;
-
-const get_page = (block) => {
-  return {
-    file_name: `${block.page}.md`,
-    content: block.content
-  }
-}
 
 const save_file = async (block) => {
   const { file_name, content } = get_page(block);
