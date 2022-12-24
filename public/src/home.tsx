@@ -1,5 +1,5 @@
 import { app, Component, on } from 'apprun';
-import { data, fileHandle, select_file, grant_access  } from './model';
+import { data, dirHandle, select_dir, grant_access } from './store';
 import search from './search';
 import Page from './ui/page';
 
@@ -22,8 +22,8 @@ export default class extends Component {
       <div class="page">
         <h1>All Pages ({total})</h1>
         {pages.map(page => <Page page={page} />)}
-      </div> : !fileHandle ?
-      <button $onclick={select_file}>Open...</button> :
-      <button $onclick={grant_access}>Grant access...</button>
+      </div> : !dirHandle ?
+        <button $onclick={select_dir}>Open...</button> :
+        <button $onclick={grant_access}>Grant access...</button>
   }
 }

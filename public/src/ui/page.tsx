@@ -1,6 +1,6 @@
 import { app, Component, safeHTML, on } from 'apprun';
 import { to_html } from '../md';
-import { data } from '../model';
+import { data } from '../store';
 
 const toggle = el => {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';

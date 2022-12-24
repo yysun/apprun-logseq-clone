@@ -56,7 +56,7 @@ export default async () => {
   }
 }
 
-export const select_file = async () => {
+export const select_dir = async () => {
   dirHandle = await window['showDirectoryPicker']();
   // for await (const entry of dirHandle.values()) {
   //   console.log(entry);
