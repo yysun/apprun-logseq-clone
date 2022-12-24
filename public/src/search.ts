@@ -35,7 +35,7 @@
 // import './lunr/min/lunr.stemmer.support.min.js'
 // import './lunr/min/lunr.zh.min.js'
 
-import { data } from './data';
+import { data } from './model';
 
 declare const lunr;
 
@@ -60,7 +60,7 @@ export default query => {
     });
 
     for (const block of data.blocks) {
-      this.add({id: block.id, content: block.content});
+      this.add({ id: block.id, content: block.content });
     }
   });
 

@@ -1,10 +1,11 @@
-import app from 'apprun';
+// import app from 'apprun';
 import Home from './home';
 import Layout from './ui/layout';
-import './data';
+import plugins from './plugins';
+import model from './model';
 
-// import load_plugins from './plugins';
-// await load_plugins();
+await plugins();
+await model();
 
 new Layout().start(document.body);
 new Home().start('my-app');
