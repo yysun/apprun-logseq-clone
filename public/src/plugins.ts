@@ -1,4 +1,7 @@
 export default async () => {
-  (await import('./editor_toolbar')).default();
-
+  try {
+    (await import('./ui/editor_toolbar')).default();
+  } catch (e) {
+    console.error(e);
+  }
 }

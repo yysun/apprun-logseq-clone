@@ -1,5 +1,5 @@
 import { app, Component, on } from 'apprun';
-import { data, select_file } from './data';
+import { data, select_file } from './model';
 import search from './search';
 import Page from './ui/page';
 
