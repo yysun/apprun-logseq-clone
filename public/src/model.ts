@@ -1,9 +1,32 @@
-import { get, set } from 'idb-keyval';
+import app from 'apprun';
+import { get, set, setMany, values } from 'idb-keyval';
+import { to_markdown } from './md';
 
-export let data;
+let saved_html;
+
+app.on('@edit-block-begin', e => {
+  const { innerHTML } = e.target;
+  saved_html = innerHTML;
+});
+
+app.on('@edit-block-end', async e => {
+  const { block, innerHTML } = e.target;
+  if (innerHTML === saved_html) return;
+  const md = to_markdown(innerHTML);
+  block.content = md;
+  await set(`b:${block.id}`, block);
+});
+
+export const data = {
+  blocks: [],
+  pages: []
+};
+
 export default async () => {
 
-  data = await get('data');
+  const all = await values();
+  data.blocks = all.filter(d => d._type === 1);
+  data.pages = all.filter(d => d._type === 2).sort((a, b) => a._idx - b._idx);
 
   let fileHandle = await get("file");
   if (fileHandle) {
@@ -26,9 +49,11 @@ export const select_file = async () => {
 export const open_file = async (fileHandle) => {
   const file = await fileHandle.getFile();
   const content = await file.text();
-  data = JSON.parse(content);
-
   await set("file", fileHandle);
-  await set("data", data);
+
+  const data = JSON.parse(content);
+  await setMany(data.blocks.map(b => [`b:${b.id}`, { ...b, _type: 1 }]));
+  await setMany(data.pages.map((p, _idx) => [`p:${p.id}`, { ...p, _type: 2, _idx }]));
+
 };
 
