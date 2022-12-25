@@ -57,7 +57,7 @@
 }
 
 .bullet.collapsed {
-  background: #718ef7;
+  @apply bg-indigo-500
 }
 
 .block-content img {
@@ -104,4 +104,35 @@ pre {
 .resizer[data-direction='vertical'] {
   cursor: ns-resize;
   height: 4px;
+}
+
+.calendar {
+  font-size: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-top: 10px;
+}
+
+.prev-month,
+.next-month {
+  opacity: 0.5;
+}
+
+.week-day,
+.day {
+  text-align: center;
+  padding: 4px 2px;
+}
+
+.day.today {
+  @apply bg-gray-300;
+  border-radius: 50%;
+}
+
+.day.has-page {
+  @apply bg-yellow-200;
+  border-radius: 50%;
 }

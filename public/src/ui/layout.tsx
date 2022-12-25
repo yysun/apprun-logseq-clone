@@ -1,5 +1,6 @@
 import { app, Component } from 'apprun';
 import resizable from './resizable';
+import Calander from './calander';
 
 const toggle_left_panel = () => {
   document.getElementById('left-panel').classList.toggle('hidden');
@@ -23,10 +24,10 @@ export default class extends Component {
     <div class="flex overflow-hidden">
       <div class="w-12 bg-gray-300" id="left-icons">
       </div>
-      <div class="w-52 p-4" id="left-panel">
-        <aside class="">Keywords</aside>
+      <div class="w-52 p-4 min-w-max" id="left-panel">
+        <Calander />
       </div>
-      <div class="resizer bg-white" data-direction='horizontal'></div>
+      {/* <div class="resizer bg-white" data-direction='horizontal'></div> */}
       <div class="overflow-scroll" id="main-panel">
         <div class="max-w-3xl pl-4" id='my-app'></div>
       </div>
@@ -44,7 +45,7 @@ export default class extends Component {
   </div>;
 
   rendered = () => {
-    const w = window.innerWidth - 8 -
+    const w = window.innerWidth - 4 -
       48 - // document.getElementById('left-icons').getBoundingClientRect().width -
       208 -  //document.getElementById('left-panel').getBoundingClientRect().width;
       0 // document.getElementById('right-panel').getBoundingClientRect().width;
