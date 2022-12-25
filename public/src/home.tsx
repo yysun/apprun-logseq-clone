@@ -19,7 +19,7 @@ export default class extends Component {
     const total = data?.blocks.length;
 
     return pages.length > 0 ?
-      <div class="page">
+      <div class="main-page">
         <h1>All Pages ({total})</h1>
         {pages.map(page => <Page page={page} />)}
       </div> : !dirHandle ?

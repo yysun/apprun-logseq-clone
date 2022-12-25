@@ -24,12 +24,12 @@ export default class extends Component {
     <div class="flex overflow-hidden">
       <div class="w-12 bg-gray-300" id="left-icons">
       </div>
-      <div class="w-52 p-4 min-w-max" id="left-panel">
+      <div class="w-64 p-4 min-w-max hidden bg-gray-100" id="left-panel">
         <Calander />
       </div>
       {/* <div class="resizer bg-white" data-direction='horizontal'></div> */}
-      <div class="overflow-scroll" id="main-panel">
-        <div class="max-w-3xl pl-4" id='my-app'></div>
+      <div class="overflow-scroll w-full p-4" id="main-panel">
+        <div id='my-app'></div>
       </div>
       <div class="resizer bg-gray-200" data-direction='horizontal'></div>
       <div id="right-panel" class="flex-1 flex flex-col">
@@ -47,7 +47,7 @@ export default class extends Component {
   rendered = () => {
     const w = window.innerWidth - 4 -
       48 - // document.getElementById('left-icons').getBoundingClientRect().width -
-      208 -  //document.getElementById('left-panel').getBoundingClientRect().width;
+      //208 -  //document.getElementById('left-panel').getBoundingClientRect().width;
       0 // document.getElementById('right-panel').getBoundingClientRect().width;
     document.getElementById('main-panel').style.width = `${w}px`;
     document.querySelectorAll('.resizer').forEach(function (ele) {
