@@ -4,9 +4,7 @@
 
 @layer components {}
 
-:root {
-
-}
+:root {}
 
 /* *:focus {
   outline: none;
@@ -16,7 +14,10 @@
   min-width: 300px;
   max-width: 810px;
   margin: 0 auto;
+  padding: 0 10px;
   font-size: 0.92em;
+  height: 100vh;
+  overflow-y: scroll;
 }
 
 .block-list {
@@ -106,12 +107,10 @@ pre {
 
 .resizer[data-direction='horizontal'] {
   cursor: ew-resize;
-  width: 4px;
 }
 
 .resizer[data-direction='vertical'] {
   cursor: ns-resize;
-  height: 4px;
 }
 
 .calendar {
