@@ -4,15 +4,20 @@
 
 @layer components {}
 
+:root {
+
+}
+
 /* *:focus {
   outline: none;
 } */
 
-/* .page {
+.main-page {
   min-width: 300px;
-  max-width: 800px;
+  max-width: 810px;
   margin: 0 auto;
-} */
+  font-size: 0.92em;
+}
 
 .block-list {
   border-left: 1px solid #eeeeee;
@@ -33,9 +38,9 @@
   flex-direction: row;
 }
 
-.block-content:hover {
+/* .block-content:hover {
   background: #eeeeee;
-}
+} */
 
 .block-content.selected {
   background: #eeffee;
@@ -44,6 +49,7 @@
 .block-content {
   padding: 5px;
   width: 100%;
+  color: rgb(67, 63, 56);
 }
 
 .bullet {
@@ -93,9 +99,11 @@ pre {
   border-color: transparent transparent gray transparent;
 }
 
-.resizer.active, .resizer:hover {
+.resizer.active,
+.resizer:hover {
   @apply bg-blue-300;
 }
+
 .resizer[data-direction='horizontal'] {
   cursor: ew-resize;
   width: 4px;
