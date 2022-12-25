@@ -1,5 +1,5 @@
 import app from 'apprun';
-import { get, set, values } from 'idb-keyval';
+import { get, set, values, setMany } from 'idb-keyval';
 import { to_markdown } from './md';
 import { get_page } from './model/page';
 
@@ -58,27 +58,23 @@ export const select_dir = async () => {
   await set("doc_root", dirHandle);
 }
 
-// export const select_file = async () => {
-//   const [fileHandle] = await window['showOpenFilePicker']();
-//   return await open_file(fileHandle);
-// }
-
 export const grant_access = async () => {
   if (await dirHandle.requestPermission(options) !== 'granted') {
     alert('no permission to read file');
     return;
   }
-  // await open_file(fileHandle);
+  await select_file();
   return get_data();
 }
 
-// export const open_file = async (fileHandle) => {
-//   const file = await fileHandle.getFile();
-//   const content = await file.text();
-//   await set("file", fileHandle);
-//   const data = JSON.parse(content);
-//   await setMany(data.blocks.map(b => [`b:${b.id}`, { ...b, _type: 1 }]));
-//   await setMany(data.pages.map((p, _idx) => [`p:${p.id}`, { ...p, _type: 2, _idx }]));
-//   return await get_data();
-// };
+export const select_file = async () => {
+  const [fileHandle] = await window['showOpenFilePicker']();
+  const file = await fileHandle.getFile();
+  const content = await file.text();
+  await set("file", fileHandle);
+  const data = JSON.parse(content);
+  await setMany(data.blocks.map(b => [`b:${b.id}`, { ...b, _type: 1 }]));
+  await setMany(data.pages.map((p, _idx) => [`p:${p.id}`, { ...p, _type: 2, _idx }]));
+  return await get_data();
+};
 
