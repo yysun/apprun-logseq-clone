@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "electron .",
-    "build": "vite build --minify",
+    "build": "vite build --sourcemap --minify",
     "watch": "vite build --sourcemap --watch",
     "dev": "vite dev --port 8080",
     "preview": "vite preview --port 8080"
@@ -28,6 +28,6 @@
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.3",
     "turndown": "^7.1.1",
-    "vite": "^4.0.2"
+    "vite": "^4.0.3"
   }
 }
