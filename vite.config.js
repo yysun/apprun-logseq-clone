@@ -1,8 +1,11 @@
 export default {
-  root: 'public',
+  root: 'src',
   base: '',
-  sourcemap: true,
   build: {
-    target: 'esnext'
+    sourcemap: true,
+    target: 'esnext',
+    outDir: '../public/dist',
+
+    
   }
 }
