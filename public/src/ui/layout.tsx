@@ -1,11 +1,29 @@
-import { app, Component } from 'apprun';
+import app from 'apprun';
 import ToolBar from './top-toolbar';
 import resizable from './resizable';
 import Calander from './calander';
 
-const toggle_left_panel = () => {
-  document.getElementById('left-panel').classList.toggle('hidden');
-}
+app.on('toggle-left-drawer', () => {
+  const drawer = document.getElementById('left-drawer');
+  const main = document.getElementById('left-main');
+  if (!drawer.style.left || drawer.style.left === '0px') {
+    drawer.style.left = '-1000px';
+    main.style.paddingLeft = '0px';
+  } else {
+    drawer.style.left = '0px';
+    main.style.paddingLeft = '224px'; //w-56
+  }
+});
+
+app.on('toggle-right-panel', () => {
+  const panel = document.getElementById('right-panel');
+  const width = parseInt((panel.style.width || '0px').replace('px', ''));
+  if (width < 10) {
+    panel.style.width = '384px'; //w-96
+  } else {
+    panel.style.width = '4px'; //w-1
+  }
+});
 
 export default () => <>
   <div id="left-panel" class="h-screen flex-1">
@@ -13,8 +31,8 @@ export default () => <>
       <ToolBar />
     </div>
     <div id="left-main" class="flex-1 flex flex-row pl-64">
-      <div id="left-drawer" class="absolute top-0 left-0 w-64 h-screen overflow-scroll bg-gray-100">
-
+      <div id="left-drawer" class="absolute top-0 left-0 w-56 h-screen overflow-scroll
+      transition-all duration-150 bg-gray-100">
       </div>
       <div id="left-content" class="flex-1 overflow-scroll">
         <div id="my-app"></div>
