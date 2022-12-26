@@ -1,7 +1,7 @@
 import app from 'apprun';
 import { clear, get, set, values, setMany } from 'idb-keyval';
 import { to_markdown } from './md';
-import { data, get_page_file, add_page, init_data } from './model/page';
+import { data, get_page_file, add_page, update_page, init_data } from './model/page';
 import init_search from './search';
 export { data }
 
@@ -34,6 +34,7 @@ const db_save_data = async () => {
   await clear();
   await setMany(data.blocks.map(b => [`b:${b.id}`, { ...b, _type: 1 }]));
   await setMany(data.pages.map(p => [`p:${p.id}`, { ...p, _type: 2 }]));
+  await set("doc_root", dirHandle);
 }
 
 const save_block = async (b) => {
@@ -46,6 +47,7 @@ const save_page = async (p) => {
 }
 
 export let dirHandle;
+let need_save = false;
 
 const save_file = async (block) => {
   const { file_name, content } = get_page_file(block);
@@ -59,9 +61,16 @@ const process_file = async (fileHandle, dir) => {
   if (!fileHandle.name.endsWith('.md')) return;
   const name = `${dir}/${fileHandle.name}`.replace(/\.md$/, '');
   const file = await fileHandle.getFile();
-  const text = await file.text();
   const lastModified = file.lastModified;
-  add_page(name, text, lastModified);
+  const page = data.pages.find(p => p.name === name);
+  if (page && page.lastModified > lastModified) return;
+  const text = await file.text();
+  if (!page) {
+    add_page(name, text, lastModified);
+  } else if (page.lastModified < lastModified) {
+    need_save = false;
+    update_page(name, text, lastModified);
+  }
 }
 
 const process_dir = async (dirHandle) => {
@@ -81,10 +90,17 @@ export default async () => {
   dirHandle = await get("doc_root");
   if (dirHandle) {
     if (await dirHandle.queryPermission(options) === 'granted') {
-      // await process_dir(dirHandle);
-      await db_read_data();
+      return await open_dir(dirHandle);
     }
   }
+}
+
+const open_dir = async (dirHandle) => {
+  need_save = false;
+  await db_read_data();
+  await process_dir(dirHandle);
+  need_save && await db_save_data();
+  return data;
 }
 
 export const select_dir = async () => {
@@ -101,8 +117,7 @@ export const grant_access = async () => {
     alert('no permission to read file');
     return;
   }
-  await db_read_data();
-  return data;
+  return await open_dir(dirHandle);
 }
 
 export const new_page = async (name, text) => {
