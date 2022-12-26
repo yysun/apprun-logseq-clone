@@ -169,3 +169,8 @@ export function update_page(name, text, lastModified) {
   data.pages = data.pages.filter(p => p.name !== name);
   data.pages.push(page);
 }
+
+export const delete_page = (name) => {
+  data.blocks = data.blocks.filter(b => b.page !== name);
+  data.pages = data.pages.filter(p => p.name !== name);
+}
