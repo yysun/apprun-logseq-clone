@@ -35,7 +35,7 @@ export default () => <>
       transition-all duration-150 bg-gray-100">
         <Sidebar />
       </div>
-      <div id="left-content" class="flex-1 overflow-scroll">
+      <div id="left-content" class="flex-1 h-screen overflow-scroll pb-24">
         <div id="my-app"></div>
       </div>
     </div>
