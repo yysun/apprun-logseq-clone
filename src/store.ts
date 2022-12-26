@@ -1,7 +1,7 @@
 import app from 'apprun';
 import { clear, get, set, values, setMany } from 'idb-keyval';
 import { to_markdown } from './md';
-import { data, get_page_file, add_page, update_page, init_data } from './model/page';
+import { init_data, data, get_page_file, add_page, update_page, delete_page } from './model/page';
 import init_search from './search';
 export { data }
 
@@ -47,7 +47,7 @@ const save_page = async (p) => {
 }
 
 export let dirHandle;
-let need_save = false;
+let need_save = false, dir_files = [];
 
 const save_file = async (block) => {
   const { file_name, content } = get_page_file(block);
@@ -60,6 +60,7 @@ const save_file = async (block) => {
 const process_file = async (fileHandle, dir) => {
   if (!fileHandle.name.endsWith('.md')) return;
   const name = `${dir}/${fileHandle.name}`.replace(/\.md$/, '');
+  dir_files.push(name);
   const file = await fileHandle.getFile();
   const lastModified = file.lastModified;
   const page = data.pages.find(p => p.name === name);
@@ -74,6 +75,7 @@ const process_file = async (fileHandle, dir) => {
 }
 
 const process_dir = async (dirHandle) => {
+  dir_files = [];
   let dir = dirHandle.name;
   if (dir.startsWith('.') || dir.startsWith('_') || dir.startsWith('bak')) return;
   for await (const entry of dirHandle.values()) {
@@ -84,6 +86,15 @@ const process_dir = async (dirHandle) => {
       await process_dir(entry);
     }
   }
+
+  // delete pages that are not in the directory
+  // const dels = data.pages.filter(p => dir_files.indexOf(p.name) < 0)
+  //   .map(p => p.name);
+
+  // if (dels.length > 0) {
+  //   dels.forEach(delete_page);
+  //   need_save = true;
+  // }
 }
 
 export default async () => {
