@@ -18,9 +18,7 @@ app.on('@edit-block-end', async e => {
   if (innerHTML === saved_html) return;
   const md = to_markdown(innerHTML).replace(/\s+/g, ' ');
   block.content = md;
-  await save_file(block);
 });
-
 
 
 
@@ -45,11 +43,13 @@ const process_file = async (fileHandle, dir) => {
   if (!page) {
     add_page(name, text, lastModified);
   } else if (page.lastModified < lastModified) {
+    need_save = false;
     update_page(name, text, lastModified);
   }
 }
 
 const process_dir = async (dirHandle) => {
+  dir_files = [];
   let dir = dirHandle.name;
   if (dir.startsWith('.') || dir.startsWith('_') || dir.startsWith('bak')) return;
   for await (const entry of dirHandle.values()) {
@@ -61,7 +61,6 @@ const process_dir = async (dirHandle) => {
     }
   }
 
-}
 
 export default async () => {
   dirHandle = await get("doc_root");
@@ -73,15 +72,20 @@ export default async () => {
 }
 
 const open_dir = async (dirHandle) => {
+  need_save = false;
+  await db_read_data();
   await process_dir(dirHandle);
-  init_search(data);
+  need_save && await db_save_data();
   return data;
 }
 
 export const select_dir = async () => {
   dirHandle = await window['showDirectoryPicker']();
+  init_data();
+  await process_dir(dirHandle);
+  await db_save_data();
   await set("doc_root", dirHandle);
-  return await open_dir(dirHandle);
+  return data;
 }
 
 export const grant_access = async () => {
