@@ -12,14 +12,14 @@ export default class extends Component {
     if (!pages.some(p => p.name === `journals/${today}`)) {
       new_page(`journals/${today}`, '- ');
     }
-    pages = data.pages?.filter(p => p.name.startsWith('journals/'))
-      .sort((a, b) => b.name.localeCompare(a.name));
+    pages = data.pages?.filter(p => p.name.startsWith('journals/'));
     return { pages };
   }
 
   state = data;
 
   view = ({ pages }) => {
+    pages = pages.sort((a, b) => b.name.localeCompare(a.name));
     const total = pages.length;
     return pages.length > 0 ?
       <div class="main-page">

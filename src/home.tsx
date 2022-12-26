@@ -21,7 +21,7 @@ export default class extends Component {
   state = data;
 
   view = ({ pages }) => {
-
+    pages = pages.sort((a, b) => b.name.localeCompare(a.name));
     const total = pages.length;
 
     return pages.length > 0 ?
