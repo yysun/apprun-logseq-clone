@@ -4,6 +4,7 @@ import Journals from './ui/journals';
 import Layout from './ui/layout';
 import plugins from './plugins';
 import store from './store';
+import './ui-events';
 
 await plugins();
 await store();
