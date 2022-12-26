@@ -2,6 +2,7 @@ import app from 'apprun';
 import { clear, get, set, values, setMany } from 'idb-keyval';
 import { to_markdown } from './md';
 import { data, get_page_file, add_page, init_data } from './model/page';
+import init_search from './search';
 export { data }
 
 let saved_html;
@@ -25,6 +26,7 @@ const db_read_data = async () => {
   const all = await values();
   data.blocks = all.filter(d => d._type === 1);
   data.pages = all.filter(d => d._type === 2).sort((a, b) => b.name.localeCompare(a.name));
+  init_search(data);
   return data;
 }
 

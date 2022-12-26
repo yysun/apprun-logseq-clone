@@ -1,6 +1,6 @@
 import app from 'apprun';
 import { open_editor, close_editor } from './editor';
-
+import { search } from './search';
 
 let editing_block, selected_block;
 
@@ -38,6 +38,16 @@ function move(sel) {
   if (el) {
     select(el);
     el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+window.onkeydown = (e) => {
+
+  if (e.code === 'KeyF' && (e.metaKey || e.ctrlKey)) {
+    e.preventDefault();
+    const sel = window.getSelection();
+    const result = search(sel?.toString());
+    console.log(result);
   }
 }
 
