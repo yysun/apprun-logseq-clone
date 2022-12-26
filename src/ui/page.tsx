@@ -1,4 +1,4 @@
-import { app, Component, safeHTML, on } from 'apprun';
+import { app, safeHTML } from 'apprun';
 import { to_html } from '../md';
 import { data } from '../store';
 
@@ -25,8 +25,10 @@ export default function Page({ page }) {
   const block = data.blocks.find(b => b.id === id);
   let list = children?.map(child => <Page page={child} />);
   let content = block.content;
-  // content = block.type === 'page' ? `<h1>${content}</h1>` : content;
-
+  if (block.type === 'page') {
+    content = content.substring(content.lastIndexOf('/') + 1);
+    content = `<h1>${content}</h1>`;
+  }
   content = create_content(content);
 
   return <div class={`block`}
