@@ -1,3 +1,4 @@
+import app from 'apprun';
 import Fuse from 'fuse.js';
 
 const options = {
@@ -25,6 +26,11 @@ let fuse;
 export default (data) => {
   fuse = new Fuse(data?.blocks || [], options);
 };
-export const search = query => fuse ? fuse.search(query): [];
+export const search = query => fuse ? fuse.search(query) : [];
 
+app.on('@search', () => {
+  const sel = window.getSelection();
+  const result = search(sel?.toString());
+  console.log(result);
+});
 

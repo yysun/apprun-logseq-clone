@@ -4,8 +4,9 @@ import Journals from './ui/journals';
 import Layout from './ui/layout';
 import plugins from './plugins';
 import store from './store';
-import './ui-events';
+import shortcuts from './shortcuts';
 
+shortcuts();
 await plugins();
 await store();
 
