@@ -1,7 +1,7 @@
 import app from 'apprun';
 import ToolBar from './top-toolbar';
 import resizable from './resizable';
-import Calander from './calander';
+import Sidebar from './sidebar';
 
 app.on('toggle-left-drawer', () => {
   const drawer = document.getElementById('left-drawer');
@@ -33,6 +33,7 @@ export default () => <>
     <div id="left-main" class="flex-1 flex flex-row pl-64">
       <div id="left-drawer" class="absolute top-0 left-0 w-56 h-screen overflow-scroll
       transition-all duration-150 bg-gray-100">
+        <Sidebar />
       </div>
       <div id="left-content" class="flex-1 overflow-scroll">
         <div id="my-app"></div>
