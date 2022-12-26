@@ -135,3 +135,37 @@ export function add_page(name, text, lastModified) {
   }));
   data.pages.push(page);
 }
+
+export function update_page(name, text, lastModified) {
+  const blocks = get_blocks(text);
+  const old_blocks = data.blocks.filter(b => b.page === name);
+  for (let block of blocks) {
+    const old_block = old_blocks.find(b => b.content === block.content);
+    if (old_block) {
+      block.id = old_block.id;
+    } else {
+      block.isNew = true;
+    }
+  }
+  const page = get_page(blocks, name, lastModified);
+  const old_page = data.pages.find(b => b.name === name);
+
+  for (let block of old_blocks) {
+    const new_block = blocks.find(b => b.content === block.content);
+    if (!new_block) {
+      block.isDeleted = true;
+    }
+  }
+  data.blocks = data.blocks.filter(b => !b.isDeleted);
+  data.blocks.push(...blocks.filter(b => b.isNew).map(b => {
+    delete b.text;
+    delete b.isNew;
+    return b;
+  }));
+
+  if (old_page) {
+    page.id = old_page.id;
+  }
+  data.pages = data.pages.filter(p => p.name !== name);
+  data.pages.push(page);
+}
