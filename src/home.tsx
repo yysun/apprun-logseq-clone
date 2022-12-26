@@ -12,11 +12,16 @@ export default class extends Component {
     return { ...state, hits, pattern }
   }
 
-  state = data;
+  @on('#pages')
+  show = () => {
+    return data.pages?.filter(p => !p.name.startsWith('journals/')) || [];
+  }
 
-  view = state => {
-    const pages = state.pages || [];
-    const total = data?.blocks.length;
+  state = [];
+
+  view = pages => {
+
+    const total = pages.length;
 
     return pages.length > 0 ?
       <div class="main-page">
@@ -26,4 +31,5 @@ export default class extends Component {
         <button $onclick={select_dir}>Open...</button> :
         <button $onclick={grant_access}>Grant access...</button>
   }
+
 }

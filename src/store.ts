@@ -3,6 +3,7 @@ import { clear, get, set, values, setMany } from 'idb-keyval';
 import { to_markdown } from './md';
 import { data, get_page_file, add_page, init_data } from './model/page';
 export { data }
+
 let saved_html;
 const options = { 'mode': 'readwrite' };
 
@@ -59,7 +60,6 @@ const process_file = async (fileHandle, dir) => {
   const text = await file.text();
   const lastModified = file.lastModified;
   add_page(name, text, lastModified);
-  console.log(name, lastModified);
 }
 
 const process_dir = async (dirHandle) => {
@@ -81,7 +81,6 @@ export default async () => {
     if (await dirHandle.queryPermission(options) === 'granted') {
       // await process_dir(dirHandle);
       await db_read_data();
-      console.log(data);
     }
   }
 }
@@ -104,4 +103,7 @@ export const grant_access = async () => {
   return data;
 }
 
-
+export const new_page = async (name, text) => {
+  add_page(name, text, Date.now());
+  return data;
+}
