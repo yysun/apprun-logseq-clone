@@ -9,8 +9,10 @@ await plugins();
 await store();
 
 app.render(document.getElementById('root'), <Layout />);
-new Home().start('my-app');
+new Home().mount('my-app');
 new Journals().mount('my-app');
+
+app.run('#journals');
 
 
 

@@ -14,12 +14,13 @@ export default class extends Component {
 
   @on('#pages')
   show = () => {
-    return data.pages?.filter(p => !p.name.startsWith('journals/')) || [];
+    const pages = data.pages?.filter(p => !p.name.startsWith('journals/')) || [];
+    return { pages };
   }
 
-  state = [];
+  state = data;
 
-  view = pages => {
+  view = ({ pages }) => {
 
     const total = pages.length;
 
