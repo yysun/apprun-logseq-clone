@@ -9,17 +9,17 @@ export default class extends Component {
     let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
     const date = new Date();
     const today = `${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}`;
-    if (!pages.length || pages[0].name !== `journals/${today}`) {
+    if (!pages.some(p => p.name === `journals/${today}`)) {
       new_page(`journals/${today}`, '- ');
-      pages = data.pages?.filter(p => p.name.startsWith('journals/'))
-        .sort((a, b) => b.name.localeCompare(a.name));
     }
-    return pages;
+    pages = data.pages?.filter(p => p.name.startsWith('journals/'))
+      .sort((a, b) => b.name.localeCompare(a.name));
+    return { pages };
   }
 
-  state = [];
+  state = data;
 
-  view = pages => {
+  view = ({ pages }) => {
     const total = pages.length;
     return pages.length > 0 ?
       <div class="main-page">
