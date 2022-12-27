@@ -16,19 +16,28 @@ app.on('@edit-block-begin', e => {
 app.on('@edit-block-end', async e => {
   const { block, innerHTML } = e.target;
   if (innerHTML === saved_html) return;
-  const md = to_markdown(innerHTML).replace(/\s+/g, ' ');
+  const md = to_markdown(innerHTML);
   block.content = md;
   await save_file(block);
 });
 
 
-
-
 export let dirHandle;
+
+const get_file_handler = async (dirHandle, file_name) => {
+  const paths = file_name.split('/');
+  if (paths.length === 1) return dirHandle;
+  let handler = dirHandle;
+  for await (const path of paths.slice(0, -1)) {
+    handler = await handler.getDirectoryHandle(path);
+  }
+  return await handler.getFileHandle(paths[paths.length - 1], { create: true });
+}
+
 
 const save_file = async (block) => {
   const { file_name, content } = get_page_file(block);
-  const fileHandle = await dirHandle.getFileHandle(file_name, { create: true });
+  const fileHandle = await get_file_handler(dirHandle, file_name);
   const writable = await fileHandle.createWritable();
   await writable.write(content);
   await writable.close();
