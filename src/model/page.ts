@@ -11,8 +11,8 @@ export const init_data = () => {
   data.pages = [];
 }
 
-const find_page = block => {
-  const page_block = data.blocks.find(b => b.type === 'page' && b.page === block.page);
+const find_page = name => {
+  const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
   const page = data.pages.find(p => p.id === page_block.id);
   return page;
 }
@@ -28,21 +28,17 @@ const create_content = page => {
 
   if (content && list) {
     content = content + '\n' + list;
-  } else if (!content) {
+  } else if (!content && list) {
     content = list;
   }
-  content = ' '.repeat(block.level) + content;
+  content = content ? ' '.repeat(block.level) + content : '';
   return content;
 };
 
-export const get_page_file = (block) => {
-  const page = find_page(block);
+export const get_page_content = (name) => {
+  const page = find_page(name);
   if (!page) return {}
-  const content = create_content(page);
-  return {
-    file_name: `${block.page}.md`,
-    content
-  }
+  return create_content(page);
 }
 
 export function get_page(page_blocks, name, lastModified) {
@@ -173,4 +169,9 @@ export function update_page(name, text, lastModified) {
 export const delete_page = (name) => {
   data.blocks = data.blocks.filter(b => b.page !== name);
   data.pages = data.pages.filter(p => p.name !== name);
+}
+
+export const refresh_page = page => {
+  const text = get_page_content(page);
+  update_page(page, text, Date.now());
 }

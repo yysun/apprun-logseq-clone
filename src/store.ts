@@ -1,6 +1,6 @@
 import app from 'apprun';
 import { get, set } from 'idb-keyval';
-import { data, get_page_file, add_page, update_page, delete_page } from './model/page';
+import { data, get_page_content, add_page, update_page, delete_page } from './model/page';
 import init_search from './search';
 export { data }
 
@@ -19,12 +19,21 @@ const get_file_handler = async (dirHandle, file_name) => {
 }
 
 
-const save_file = async (block) => {
-  const { file_name, content } = get_page_file(block);
+export const save_file = async (name) => {
+  const content  = get_page_content(name);
+  const file_name = name + '.md';
   const fileHandle = await get_file_handler(dirHandle, file_name);
   const writable = await fileHandle.createWritable();
   await writable.write(content);
   await writable.close();
+}
+
+export const open_file = async (name) => {
+  const file_name = name + '.md';
+  const fileHandle = await get_file_handler(dirHandle, file_name);
+  const file = await fileHandle.getFile();
+  const text = await file.text();
+  update_page(name, text, Date.now());
 }
 
 const process_file = async (fileHandle, dir) => {
@@ -57,16 +66,17 @@ const process_dir = async (dirHandle) => {
 }
 
 export default async () => {
+  app.on('@open-file', open_file);
   app.on('@save-block', save_file, { delay: 500 });
   dirHandle = await get("doc_root");
   if (dirHandle) {
     if (await dirHandle.queryPermission(options) === 'granted') {
-      return await open_dir(dirHandle);
+      return await open_dir();
     }
   }
 }
 
-const open_dir = async (dirHandle) => {
+const open_dir = async () => {
   await process_dir(dirHandle);
   init_search(data);
   return data;
@@ -75,7 +85,7 @@ const open_dir = async (dirHandle) => {
 export const select_dir = async () => {
   dirHandle = await window['showDirectoryPicker']();
   await set("doc_root", dirHandle);
-  return await open_dir(dirHandle);
+  return await open_dir();
 }
 
 export const grant_access = async () => {
@@ -83,7 +93,7 @@ export const grant_access = async () => {
     alert('no permission to read file');
     return;
   }
-  return await open_dir(dirHandle);
+  return await open_dir();
 }
 
 export const new_page = async (name, text) => {
