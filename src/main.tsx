@@ -5,8 +5,10 @@ import Layout from './ui/layout';
 import plugins from './plugins';
 import store from './store';
 import shortcuts from './shortcuts';
+import editor from './editor';
 
 shortcuts();
+editor();
 await plugins();
 await store();
 

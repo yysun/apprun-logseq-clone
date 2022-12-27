@@ -1,26 +1,10 @@
 import app from 'apprun';
-import { clear, get, set, values, setMany } from 'idb-keyval';
-import { to_markdown } from './md';
-import { init_data, data, get_page_file, add_page, update_page, delete_page } from './model/page';
+import { get, set } from 'idb-keyval';
+import { data, get_page_file, add_page, update_page, delete_page } from './model/page';
 import init_search from './search';
 export { data }
 
-let saved_html;
 const options = { 'mode': 'readwrite' };
-
-app.on('@edit-block-begin', e => {
-  const { innerHTML } = e.target;
-  saved_html = innerHTML;
-});
-
-app.on('@edit-block-end', async e => {
-  const { block, innerHTML } = e.target;
-  if (innerHTML === saved_html) return;
-  const md = to_markdown(innerHTML);
-  block.content = md;
-  await save_file(block);
-});
-
 
 export let dirHandle;
 
@@ -73,6 +57,7 @@ const process_dir = async (dirHandle) => {
 }
 
 export default async () => {
+  app.on('@save-block', save_file, { delay: 500 });
   dirHandle = await get("doc_root");
   if (dirHandle) {
     if (await dirHandle.queryPermission(options) === 'granted') {

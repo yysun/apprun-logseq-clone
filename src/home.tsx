@@ -5,12 +5,12 @@ import Page from './ui/page';
 
 export default class extends Component {
 
-  @on('@search')
-  search = (state, pattern) => {
-    if (!pattern) return { ...state, hits: null, pattern };
-    const hits = search(pattern);//.map(r => ({ id: r.item.id, matches: r.matches }));
-    return { ...state, hits, pattern }
-  }
+  // @on('@search')
+  // search = (state, pattern) => {
+  //   if (!pattern) return { ...state, hits: null, pattern };
+  //   const hits = search(pattern);//.map(r => ({ id: r.item.id, matches: r.matches }));
+  //   return { ...state, hits, pattern }
+  // }
 
   @on('#pages')
   show = () => {
