@@ -27,17 +27,16 @@ export default function Page({ page }) {
   let content = block.content;
   if (block.type === 'page') {
     content = content.substring(content.lastIndexOf('/') + 1);
-    content = `<h1>${content}</h1>`;
+    content = `<h1 contenteditable="false">${content}</h1>`;
   }
   content = create_content(content);
 
-  return <div class={`block`}
-    id={block.id}>
+  return <div class={`block`} id={block.id}>
     <div class="block-header">
-      <div class="block-bullet">
+      <div class="block-bullet" contenteditable="false">
         <div class="bullet" onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content" contenteditable="true"
+      <div class="block-content"
         $onfocus='@edit-block-begin'
         $onblur='@edit-block-end'
         block={block}>{content}</div>

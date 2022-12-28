@@ -1,5 +1,6 @@
 import app from 'apprun';
 import { to_html, to_markdown } from './md';
+import { data, refresh_page } from './model/page';
 
 // let editing_div;
 
@@ -43,40 +44,81 @@ import { to_html, to_markdown } from './md';
 //   app.run('@save-block', editing_div.block);
 // }
 
-
-const edit = (e) => {
-  const element = e.target as HTMLElement;
-  if (!element || !element.classList.contains('block-content')) return;
-  const block = element['block'];
-  // console.log(element['block']);
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    app.run('@add-block-sibling', block);
-  } else if (e.key === 'Tab' && !e.ctrlKey) {
-    e.preventDefault();
-    app.run('@indent-block', block);
-  } else if (e.key === 'Tab' && e.ctrlKey) {
-    e.preventDefault();
-    app.run('@outdent-block', block);
+const handle_enter_key = async (e, md, block) => {
+  block.content = md.replace(/ +/g, ' ');
+  const content = ' '.repeat(block.level) + '- ';
+  block.content = block.content + '\n' + content;
+  if (!block.content.startsWith('-')) {
+    block.content = ' '.repeat(block.level) + '- ' + block.content;
   }
+  refresh_page(block.page);
 };
+
+const handle_backspace_key = async (e, md, block) => {
+  block.content = md.replace(/ +/g, ' ');
+  if (!block.content) {
+    refresh_page(block.page);
+  }
+}
+
+const handle_tab_key = async (e, md, block) => {
+  let level = block.level;
+  if (e.shiftKey) {
+    level = level - 1;
+    if (level < 0) level = 0;
+  } else {
+    level = level + 1;
+  }
+  block.level = level;
+  refresh_page(block.page);
+}
+
+export const editor_keydown = async (_, e) => {
+  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+  const range = window.getSelection().getRangeAt(0);
+  console.log(range);
+  const node = document.getSelection().anchorNode;
+  const element = node.nodeType === 3 ?
+    node.parentElement.closest('.block-content') : node;
+  const editing = (element && element['block']);
+  const block = element['block'];
+  const md = to_markdown(element['innerHTML']);
+
+  if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
+    e.preventDefault();
+    editing && handle_enter_key(e, md, block);
+    return data;
+  } else if (key === 'Backspace') {
+    e.preventDefault();
+    editing && handle_backspace_key(e, md, block);
+    return data;
+  } else if (key === 'Tab') {
+    e.preventDefault();
+    editing && handle_tab_key(e, md, block);
+    console.log(window.getSelection().getRangeAt(0));
+    const sel = window.getSelection();
+    sel.addRange(range);
+    return data;
+  }
+}
 
 export default () => {
 
-  let saved_html;
+  let saved_html
 
   app.on('@edit-block-begin', e => {
-    const { innerHTML } = e.target;
+    const { block, innerHTML } = e.target;
     saved_html = innerHTML;
-    e.target.addEventListener('keydown', edit);
+    // e.target.addEventListener('keydown', editor_keydown);
   });
 
   app.on('@edit-block-end', async e => {
-    const { block, innerHTML } = e.target;
-    if (innerHTML === saved_html) return;
-    const md = to_markdown(innerHTML);
-    block.content = md.replace(/ +/g, ' ');
-    e.target.removeEventListener('keydown', edit);
-    app.run('@save-block', block);
+    // const { block, innerHTML } = e.target;
+    // if (innerHTML === saved_html) return;
+    // const md = to_markdown(innerHTML);
+    // block.content = md.replace(/ +/g, ' ');
+    // // e.target.removeEventListener('keydown', editor_keydown);
+    // await save_file(block.page);
   });
+
 }
