@@ -18,7 +18,7 @@
   "devDependencies": {
     "@floating-ui/dom": "^1.1.0",
     "@types/jest": "^29.2.4",
-    "apprun": "^3.29.0",
+    "apprun": "^3.30.0",
     "autoprefixer": "^10.4.13",
     "electron": "^22.0.0",
     "fuse.js": "^6.6.2",
