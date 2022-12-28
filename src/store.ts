@@ -1,4 +1,3 @@
-import app from 'apprun';
 import { get, set } from 'idb-keyval';
 import { data, get_page_content, add_page, update_page, delete_page } from './model/page';
 import init_search from './search';
@@ -6,7 +5,7 @@ export { data }
 
 const options = { 'mode': 'readwrite' };
 
-export let dirHandle;
+export let dirHandle, hasAccess;
 
 const get_file_handler = async (dirHandle, file_name) => {
   const paths = file_name.split('/');
@@ -67,8 +66,6 @@ const process_dir = async (dirHandle) => {
 }
 
 export default async () => {
-  app.on('@open-file', open_file);
-  app.on('@save-block', save_file, { delay: 500 });
   dirHandle = await get("doc_root");
   if (dirHandle) {
     if (await dirHandle.queryPermission(options) === 'granted') {
@@ -78,6 +75,7 @@ export default async () => {
 }
 
 const open_dir = async () => {
+  hasAccess = true;
   await process_dir(dirHandle);
   init_search(data);
   return data;
@@ -92,6 +90,7 @@ export const select_dir = async () => {
 export const grant_access = async () => {
   if (await dirHandle.requestPermission(options) !== 'granted') {
     alert('no permission to read file');
+    hasAccess = false;
     return;
   }
   return await open_dir();

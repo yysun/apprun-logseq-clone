@@ -1,6 +1,7 @@
 import app from 'apprun';
 import Home from './home';
 import Journals from './ui/journals';
+import Pages from './ui/pages';
 import Layout from './ui/layout';
 import plugins from './plugins';
 import store from './store';
@@ -13,10 +14,10 @@ await plugins();
 await store();
 
 app.render(document.getElementById('root'), <Layout />);
-new Home().mount('my-app');
+new Pages().mount('my-app');
 new Journals().mount('my-app');
+new Home().start('my-app');
 
-app.run('#journals');
 
 
 
