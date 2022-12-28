@@ -44,6 +44,7 @@ const process_file = async (fileHandle, dir) => {
   const page = data.pages.find(p => p.name === name);
   if (page && page.lastModified > lastModified) return;
   const text = await file.text();
+  if(!text) return;
   if (!page) {
     add_page(name, text, lastModified);
   } else if (page.lastModified < lastModified) {
