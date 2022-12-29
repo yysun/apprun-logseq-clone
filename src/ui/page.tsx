@@ -1,17 +1,20 @@
 import { app, safeHTML } from 'apprun';
 import { to_html } from '../md';
 import { data } from '../store';
+import { create_caret } from './caret';
 
 const toggle = el => {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 const toggle_block_list = e => {
-  const target = e.target.closest('.block').querySelector('.block-list');
-  if (target) {
-    toggle(target);
+  const list = e.target.closest('.block').querySelector('.block-list');
+  const content = e.target.closest('.block').querySelector('.block-content');
+  if (list) {
+    toggle(list);
     e.target.classList.toggle('collapsed');
   }
+  create_caret(content);
 }
 
 const create_content = content => {
