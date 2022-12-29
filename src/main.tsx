@@ -6,7 +6,7 @@ import Layout from './ui/layout';
 import plugins from './plugins';
 import store from './store';
 import shortcuts from './shortcuts';
-import editor from './editor';
+import editor from './ui/editor';
 
 shortcuts();
 editor();

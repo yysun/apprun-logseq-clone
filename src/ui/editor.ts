@@ -1,6 +1,6 @@
 import app from 'apprun';
-import { to_html, to_markdown } from './md';
-import { data, refresh_page } from './model/page';
+import { to_html, to_markdown } from '../md';
+import { data, refresh_page } from '../model/page';
 
 // let editing_div;
 
@@ -76,7 +76,6 @@ const handle_tab_key = async (e, md, block) => {
 export const editor_keydown = async (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   const range = window.getSelection().getRangeAt(0);
-  console.log(range);
   const node = document.getSelection().anchorNode;
   const element = node.nodeType === 3 ?
     node.parentElement.closest('.block-content') : node;
@@ -95,6 +94,7 @@ export const editor_keydown = async (_, e) => {
   } else if (key === 'Tab') {
     e.preventDefault();
     editing && handle_tab_key(e, md, block);
+    console.log(range);
     console.log(window.getSelection().getRangeAt(0));
     const sel = window.getSelection();
     sel.addRange(range);

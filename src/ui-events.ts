@@ -1,5 +1,5 @@
 import app from 'apprun';
-import { open_editor, close_editor } from './editor';
+import { open_editor, close_editor } from './ui/editor';
 import { search } from './search';
 
 let editing_block, selected_block;
