@@ -34,7 +34,7 @@ export default function Page({ page }) {
   }
   content = create_content(content);
 
-  return <div class={`block ${block.type === 'page' ? 'page' : ''}`} id={block.id}>
+  return <div class={`block${block.type === 'page' ? ' page' : ''}`} id={block.id}>
     <div class="block-header">
       <div class="block-bullet" contenteditable="false">
         <div class="bullet" onclick={toggle_block_list}></div>

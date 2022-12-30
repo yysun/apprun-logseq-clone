@@ -1,6 +1,7 @@
 import app from 'apprun';
 import { to_html, to_markdown } from '../md';
 import { data, refresh_page } from '../model/page';
+import { create_caret } from './caret';
 
 // let editing_div;
 
@@ -44,7 +45,7 @@ import { data, refresh_page } from '../model/page';
 //   app.run('@save-block', editing_div.block);
 // }
 
-const handle_enter_key = async (e, md, block) => {
+const handle_enter_key = async (e, md, block, element) => {
   block.content = md.replace(/ +/g, ' ');
   const content = ' '.repeat(block.level) + '- ';
   block.content = block.content + '\n' + content;
@@ -52,6 +53,7 @@ const handle_enter_key = async (e, md, block) => {
     block.content = ' '.repeat(block.level) + '- ' + block.content;
   }
   refresh_page(block.page);
+  create_caret(element);
 };
 
 const handle_backspace_key = async (e, md, block) => {
@@ -85,7 +87,7 @@ export const editor_keydown = async (_, e) => {
 
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
     e.preventDefault();
-    editing && handle_enter_key(e, md, block);
+    editing && handle_enter_key(e, md, block, element);
     return data;
   } else if (key === 'Backspace') {
     e.preventDefault();
