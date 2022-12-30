@@ -8,6 +8,8 @@ import store from './store';
 import shortcuts from './shortcuts';
 import editor from './ui/editor';
 
+app['no-init-route'] = true;
+
 shortcuts();
 editor();
 await plugins();
