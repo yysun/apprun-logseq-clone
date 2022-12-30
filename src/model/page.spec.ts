@@ -1,4 +1,4 @@
-import { get_blocks, get_page } from '../src/model/page';
+import { get_blocks, get_page } from './page';
 
 test('basic structure', () => {
 
@@ -16,7 +16,7 @@ test('basic structure', () => {
 
   const blocks = get_blocks(text);
   expect(blocks.length).toBe(6);
-  const page = get_page(blocks, 'test');
+  const page = get_page(blocks, 'test', 0);
   expect(blocks.length).toBe(7);
   expect(blocks[0].page).toBe('test');
   expect(blocks[6].page).toBe('test');

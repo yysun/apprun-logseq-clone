@@ -1,5 +1,5 @@
 import { app, safeHTML } from 'apprun';
-import { to_html } from '../md';
+import { to_html } from '../model/md';
 import { data } from '../store';
 import { create_caret } from './caret';
 
@@ -27,6 +27,7 @@ export default function Page({ page }) {
   let { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
   let list = children?.map(child => <Page page={child} />);
+
   let content = block.content;
   if (block.type === 'page') {
     content = content.substring(content.lastIndexOf('/') + 1);

@@ -1,4 +1,4 @@
-import { get_blocks, get_page } from '../src/model/page';
+import { get_blocks, get_page } from './page';
 
 test('basic structure', () => {
 

@@ -1,3 +1,4 @@
+import _md from 'markdown-it';
 import { v4 as uuidv4 } from 'uuid';
 const get_id = () => uuidv4();
 
@@ -41,82 +42,100 @@ export const get_page_content = (name) => {
   return create_content(page);
 }
 
-export function get_page(page_blocks, name, lastModified) {
-  const id = get_id();
-  const blocks = page_blocks.map(b => {
-    b.page = name;
-    b.page_id = id;
-    return { id: b.id, level: b.level }
-  });
+export function get_page(blocks, name, lastModified) {
+
+  const page_blocks = [];
+  const getId = block => {
+    const children = block.children?.map(child => getId(child))
+    get_properties(block);
+    page_blocks.push({
+      id: block.id,
+      content: block.content,
+      type: block.type,
+      page: name,
+    });
+    return { id: block.id, children }
+  }
+
+  const children = blocks.map(block => getId(block))
 
   const page = {
-    id,
+    id: get_id(),
     name,
-    children: [blocks[0]],
+    children,
     lastModified
   };
 
-  const parents = {};
-
-  blocks.reduce((prev, curr) => {
-    let parent = prev;
-    if (curr.level <= prev.level) {
-      parent = parents[curr.level];
-      if (!parent) {
-        parent = parents[curr.level] = page;
-      }
-    }
-    if (!parent.children) {
-      parent.children = [];
-    }
-    parent.children.push(curr);
-    parents[curr.level] = parent;
-    return curr;
-  });
-
   page_blocks.push({ id: page.id, page: name, content: name, type: 'page' });
-  return page;
+  return { page, page_blocks };
 }
 
 export function get_blocks(text) {
-  const lines = text.split('\n').map((l, idx) => ({
-    content: l,
-    level: l.indexOf(l.trimStart()),
-    line: idx + 1,
-  })).filter(l => l.content.trim().length > 0);
 
-  const blocks = [];
+  const lines = text.split('\n')
+    .map((line) => {
+      if (line[0] !== ' ' && line[0] !== '\t' && line[0] !== '-') line = '- ' + line;
+      return line;
+    })
+  text = lines.join('\n');
 
-  for (const line of lines) {
-    const last = blocks[blocks.length - 1];
-    if (!line.content.trimStart().startsWith('- ') && last && line.level === last.level) {
-      last.content += '\n' + line.content;
-    } else {
-      blocks.push(line);
+  const md = _md({ html: true, breaks: true, linkify: true });
+  const nodes = md.parse(text, {});
+  const stack = [];
+  let block = { children: [] } as any;
+
+  nodes.forEach(node => {
+    switch (node.type) {
+
+      case 'list_item_open':
+        const new_block = { type: 'list-item', children: [], content: node.content };
+        stack.push(block);
+        block.children.push(new_block);
+        block = new_block;
+        break;
+
+      case 'list_item_close':
+        if (block.children.length === 0) delete block.children;
+        block = stack.pop();
+        break;
+
+      case 'fence':
+        block.children.push({
+          type: 'code',
+          content: `${node.markup}${node.info}\n${node.content}\n${node.markup}`
+        });
+        break;
+
+      case 'heading_open':
+        block.type = "heading";
+        break;
+
+      case 'heading_close':
+        block.content = `${node.markup} ${block.content}`
+        break;
+
+      default:
+        if (node.content) block.content = node.content;
+        break;
     }
-  }
-
-  // remove leading spaces after save
-  blocks.forEach(b => {
-    b.text = b.content;
-    b.content = b.content.trimStart();
-    get_properties(b);
   });
-
-  return blocks;
+  const blocks = block.children;
+  return blocks ?? [];
 }
 
 export function get_properties(block) {
-  block.content = block.content.split('\n')
-    .filter(line => {
-      const is_prop = line.indexOf('::') > 0;
-      if (is_prop) {
-        const [key, value] = line.split('::');
-        block[key.trim()] = value.trim();
-      }
-      return !is_prop;
-    })
-    .join('\n');
+  if (block.content) {
+    block.content = block.content.split('\n')
+      .filter(line => {
+        const is_prop = line.indexOf('::') > 0;
+        if (is_prop) {
+          const [key, value] = line.split('::');
+          block[key.trim()] = value.trim();
+        }
+        return !is_prop;
+      })
+      .join('\n');
+  }
   if (!block.id) {
     block.id = get_id();
   }
@@ -124,12 +143,9 @@ export function get_properties(block) {
 
 export function add_page(name, text, lastModified) {
   const blocks = get_blocks(text);
-  const page = get_page(blocks, name, lastModified);
-  data.blocks.push(...blocks.map(b => {
-    delete b.text;
-    return b;
-  }));
-  data.pages.push(page);
+  const { page, page_blocks } = get_page(blocks, name, lastModified);
+  data.blocks.push(...page_blocks);
+  if (page?.children?.length) data.pages.push(page);
 }
 
 export function update_page(name, text, lastModified) {
@@ -143,18 +159,17 @@ export function update_page(name, text, lastModified) {
       block.isNew = true;
     }
   }
-  const page = get_page(blocks, name, lastModified);
+  const { page, page_blocks } = get_page(blocks, name, lastModified);
   const old_page = data.pages.find(b => b.name === name);
 
   for (let block of old_blocks) {
-    const new_block = blocks.find(b => b.content === block.content);
+    const new_block = page_blocks.find(b => b.content === block.content);
     if (!new_block) {
       block.isDeleted = true;
     }
   }
   data.blocks = data.blocks.filter(b => !b.isDeleted);
-  data.blocks.push(...blocks.filter(b => b.isNew).map(b => {
-    delete b.text;
+  data.blocks.push(...page_blocks.filter(b => b.isNew).map(b => {
     delete b.isNew;
     return b;
   }));

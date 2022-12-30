@@ -1,5 +1,5 @@
 import app from 'apprun';
-import { to_html, to_markdown } from '../md';
+import { to_html, to_markdown } from '../model/md';
 import { data, refresh_page } from '../model/page';
 import { create_caret } from './caret';
 

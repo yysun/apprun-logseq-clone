@@ -4,6 +4,10 @@
 
 @layer components {}
 
+pre code {
+  @apply text-sm;
+}
+
 :root {}
 
 *:focus {
