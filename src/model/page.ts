@@ -49,9 +49,7 @@ export function get_page(blocks, name, lastModified) {
     const children = block.children?.map(child => getId(child))
     get_properties(block);
     page_blocks.push({
-      id: block.id,
-      content: block.content,
-      type: block.type,
+      ...block,
       page: name,
     });
     return { id: block.id, children }
@@ -67,12 +65,14 @@ export function get_page(blocks, name, lastModified) {
   };
 
   page_blocks.push({ id: page.id, page: name, content: name, type: 'page' });
+  page_blocks.sort((a, b) => a.id.localeCompare(b.id));
   return { page, page_blocks };
 }
 
 export function get_blocks(text) {
 
   const lines = text.split('\n')
+    .filter(line => !!line.trim())
     .map((line) => {
       if (line[0] !== ' ' && line[0] !== '\t' && line[0] !== '-') line = '- ' + line;
       return line;

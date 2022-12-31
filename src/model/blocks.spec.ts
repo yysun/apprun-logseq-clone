@@ -1,62 +1,138 @@
 import { get_blocks, get_page } from './page';
 
-test('basic structure', () => {
-
+test('basic structure 1', () => {
   const text = `
-1
-  2
-    3
-    4
-    5
-
-  6
-    7
-8
+- 1
+- 2
   `;
-
   const blocks = get_blocks(text);
-  expect(blocks.length).toBe(6);
+  expect(blocks.length).toBe(2);
   expect(blocks[0].content).toBe('1');
-  expect(blocks[2].level).toBe(4);
-  expect(blocks[3].level).toBe(2);
-  expect(blocks[3].line).toBe(8);
-  expect(blocks[3].text).toBe('  6');
-  expect(blocks[3].content).toBe('6');
+  expect(blocks[1].content).toBe('2');
 });
 
-
-test('properties', () => {
-
+test('basic structure 2', () => {
   const text = `
 1
-id::1
-  2
-  id::2
-    3
-id::3
-    4
-    id::4
-    open::false
-    5
-
-  6
-  prop with spaces::value with spaces
-    7
-8
-lang::en
+2
   `;
-
   const blocks = get_blocks(text);
-  // const page = get_page(blocks);
-  // console.log(blocks, page);
+  expect(blocks.length).toBe(2);
+  expect(blocks[0].content).toBe('1');
+  expect(blocks[1].content).toBe('2');
+});
 
-  expect(blocks[0].id).toBe('1');
-  expect(blocks[1].id).toBe('2');
-  expect(blocks[2].id).not.toBeUndefined();
-  expect(blocks[3].id).toBe('3'); // added an empty-content block
-  expect(blocks[4].id).toBe('4');
-  expect(blocks[4].open).toBe('false');
-  expect(blocks[5]['prop with spaces']).toBe('value with spaces');
-  expect(blocks[6].id).not.toBeUndefined();
-  expect(blocks[7].lang).toBe('en');
+test('basic structure 3', () => {
+  const text = `
+1
+- 2
+  `;
+  const blocks = get_blocks(text);
+  expect(blocks.length).toBe(2);
+  expect(blocks[0].content).toBe('1');
+  expect(blocks[1].content).toBe('2');
+});
+
+test('basic structure 4', () => {
+  const text = `
+1
+  - 2
+  `;
+  const blocks = get_blocks(text);
+  expect(blocks.length).toBe(1);
+  expect(blocks[0].content).toBe('1');
+  expect(blocks[0].children[0].content).toBe('2');
+});
+
+test('basic structure 5', () => {
+  const text = `
+- # 1
+  - ## 1.1
+  - ## 1.2
+- # 2
+  - ## 2.1
+  - ## 2.2
+  `;
+  const blocks = get_blocks(text);
+  expect(blocks.length).toBe(2);
+  expect(blocks[0].content).toBe('# 1');
+  expect(blocks[0].children[0].content).toBe('## 1.1');
+  expect(blocks[0].children[1].content).toBe('## 1.2');
+  expect(blocks[1].content).toBe('# 2');
+  expect(blocks[1].children[0].content).toBe('## 2.1');
+  expect(blocks[1].children[1].content).toBe('## 2.2');
+});
+
+test('page 1', () => {
+  const text = `
+- 1
+  id::_1
+- 2
+  id::_2
+  `;
+  const blocks = get_blocks(text);
+  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+
+  expect(page_blocks.length).toBe(3);
+  expect(page_blocks[0].id).toBe('_1');
+  expect(page_blocks[0].content).toBe('1');
+  expect(page_blocks[1].id).toBe('_2');
+  expect(page_blocks[1].content).toBe('2');
+
+  expect(page_blocks[2].id).not.toBeUndefined();
+  expect(page_blocks[2].type).toBe('page');
+  expect(page_blocks[2].page).toBe('test');
+  expect(page_blocks[2].content).toBe('test');
+
+  expect(page.children.length).toBe(2);
+  expect(page.children[0].id).toBe('_1');
+  expect(page.children[1].id).toBe('_2');
+});
+
+test('page 2', () => {
+  const text = `
+- 1
+  id::_1
+  - 2
+    id::_2
+  `;
+  const blocks = get_blocks(text);
+  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  expect(page_blocks.length).toBe(3);
+  expect(page.children.length).toBe(1);
+  expect(page.children[0].id).toBe('_1');
+  expect(page.children[0].children[0].id).toBe('_2');
+});
+
+test('page 3', () => {
+  const text = `
+- 1
+  id::_1
+  - 2
+    id::_2
+-
+3
+  - 4
+  `;
+  const blocks = get_blocks(text);
+  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  expect(page_blocks.length).toBe(6);
+  expect(page.children.length).toBe(3);
+});
+
+test('properties 1', () => {
+  const text = `
+- 1
+  id::_1
+  prop::value
+- 2
+  id::_2
+  `;
+  const blocks = get_blocks(text);
+  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  console.log(page_blocks);
+  expect(page_blocks.length).toBe(3);
+  expect(page_blocks[0].id).toBe('_1');
+  expect(page_blocks[0].prop).toBe('value');
+  expect(page_blocks[1].id).toBe('_2');
 });
