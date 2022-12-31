@@ -16,11 +16,10 @@ pre code {
 
 .main-page {
   min-width: 300px;
-  max-width: 810px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 0 10px;
   /* font-size: 0.92em; */
-  overflow-y: scroll;
 }
 
 .page {
@@ -55,19 +54,18 @@ pre code {
 }
 
 .block-content {
-  padding: 5px;
+  padding: 5px 50px 5px 5px;
   width: 100%;
   color: rgb(67, 63, 56);
+  flex-grow: 1;
 }
 
 .bullet {
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
-  background: #aaaaaa;
-  margin-top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  margin-top: 12px;
   margin-right: 10px;
-  cursor: pointer;
 }
 
 .bullet.collapsed {

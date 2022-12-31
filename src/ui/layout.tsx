@@ -17,11 +17,12 @@ app.on('toggle-left-drawer', () => {
 
 app.on('toggle-right-panel', () => {
   const panel = document.getElementById('right-panel');
+  const main = document.getElementById('left-main');
   const width = parseInt((panel.style.width || '0px').replace('px', ''));
   if (width < 10) {
-    panel.style.width = '384px'; //w-96
+    panel.style.width = main.clientWidth / 2 + 'px';
   } else {
-    panel.style.width = '4px'; //w-1
+    panel.style.width = '4px';
   }
 });
 

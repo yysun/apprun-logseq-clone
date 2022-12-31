@@ -38,12 +38,15 @@ export default function Page({ page }) {
   return <div class={`block${block.type === 'page' ? ' page' : ''}`} id={block.id}>
     <div class="block-header">
       <div class="block-bullet" contenteditable="false">
-        <div class="bullet" onclick={toggle_block_list}></div>
+        <div class={`bullet ${list ? 'cursor-pointer bg-gray-500' : 'cursor-default  bg-gray-300'}`}
+          onclick={toggle_block_list}></div>
       </div>
       <div class="block-content"
         $onfocus='@edit-block-begin'
         $onblur='@edit-block-end'
-        block={block}>{content}</div>
+        block={block}>{content}
+      </div>
+      <div class="block-handle" contenteditable="false"></div>
     </div>
     {list && <div class="block-list">{list}</div>}
   </div>;
