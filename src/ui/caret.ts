@@ -24,15 +24,14 @@ export const restore_caret = () => {
   setTimeout(() => saved_caret.remove(), 150);
 }
 
-export const create_caret = element => {
-  const sel = window.getSelection();
-  const range = new Range();
-  range.setStartAfter(element);
-  range.setEndAfter(element);
-  sel.removeAllRanges();
-  sel.addRange(range);
+export const create_caret = (element, atStart = false) => {
+  const range = document.createRange();
+  const selection = window.getSelection();
+  range.selectNodeContents(element);
+  range.collapse(atStart);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
-
 export const split_content = element => {
 
   const selection = window.getSelection();
@@ -42,18 +41,10 @@ export const split_content = element => {
   }
 
   const selectRange = selection.getRangeAt(0);
-
-  let startNode = selectRange.startContainer;
-  if (startNode.nodeType !== Node.ELEMENT_NODE) {
-    startNode = startNode.parentNode;
-  }
-
-  element = (startNode as Element).closest('li');
   if (!element) return;
   selectRange.deleteContents();
   const range = selectRange.cloneRange();
   range.selectNodeContents(element);
-
   range.setStart(selectRange.endContainer, selectRange.endOffset);
   const c2 = range.extractContents();
   range.setStart(selectRange.startContainer, 0);

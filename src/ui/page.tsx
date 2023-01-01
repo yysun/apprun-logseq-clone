@@ -33,20 +33,20 @@ export default function Page({ page }) {
     content = content.substring(content.lastIndexOf('/') + 1);
     content = `<h1 contenteditable="false">${content}</h1>`;
   }
-  content = create_content(content);
+  content = create_content(content) || ' ';
 
   return <div class={`block${block.type === 'page' ? ' page' : ''}`} id={block.id}>
-    <div class="block-header">
-      <div class="block-bullet" contenteditable="false">
+    <div class="block-header" contenteditable="false">
+      <div class="block-bullet">
         <div class={`bullet ${list ? 'cursor-pointer bg-gray-500' : 'cursor-default  bg-gray-300'}`}
           onclick={toggle_block_list}></div>
       </div>
-      <div class="block-content"
-        $onfocus='@edit-block-begin'
-        $onblur='@edit-block-end'
-        block={block}>{content}
+      <div class="block-content" contenteditable="true"
+        $onfocus='@edit-block-begin' $onblur='@edit-block-end'
+        block={block}>
+        {content}
       </div>
-      <div class="block-handle" contenteditable="false"></div>
+      <div class="block-handle"></div>
     </div>
     {list && <div class="block-list">{list}</div>}
   </div>;

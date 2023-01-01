@@ -1,78 +1,60 @@
 import app from 'apprun';
 import { to_html, to_markdown } from '../model/md';
-import { data, refresh_page } from '../model/page';
-import { create_caret } from './caret';
+import { data, delete_block, find_block_parent, move_block_after } from '../model/page';
+import { create_caret, split_content } from './caret';
+import { update_block, create_block, append_block } from '../model/page';
 
-// let editing_div;
+const get_md = fragment => {
+  const div = document.createElement('p');
+  div.appendChild(fragment);
+  return to_markdown(div.innerHTML);
+}
 
-// export const open_editor = (div) => {
-//   editing_div = div;
-//   editing_div.setAttribute('contenteditable', 'true');
-//   editing_div.focus();
-// }
-
-// export const close_editor = () => {
-//   const text = editing_div.innerText;
-//   editing_div.block.content = to_markdown(editing_div.innerHTML);
-//   editing_div.innerHTML = to_html(text);
-//   app.run('@save-block', editing_div.block);
-//   editing_div.setAttribute('contenteditable', 'false');
-// }
-
-// export const open_editor = (div) => {
-//   const textarea = document.createElement('textarea');
-//   textarea.id = 'editor';
-//   textarea.classList.add('editor');
-//   textarea.value = div.block.content;
-//   textarea.style.width = div.offsetWidth + 'px';
-//   textarea.style.height = div.offsetHeight + 'px';
-//   textarea.style.display = 'block';
-//   setTimeout(() => textarea.focus(), 100);
-//   editing_div = div;
-//   editing_div.parentElement.appendChild(textarea);
-//   editing_div.style.display = 'none';
-
-// }
-
-// export const close_editor = () => {
-//   const textarea = document.getElementById('editor');
-//   const text = textarea.value;
-//   textarea.style.display = 'none';
-//   editing_div.parentElement.removeChild(textarea);
-//   editing_div.block.content = text;
-//   editing_div.innerHTML = to_html(text);
-//   editing_div.style.display = 'block';
-//   app.run('@save-block', editing_div.block);
-// }
-
-const handle_enter_key = async (e, md, block, element) => {
-  block.content = md.replace(/ +/g, ' ');
-  const content = ' '.repeat(block.level) + '- ';
-  block.content = block.content + '\n' + content;
-  if (!block.content.startsWith('-')) {
-    block.content = ' '.repeat(block.level) + '- ' + block.content;
+const handle_enter_key = (e, md, block, element) => {
+  e.preventDefault();
+  update_block(block, md);
+  let [c1, c2] = split_content(element);
+  c2 = get_md(c2);
+  const new_block = create_block(c2);
+  append_block(new_block, block);
+  if (c2) {
+    c1 = get_md(c1);
+    update_block(block, c1);
   }
-  refresh_page(block.page);
-  create_caret(element);
+  setTimeout(() => {
+    const new_element = document.getElementById(new_block.id).querySelector('.block-content');
+    create_caret(new_element);
+  });
+  return data;
 };
 
-const handle_backspace_key = async (e, md, block) => {
-  block.content = md.replace(/ +/g, ' ');
-  if (!block.content) {
-    refresh_page(block.page);
+const handle_backspace_key = async (e, md, block, element) => {
+  if (!md) {
+    e.preventDefault();
+    const { parent } = find_block_parent(block);
+    if (parent.name) {
+      delete_block(block);
+      setTimeout(() => {
+        const prev_id = parent.children[parent.children.length - 1].id;
+        const prev_elements = Array.from(document.getElementById(prev_id).querySelectorAll('.block-content'));
+        const new_element = prev_elements[prev_elements.length - 1]; 
+        create_caret(new_element);
+      });
+    } else {
+      move_block_after(block, parent);
+
+      setTimeout(() => {
+        const new_element = document.getElementById(block.id).querySelector('.block-content');
+        create_caret(new_element);
+      });
+    }
+    return data;
   }
 }
 
-const handle_tab_key = async (e, md, block) => {
-  let level = block.level;
-  if (e.shiftKey) {
-    level = level - 1;
-    if (level < 0) level = 0;
-  } else {
-    level = level + 1;
-  }
-  block.level = level;
-  refresh_page(block.page);
+const handle_tab_key = async (e, block) => {
+
+
 }
 
 export const editor_keydown = async (_, e) => {
@@ -86,21 +68,19 @@ export const editor_keydown = async (_, e) => {
   const md = to_markdown(element['innerHTML']);
 
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
-    e.preventDefault();
-    editing && handle_enter_key(e, md, block, element);
-    return data;
+    return editing && handle_enter_key(e, md, block, element);
   } else if (key === 'Backspace') {
-    e.preventDefault();
-    editing && handle_backspace_key(e, md, block);
-    return data;
+    return editing && handle_backspace_key(e, md, block, element);
   } else if (key === 'Tab') {
-    e.preventDefault();
-    editing && handle_tab_key(e, md, block);
+    editing && handle_tab_key(e, block);
     console.log(range);
     console.log(window.getSelection().getRangeAt(0));
     const sel = window.getSelection();
     sel.addRange(range);
     return data;
+    // } else {
+    //   const md = to_markdown(element['innerHTML']);
+    //   update_block(block, to_markdown(md));
   }
 }
 
