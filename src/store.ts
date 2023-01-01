@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import { data, get_page_content, add_page, update_page, delete_page } from './model/page';
+import { data, get_page_content, add_page, update_page } from './model/page';
 import init_search from './search';
 export { data }
 

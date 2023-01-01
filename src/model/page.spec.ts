@@ -130,7 +130,6 @@ test('properties 1', () => {
   `;
   const blocks = get_blocks(text);
   const { page, page_blocks } = get_page(blocks, 'test', new Date());
-  console.log(page_blocks);
   expect(page_blocks.length).toBe(3);
   expect(page_blocks[0].id).toBe('_1');
   expect(page_blocks[0].prop).toBe('value');

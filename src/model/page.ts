@@ -48,11 +48,14 @@ export function get_page(blocks, name, lastModified) {
   const getId = block => {
     const children = block.children?.map(child => getId(child))
     get_properties(block);
-    page_blocks.push({
+    const _block = {
       ...block,
       page: name,
-    });
-    return { id: block.id, children }
+    }
+    delete _block.children;
+    delete _block.type;
+    page_blocks.push(_block);
+    return children ? { id: block.id, children } : { id: block.id }
   }
 
   const children = blocks.map(block => getId(block))
@@ -88,7 +91,7 @@ export function get_blocks(text) {
     switch (node.type) {
 
       case 'list_item_open':
-        const new_block = { type: 'list-item', children: [], content: node.content };
+        const new_block = { type: 'block', children: [], content: node.content };
         stack.push(block);
         block.children.push(new_block);
         block = new_block;
@@ -100,10 +103,8 @@ export function get_blocks(text) {
         break;
 
       case 'fence':
-        block.children.push({
-          type: 'code',
-          content: `${node.markup}${node.info}\n${node.content}\n${node.markup}`
-        });
+        block.content = `${node.markup}${node.info}\n${node.content}\n${node.markup}`
+        block.type = "code";
         break;
 
       case 'heading_open':
@@ -186,7 +187,82 @@ export const delete_page = (name) => {
   data.pages = data.pages.filter(p => p.name !== name);
 }
 
-export const refresh_page = page => {
-  const text = get_page_content(page);
-  update_page(page, text, Date.now());
+// export const refresh_page = page => {
+//   const text = get_page_content(page);
+//   update_page(page, text, Date.now());
+// }
+
+
+export const get_block_id = (block) => {
+  return typeof block === 'string' ? block : block.id;
+}
+
+export const find_block_page = (block) => {
+  const id = get_block_id(block);
+  const page_name = data.blocks.find(b => b.id === id)?.page;
+  return page_name ? data.pages.find(p => p.name === page_name) : null;
+}
+
+export const find_block_parent = (block) => {
+  const id = get_block_id(block);
+  const page = find_block_page(id);
+  const search = (parent, id) => {
+    if (!parent?.children) return null;
+    const pos = parent.children.findIndex(c => c.id === id);
+    return pos > -1 ? { parent, pos, page } : null;
+  }
+  let found = search(page, id);
+  if (found) return found;
+  page.children.every(child => {
+    found = search(child, id);
+    return !found;
+  })
+  return found;
+}
+
+export const find_block = (block) => {
+  const id = get_block_id(block);
+  return data.blocks.find(b => b.id === id);
+}
+
+export const create_block = (content) => {
+  if (!content) content = '- '
+  const block = get_blocks(content)[0];
+  get_properties(block);
+  data.blocks.push(block);
+  return block;
+
+}
+
+export const insert_block = (block, target) => {
+  const { parent, pos, page } = find_block_parent(target);
+  parent.children.splice(pos, 0, { id: block.id });
+  block.page = page.name;
+}
+
+export const append_block = (block, target) => {
+  const { parent, pos, page } = find_block_parent(target);
+  parent.children.splice(pos + 1, 0, { id: block.id });
+  block.page = page.name;
+}
+
+export const move_block_after = (block, target) => {
+  const { parent, pos } = find_block_parent(block);
+  target = find_block_parent(target);
+  if (!target || !parent) return;
+  target.parent.children.splice(target.pos + 1, 0, { id: block.id });
+
+  block = find_block(block);
+  parent.children.splice(pos, 1);
+  block.page = target.page.name;
+}
+
+export const delete_block = (block) => {
+  const { parent, pos } = find_block_parent(block);
+  parent.children.splice(pos, 1);
+  data.blocks = data.blocks.filter(b => b.id !== block.id);
+}
+
+export const update_block = (block, content) => {
+  block.content = content;
 }
