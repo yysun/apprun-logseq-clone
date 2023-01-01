@@ -6,7 +6,7 @@
     "jsx": "react",
     "jsxFactory": "app.h",
     "jsxFragmentFactory": "app.Fragment",
-    "lib": ["dom", "es2015", "es5"],
+    "lib": ["dom", "esnext"],
     "experimentalDecorators": true,
     "sourceMap": true,
     "esModuleInterop": true,
