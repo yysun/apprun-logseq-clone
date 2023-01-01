@@ -20,7 +20,7 @@ type PageIndex = Index & {
   lastModified: number;
 }
 
-type BlockIndex = {
+type BlockIndex = Index & {
   parent: Index;
   pos: number;
   page?: PageIndex;
@@ -224,7 +224,7 @@ export const find_block = (id: string): Block => {
   return data.blocks.find(b => b.id === id);
 }
 
-export const create_block = (content): Block => {
+export const create_block = (content: string): Block => {
   if (!content) content = '- '
   const block = get_blocks(content)[0];
   get_properties(block);
@@ -238,7 +238,8 @@ export const delete_block = (block) => {
   data.blocks = data.blocks.filter(b => b.id !== block.id);
 }
 
-export const update_block = (block, content) => {
+export const update_block = (block: BlockId, content: string) => {
+  block = find_block(get_block_id(block));
   block.content = content;
 }
 
@@ -261,12 +262,10 @@ export const find_page_index = (block: BlockId): PageIndex => {
   return page_index;
 }
 
-
-
-const search_index = (parent: Index, id: string): BlockIndex => {
+export const search_index = (parent: Index, id: string): BlockIndex => {
   if (!parent?.children) return null;
   const pos = parent.children.findIndex(c => c.id === id);
-  if (pos > -1) return { parent, pos };
+  if (pos > -1) return { parent, pos, id, children: parent.children[pos].children };
   let found;
   parent.children.every(child => {
     found = search_index(child, id);
@@ -276,52 +275,77 @@ const search_index = (parent: Index, id: string): BlockIndex => {
 }
 
 export const find_block_index = (block: BlockId): BlockIndex => {
-  const id = get_block_id(block);
+  block = typeof block === 'string' ? find_block(block) : block;
   const page = find_page_index(block);
-  let found = search_index(page, id);
-  if (found) found.page = page;
-  return found;
+  let found = search_index(page, block.id);
+  if (found) return { ...found, page };
 }
 
-export const insert_block = (block: Block, target: BlockId) => {
-  const { parent, pos, page } = find_block_index(target);
-  parent.children.splice(pos, 0, { id: block.id });
-  block.page = page.name;
-}
 
-export const append_block = (block: Block, target: BlockId) => {
-  const { parent, pos, page } = find_block_index(target);
-  parent.children.splice(pos + 1, 0, { id: block.id });
-  block.page = page.name;
-}
+// export const insert_block = (block: Block, target: BlockId) => {
+//   const { parent, pos, page } = find_block_index(target);
+//   parent.children.splice(pos, 0, { id: block.id });
+//   block.page = page.name;
+// }
+
+// export const append_block = (block: Block, target: BlockId) => {
+//   const { parent, pos, page, children } = find_block_index(target);
+//   parent.children.splice(pos + 1, 0, { id: block.id, children });
+//   block.page = page.name;
+// }
 
 export const indent_block = (id: string): string | undefined => {
-  const { parent, pos } = find_block_index(id);
+  const { parent, pos, page, children } = find_block_index(id);
   if (pos > 0) {
     const prev = parent.children[pos - 1];
     prev.children = prev.children || [];
-    prev.children.push({ id: id });
+    prev.children.push({ id, children });
     parent.children.splice(pos, 1);
     return id;
   }
 }
 
 export const outdent_block = (id: string): string | undefined => {
-  const { parent, pos, page } = find_block_index(id);
+  const { parent, pos, page, children } = find_block_index(id);
   if (parent.id !== page.id) {
     const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id);
-    parent_parent.children.splice(parent_pos + 1, 0, { id });
+    parent_parent.children.splice(parent_pos + 1, 0, { id, children });
     parent.children.splice(pos, 1);
     return id;
   }
 }
 
-export const split_block = (id: string, part1: string, part2: string) : Block => {
+export const split_block = (id: string, part1: string, part2: string): Block => {
+  const { parent, pos, page, children } = find_block_index(id);
   const old_block = find_block(id);
-  update_block(old_block, part1);
-  const new_block = create_block(part2);
-  new_block.page = old_block.page;
-  append_block(new_block, id);
-  return new_block;
+  if (!part1) { // at beginning of block
+    const new_block = create_block(part1);
+    parent.children.splice(pos, 0, { id: new_block.id });
+    new_block.page = page.name;
+    update_block(old_block, part2);
+    return old_block;
+  } else {
+    const new_block = create_block(part2);
+    new_block.page = page.name;
+    update_block(old_block, part1);
+    if (children) {
+      parent.children[pos].children.unshift({ id: new_block.id });
+    } else {
+      parent.children.splice(pos + 1, 0, { id: new_block.id });
+    }
+    return new_block;
+  }
 }
+
+export const merge_block = (id1: string, id2: string): Block => {
+  const block1 = find_block(id1);
+  const block2 = find_block(id2);
+  update_block(block1, block1.content + '<span id="__caret"></span>' + block2.content);
+  delete_block(block2);
+  return block1;
+}
+
+export const move_block = (id: string, target: BlockId) => {
+}
+
 //#endregion

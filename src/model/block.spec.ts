@@ -1,6 +1,6 @@
 import {
   data, init_data, add_page, find_block_page, find_block_index,
-  create_block, append_block, insert_block, find_block, delete_block,
+  create_block, find_block, delete_block,
   indent_block, outdent_block, split_block
 } from './page';
 
@@ -113,78 +113,6 @@ test('create block 2', () => {
   expect(b).toBe(block);
 });
 
-test('append block 1', () => {
-  const text = `
-- 1
-  id::_1
-  prop::value
-`;
-  init_data();
-  add_page('test2', text, new Date());
-  const block = create_block('');
-  append_block(block, '_1');
-  const { parent, pos, page } = find_block_index('_1');
-  expect(block.page).toBe('test2');
-  expect(parent.children.length).toBe(2);
-});
-
-test('append block 2', () => {
-  const text = `
-- 1
-  id::_1
-  prop::value
-  - 2
-    id::_2
-  - 3
-    id::_3
-  `;
-  init_data();
-  add_page('test2', text, new Date());
-  const block = create_block('');
-  append_block(block, '_3');
-  const { parent, pos, page } = find_block_index('_3');
-  expect(block.page).toBe('test2');
-  expect(parent.children.length).toBe(3);
-});
-
-test('insert block 1', () => {
-  const text = `
-- 1
-  id::_1
-  prop::value
-`;
-  init_data();
-  add_page('test2', text, new Date());
-  const block = create_block('');
-  insert_block(block, '_1');
-  const { parent, pos, page } = find_block_index('_1');
-  expect(block.page).toBe('test2');
-  expect(parent.children.length).toBe(2);
-  expect(parent.children[0].id).toBe(block.id);
-  expect(parent.children[1].id).toBe('_1');
-});
-
-test('insert block 2', () => {
-  const text = `
-- 1
-  id::_1
-  - 2
-    id::_2
-  - 3
-    id::_3
-  `;
-  init_data();
-  add_page('test2', text, new Date());
-  const block = create_block('');
-  insert_block(block, '_3');
-  const { parent, pos, page } = find_block_index('_3');
-  expect(block.page).toBe('test2');
-  expect(parent.children.length).toBe(3);
-  expect(parent.children[0].id).toBe('_2');
-  expect(parent.children[1].id).toBe(block.id);
-  expect(parent.children[2].id).toBe('_3');
-});
-
 test('delete block', () => {
   const text = `
 - 1
@@ -215,8 +143,8 @@ test('indent block - first item cannot indent', () => {
   init_data();
   add_page('test', text, new Date());
   indent_block('_2');
-  const { parent, pos, page } = find_block_index('_2');
-  expect(parent.id).toBe('_1');
+  const { parent, pos, page } = find_block_index('_1');
+  expect(parent.id).toBe(page.id);
 });
 
 test('indent block - second item can indent', () => {
@@ -247,18 +175,19 @@ test('indent block - last item can indent', () => {
     id::_2
   - 3
     id::_3
-  - 4
-    id::_4
+    - 4
+      id::_4
   `;
   init_data();
   add_page('test', text, new Date());
-  indent_block('_4');
-  const { parent, pos, page } = find_block_index('_4');
-  expect(parent.id).toBe('_3');
+  indent_block('_3');
+  const { parent, pos, page, children } = find_block_index('_3');
+  expect(parent.id).toBe('_2');
+  expect(children.length).toBe(1);
 });
 
 
-test('outdent block - first item canno outdent', () => {
+test('outdent block - first top item cannot outdent', () => {
   const text = `
 - 1
   id::_1
@@ -277,26 +206,27 @@ test('outdent block - first item canno outdent', () => {
   expect(parent.id).toBe(page.id);
 });
 
-test('outdent block - second item canno outdent', () => {
+test('outdent block - second item can outdent', () => {
   const text = `
 - 1
   id::_1
   prop::value
   - 2
     id::_2
-  - 3
-    id::_3
+    - 3
+      id::_3
   - 4
     id::_4
   `;
   init_data();
   add_page('test', text, new Date());
   outdent_block('_2');
-  const { parent, pos, page } = find_block_index('_2');
+  const { parent, pos, page, children } = find_block_index('_2');
   expect(parent.id).toBe(page.id);
+  expect(children.length).toBe(1);
 });
 
-test('outdent block - last item canno outdent', () => {
+test('outdent block - last item cannot outdent', () => {
   const text = `
 - 1
   id::_1
@@ -305,14 +235,14 @@ test('outdent block - last item canno outdent', () => {
     id::_2
   - 3
     id::_3
-  - 4
-    id::_4
+    - 4
+      id::_4
   `;
   init_data();
   add_page('test', text, new Date());
   outdent_block('_4');
   const { parent, pos, page } = find_block_index('_4');
-  expect(parent.id).toBe(page.id);
+  expect(parent.id).toBe('_1');
 
 });
 
@@ -368,17 +298,40 @@ test('split block - at start', () => {
     id::_3
   `;
   init_data();
-  add_page('test', text, new Date());
+  add_page('p0', text, new Date());
   split_block('_2', '', 'test');
   const { parent, pos, page } = find_block_index('_2');
   expect(parent.children.length).toBe(3);
-  expect(parent.children[0].id).toBe('_2');
-  expect(parent.children[1].id).not.toBe('_3');
-  expect(find_block('_2').content).toBe('');
+  expect(parent.children[0].id).not.toBe('_2');
+  expect(parent.children[1].id).toBe('_2');
   expect(find_block(parent.children[1].id).content).toBe('test');
+  expect(find_block(parent.children[1].id).page).toBe('p0');
 });
 
-test('split block - at end', () => {
+test('split block - in middle - has children', () => {
+  const text = `
+- 1
+  id::_1
+  prop::value
+  - 2
+    id::_2
+    - 3
+      id::_3
+  `;
+  init_data();
+  add_page('p1', text, new Date());
+  split_block('_2', '123', '456');
+  const { parent, pos, page, children } = find_block_index('_2');
+  expect(parent.children.length).toBe(1);
+  expect(children.length).toBe(2);
+  expect(children[0].id).not.toBe('_3');
+  expect(children[1].id).toBe('_3');
+  expect(find_block('_2').content).toBe('123');
+  expect(find_block(children[0].id).content).toBe('456');
+  expect(find_block(children[0].id).page).toBe('p1');
+});
+
+test('split block - in middle - no children', () => {
   const text = `
 - 1
   id::_1
@@ -389,33 +342,13 @@ test('split block - at end', () => {
     id::_3
   `;
   init_data();
-  add_page('test', text, new Date());
+  add_page('p2', text, new Date());
   split_block('_2', 'test', '');
   const { parent, pos, page } = find_block_index('_2');
   expect(parent.children.length).toBe(3);
   expect(parent.children[0].id).toBe('_2');
-  expect(parent.children[1].id).not.toBe('_3');
+  expect(parent.children[1].id).not.toBe('_2');
   expect(find_block('_2').content).toBe('test');
   expect(find_block(parent.children[1].id).content).toBe('');
-});
-
-test('split block - in middle', () => {
-  const text = `
-- 1
-  id::_1
-  prop::value
-  - 2
-    id::_2
-  - 3
-    id::_3
-  `;
-  init_data();
-  add_page('test', text, new Date());
-  split_block('_2', '123', '456');
-  const { parent, pos, page } = find_block_index('_2');
-  expect(parent.children.length).toBe(3);
-  expect(parent.children[0].id).toBe('_2');
-  expect(parent.children[1].id).not.toBe('_3');
-  expect(find_block('_2').content).toBe('123');
-  expect(find_block(parent.children[1].id).content).toBe('456');
+  expect(find_block(parent.children[1].id).page).toBe('p2');
 });
