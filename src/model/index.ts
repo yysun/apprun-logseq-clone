@@ -48,21 +48,29 @@ const find_page = name => {
   return page;
 }
 
-const create_content = page => {
+const create_content = (page, level = 0) => {
   const { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
-  let list = children?.map(child => create_content(child))
+  let list = children?.map(child => create_content(child, level + 1))
     .filter(c => !!c)
     .join('\n');
 
-  let content = block.type === 'page' ? '' : block.content;
+  if (block.type === 'page') return list;
+  const leading_spaces = ' '.repeat((level - 1) * 2);
+  const content_lines = block.content.split('\n');
+  const property_lines = Object.keys(block)
+    .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type')
+    .map(prop => prop + ':: ' + block[prop]);
+
+  const all_lines = property_lines.concat(content_lines.slice(1));
+  let content = leading_spaces + '- ' + content_lines[0] + '\n' +
+    all_lines.map(line => leading_spaces + '  ' + line).join('\n');
 
   if (content && list) {
     content = content + '\n' + list;
   } else if (!content && list) {
     content = list;
   }
-  content = content ? ' '.repeat(block.level) + content : '';
   return content;
 };
 
@@ -158,9 +166,9 @@ export function parse_properties(block) {
   if (block.content) {
     block.content = block.content.split('\n')
       .filter(line => {
-        const is_prop = line.indexOf('::') > 0;
+        const is_prop = line.indexOf(':: ') > 0;
         if (is_prop) {
-          const [key, value] = line.split('::');
+          const [key, value] = line.split(':: ');
           block[key.trim()] = value.trim();
         }
         return !is_prop;

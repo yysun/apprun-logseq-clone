@@ -7,10 +7,10 @@ import {
 test('properties', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
 - 2
-  id::_2
+  id:: _2
   `;
   init_data();
   add_page('test', text, new Date());
@@ -23,10 +23,10 @@ test('properties', () => {
 test('find block page', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
 - 2
-  id::_2
+  id:: _2
   `;
   init_data();
   add_page('test', text, new Date());
@@ -37,10 +37,10 @@ test('find block page', () => {
 test('find block index 1', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   `;
   init_data();
   add_page('test', text, new Date());
@@ -53,12 +53,12 @@ test('find block index 1', () => {
 test('find block index 2', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   `;
   init_data();
   add_page('test', text, new Date());
@@ -72,12 +72,12 @@ test('find block index 2', () => {
 test('find block index 2', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
     - 3
-      id::_3
+      id:: _3
   `;
   init_data();
   add_page('test2', text, new Date());
@@ -100,8 +100,8 @@ test('create block 1', () => {
 test('create block 2', () => {
   const text = `
 1
-  id::_1
-  prop with space::value with space
+  id:: _1
+  prop with space:: value with space
   text
   `;
   init_data();
@@ -116,11 +116,11 @@ test('create block 2', () => {
 test('delete block', () => {
   const text = `
 - 1
-  id::_1
+  id:: _1
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   `;
   init_data();
   add_page('test2', text, new Date());
@@ -133,12 +133,12 @@ test('delete block', () => {
 test('indent block - first item cannot indent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   `;
   init_data();
   add_page('test', text, new Date());
@@ -150,14 +150,14 @@ test('indent block - first item cannot indent', () => {
 test('indent block - second item can indent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   - 4
-    id::_4
+    id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -169,14 +169,14 @@ test('indent block - second item can indent', () => {
 test('indent block - last item can indent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
     - 4
-      id::_4
+      id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -190,14 +190,14 @@ test('indent block - last item can indent', () => {
 test('outdent block - first top item cannot outdent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   - 4
-    id::_4
+    id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -209,14 +209,14 @@ test('outdent block - first top item cannot outdent', () => {
 test('outdent block - second item can outdent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
     - 3
-      id::_3
+      id:: _3
   - 4
-    id::_4
+    id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -229,14 +229,14 @@ test('outdent block - second item can outdent', () => {
 test('outdent block - last item cannot outdent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
     - 4
-      id::_4
+      id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -249,14 +249,14 @@ test('outdent block - last item cannot outdent', () => {
 test('outdent - indent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   - 4
-    id::_4
+    id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -269,14 +269,14 @@ test('outdent - indent', () => {
 test('indent - outdent', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   - 4
-    id::_4
+    id:: _4
   `;
   init_data();
   add_page('test', text, new Date());
@@ -290,12 +290,12 @@ test('indent - outdent', () => {
 test('split block - at start', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   `;
   init_data();
   add_page('p0', text, new Date());
@@ -311,12 +311,12 @@ test('split block - at start', () => {
 test('split block - in middle - has children', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
     - 3
-      id::_3
+      id:: _3
   `;
   init_data();
   add_page('p1', text, new Date());
@@ -334,12 +334,12 @@ test('split block - in middle - has children', () => {
 test('split block - in middle - no children', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
   - 2
-    id::_2
+    id:: _2
   - 3
-    id::_3
+    id:: _3
   `;
   init_data();
   add_page('p2', text, new Date());

@@ -1,4 +1,4 @@
-import { data, parse_blocks, parse_page, add_page, get_page_content } from './index';
+import { data, init_data, parse_blocks, parse_page, add_page, get_page_content } from './index';
 
 
 test('basic structure 1', () => {
@@ -67,9 +67,9 @@ test('basic structure 5', () => {
 test('page 1', () => {
   const text = `
 - 1
-  id::_1
+  id:: _1
 - 2
-  id::_2
+  id:: _2
   `;
   const blocks = parse_blocks(text);
   const { page, page_blocks } = parse_page('test', blocks, new Date());
@@ -93,9 +93,9 @@ test('page 1', () => {
 test('page 2', () => {
   const text = `
 - 1
-  id::_1
+  id:: _1
   - 2
-    id::_2
+    id:: _2
   `;
   const blocks = parse_blocks(text);
   const { page, page_blocks } = parse_page('test', blocks, new Date());
@@ -108,9 +108,9 @@ test('page 2', () => {
 test('page 3', () => {
   const text = `
 - 1
-  id::_1
+  id:: _1
   - 2
-    id::_2
+    id:: _2
 -
 3
   - 4
@@ -124,10 +124,10 @@ test('page 3', () => {
 test('properties 1', () => {
   const text = `
 - 1
-  id::_1
-  prop::value
+  id:: _1
+  prop:: value
 - 2
-  id::_2
+  id:: _2
   `;
   const blocks = parse_blocks(text);
   const { page, page_blocks } = parse_page('test', blocks, new Date());
@@ -135,4 +135,47 @@ test('properties 1', () => {
   expect(page_blocks[0].id).toBe('_1');
   expect(page_blocks[0].prop).toBe('value');
   expect(page_blocks[1].id).toBe('_2');
+});
+
+test('get page content 1', () => {
+  const text = `- 1
+  id:: _1
+  prop:: value
+- 2
+  id:: _2`;
+
+  init_data();
+  add_page('test_page', text, new Date());
+  const content = get_page_content('test_page');
+  expect(content).toBe(text);
+});
+
+test('get page content 1', () => {
+  const text = `- 1
+  id:: _1
+  prop:: value
+  - 2
+    id:: _2`;
+  init_data();
+  add_page('test2', text, new Date());
+  const content = get_page_content('test2');
+  expect(content).toBe(text);
+});
+
+test('get page content 3', () => {
+  const text = `- 1
+  id:: _1
+  prop:: value
+  some text
+  other text
+  - 2
+    id:: _2
+    content of 2
+- 3
+  id:: _3
+  content of 3`;
+  init_data();
+  add_page('test2', text, new Date());
+  const content = get_page_content('test2');
+  expect(content).toBe(text);
 });
