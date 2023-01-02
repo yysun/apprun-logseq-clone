@@ -1,11 +1,12 @@
-import { get_blocks, get_page } from './index';
+import { data, parse_blocks, parse_page, add_page, get_page_content } from './index';
+
 
 test('basic structure 1', () => {
   const text = `
 - 1
 - 2
   `;
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   expect(blocks.length).toBe(2);
   expect(blocks[0].content).toBe('1');
   expect(blocks[1].content).toBe('2');
@@ -16,7 +17,7 @@ test('basic structure 2', () => {
 1
 2
   `;
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   expect(blocks.length).toBe(2);
   expect(blocks[0].content).toBe('1');
   expect(blocks[1].content).toBe('2');
@@ -27,7 +28,7 @@ test('basic structure 3', () => {
 1
 - 2
   `;
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   expect(blocks.length).toBe(2);
   expect(blocks[0].content).toBe('1');
   expect(blocks[1].content).toBe('2');
@@ -38,7 +39,7 @@ test('basic structure 4', () => {
 1
   - 2
   `;
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   expect(blocks.length).toBe(1);
   expect(blocks[0].content).toBe('1');
   expect(blocks[0].children[0].content).toBe('2');
@@ -53,7 +54,7 @@ test('basic structure 5', () => {
   - ## 2.1
   - ## 2.2
   `;
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   expect(blocks.length).toBe(2);
   expect(blocks[0].content).toBe('# 1');
   expect(blocks[0].children[0].content).toBe('## 1.1');
@@ -70,8 +71,8 @@ test('page 1', () => {
 - 2
   id::_2
   `;
-  const blocks = get_blocks(text);
-  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  const blocks = parse_blocks(text);
+  const { page, page_blocks } = parse_page('test', blocks, new Date());
 
   expect(page_blocks.length).toBe(3);
   expect(page_blocks[0].id).toBe('_1');
@@ -96,8 +97,8 @@ test('page 2', () => {
   - 2
     id::_2
   `;
-  const blocks = get_blocks(text);
-  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  const blocks = parse_blocks(text);
+  const { page, page_blocks } = parse_page('test', blocks, new Date());
   expect(page_blocks.length).toBe(3);
   expect(page.children.length).toBe(1);
   expect(page.children[0].id).toBe('_1');
@@ -114,8 +115,8 @@ test('page 3', () => {
 3
   - 4
   `;
-  const blocks = get_blocks(text);
-  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  const blocks = parse_blocks(text);
+  const { page, page_blocks } = parse_page('test', blocks, new Date());
   expect(page_blocks.length).toBe(6);
   expect(page.children.length).toBe(3);
 });
@@ -128,8 +129,8 @@ test('properties 1', () => {
 - 2
   id::_2
   `;
-  const blocks = get_blocks(text);
-  const { page, page_blocks } = get_page(blocks, 'test', new Date());
+  const blocks = parse_blocks(text);
+  const { page, page_blocks } = parse_page('test', blocks, new Date());
   expect(page_blocks.length).toBe(3);
   expect(page_blocks[0].id).toBe('_1');
   expect(page_blocks[0].prop).toBe('value');

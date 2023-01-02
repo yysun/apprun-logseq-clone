@@ -72,12 +72,12 @@ export const get_page_content = (name) => {
   return create_content(page);
 }
 
-export function get_page(blocks, name, lastModified) {
+export function parse_page(name, blocks, lastModified) {
 
   const page_blocks = [];
   const getId = block => {
     const children = block.children?.map(child => getId(child))
-    get_properties(block);
+    parse_properties(block);
     const _block = {
       ...block,
       page: name,
@@ -102,7 +102,7 @@ export function get_page(blocks, name, lastModified) {
   return { page, page_blocks };
 }
 
-export function get_blocks(text) {
+export function parse_blocks(text) {
 
   const lines = text.split('\n')
     .filter(line => !!line.trim())
@@ -154,7 +154,7 @@ export function get_blocks(text) {
   return blocks ?? [];
 }
 
-export function get_properties(block) {
+export function parse_properties(block) {
   if (block.content) {
     block.content = block.content.split('\n')
       .filter(line => {
@@ -173,14 +173,14 @@ export function get_properties(block) {
 }
 
 export function add_page(name, text, lastModified) {
-  const blocks = get_blocks(text);
-  const { page, page_blocks } = get_page(blocks, name, lastModified);
+  const blocks = parse_blocks(text);
+  const { page, page_blocks } = parse_page(name, blocks, lastModified);
   data.blocks.push(...page_blocks);
   if (page?.children?.length) data.pages.push(page);
 }
 
 export function update_page(name, text, lastModified) {
-  const blocks = get_blocks(text);
+  const blocks = parse_blocks(text);
   const old_blocks = data.blocks.filter(b => b.page === name);
   for (let block of blocks) {
     const old_block = old_blocks.find(b => b.content === block.content);
@@ -190,7 +190,7 @@ export function update_page(name, text, lastModified) {
       block.isNew = true;
     }
   }
-  const { page, page_blocks } = get_page(blocks, name, lastModified);
+  const { page, page_blocks } = parse_page(blocks, name, lastModified);
   const old_page = data.pages.find(b => b.name === name);
 
   for (let block of old_blocks) {
@@ -226,8 +226,8 @@ export const find_block = (id: string): Block => {
 
 export const create_block = (content: string): Block => {
   if (!content) content = '- '
-  const block = get_blocks(content)[0];
-  get_properties(block);
+  const block = parse_blocks(content)[0];
+  parse_properties(block);
   data.blocks.push(block);
   return block;
 }
@@ -280,19 +280,6 @@ export const find_block_index = (block: BlockId): BlockIndex => {
   let found = search_index(page, block.id);
   if (found) return { ...found, page };
 }
-
-
-// export const insert_block = (block: Block, target: BlockId) => {
-//   const { parent, pos, page } = find_block_index(target);
-//   parent.children.splice(pos, 0, { id: block.id });
-//   block.page = page.name;
-// }
-
-// export const append_block = (block: Block, target: BlockId) => {
-//   const { parent, pos, page, children } = find_block_index(target);
-//   parent.children.splice(pos + 1, 0, { id: block.id, children });
-//   block.page = page.name;
-// }
 
 export const indent_block = (id: string): string | undefined => {
   const { parent, pos, page, children } = find_block_index(id);
