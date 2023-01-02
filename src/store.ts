@@ -56,7 +56,6 @@ const process_file = async (fileHandle, dir) => {
 const process_dir = async (dirHandle) => {
   let dir = dirHandle.name;
   if (dir.startsWith('.') || dir.startsWith('_') || dir.startsWith('bak')) return;
-  Log.info(dir);
   for await (const entry of dirHandle.values()) {
     if (entry.kind === 'file') {
       await process_file(entry, dir);
