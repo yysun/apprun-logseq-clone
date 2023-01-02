@@ -2,12 +2,19 @@ import { to_markdown } from '../model/md';
 import {
   data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block
 } from '../model/index';
-import { create_caret, restore_caret, save_caret, split_element, set_caret_html } from './caret';
+import { create_caret, restore_caret, save_caret, split_element } from './caret';
 
-export const focus_block = (id, toStart) => {
+export const new_block_caret = (id, toStart) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
     create_caret(new_element, toStart);
+  });
+}
+
+export const restore_block_caret = (id, caret_html = null) => {
+  setTimeout(() => {
+    const new_element = document.getElementById(id);
+    restore_caret(new_element, caret_html);
   });
 }
 
@@ -20,10 +27,10 @@ const handle_enter_key = (e, id, element) => {
   const isEmpty = !text1 && !text2;
   if (!isTopLevel && isEmpty) {
     outdent_block(id);
-    focus_block(id, true);
+    new_block_caret(id, true);
   } else {
     const new_block = split_block(id, text1, text2);
-    focus_block(new_block.id, true);
+    new_block_caret(new_block.id, true);
   }
   return data;
 };
@@ -38,26 +45,21 @@ const handle_backspace_key = (e, id, element) => {
   const isTopLevel = parent.id === page.id;
   const isFirstChild = pos === 0;
   if (isTopLevel && isFirstChild) return;
-
   const prevBlockId = parent.children[pos - 1]?.id || parent.id;
   merge_block(prevBlockId, id);
-  setTimeout(() => {
-    const prevElement = document.getElementById(prevBlockId);
-    set_caret_html(prevElement.innerHTML);
-    restore_caret(prevElement);
-  });
+  restore_block_caret(prevBlockId);
   return data;
 }
 
 const handle_tab_key = async (e, id, element) => {
   e.preventDefault();
-  save_caret(element);
+  const html = save_caret(element);
   if (e.shiftKey) {
     outdent_block(id);
   } else {
     indent_block(id);
   }
-  setTimeout(() => restore_caret(document.getElementById(id)));
+  restore_block_caret(id, html);
   return data;
 }
 
@@ -69,7 +71,6 @@ export const editor_keydown = (_, e) => {
     node.parentElement.closest('.block-content');
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
-
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
     return handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {

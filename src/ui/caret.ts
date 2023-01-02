@@ -1,7 +1,3 @@
-let saved_html;
-
-export const set_caret_html = html => saved_html = html;
-
 const get_range = () => {
   const selection = window.getSelection();
   return selection && selection.rangeCount ? selection.getRangeAt(0) : null;
@@ -13,14 +9,13 @@ export const save_caret = (element) => {
   const anchor = document.createElement('span');
   anchor.id = '__caret';
   range.insertNode(anchor);
-  saved_html = element.innerHTML;
+  return element.innerHTML
 }
 
-export const restore_caret = (element) => {
-  if (!saved_html) return;
+export const restore_caret = (element, html = null) => {
   const selection = window.getSelection();
   const range = new Range();
-  element.innerHTML = saved_html;
+  if (html) element.innerHTML = html;
   range.selectNodeContents(element);
   const anchor = element.querySelector('#__caret');
   range.setStartAfter(anchor);
@@ -28,7 +23,6 @@ export const restore_caret = (element) => {
   selection.removeAllRanges();
   selection.addRange(range);
   anchor.remove();
-  saved_html = null;
 }
 
 export const create_caret = (element, toStart = false) => {
