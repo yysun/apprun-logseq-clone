@@ -27,6 +27,7 @@ export const restore_caret = (element) => {
   range.setEndAfter(anchor);
   selection.removeAllRanges();
   selection.addRange(range);
+  anchor.remove();
   saved_html = null;
 }
 

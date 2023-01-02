@@ -33,7 +33,7 @@ export default function Page({ page }) {
     content = content.substring(content.lastIndexOf('/') + 1);
     content = `<h1 contenteditable="false">${content}</h1>`;
   }
-  content = create_content(content) || ' ';
+  content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
   return <div class={`block${block.type === 'page' ? ' page' : ''}`} >
     <div class="block-header" contenteditable="false">
