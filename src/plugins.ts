@@ -1,5 +1,5 @@
 import app from 'apprun';
-import { data } from './model/page';
+import { data } from './model/index';
 export default async () => {
   app['model'] = { data };
   try {

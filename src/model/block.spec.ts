@@ -2,7 +2,7 @@ import {
   data, init_data, add_page, find_block_page, find_block_index,
   create_block, find_block, delete_block,
   indent_block, outdent_block, split_block
-} from './page';
+} from './index';
 
 test('properties', () => {
   const text = `

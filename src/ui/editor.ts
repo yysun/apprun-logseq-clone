@@ -1,8 +1,7 @@
 import { to_markdown } from '../model/md';
 import {
-  data, find_block_index, indent_block, outdent_block, delete_block,
-  split_block, update_block, merge_block
-} from '../model/page';
+  data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block
+} from '../model/index';
 import { create_caret, restore_caret, save_caret, split_element, set_caret_html } from './caret';
 
 export const focus_block = (id, toStart) => {

@@ -10,7 +10,7 @@
     "watch": "vite build --sourcemap --watch",
     "dev": "vite dev --port 8080",
     "preview": "vite preview --port 8080",
-    "create-types": "tsc src/model/page.ts --declaration --emitDeclarationOnly --skipLibCheck"
+    "create-types": "tsc src/model/index.ts --declaration --emitDeclarationOnly --skipLibCheck"
   },
   "repository": "",
   "keywords": [],

@@ -1,4 +1,4 @@
-import { get_blocks, get_page } from './page';
+import { get_blocks, get_page } from './index';
 
 test('basic structure 1', () => {
   const text = `
