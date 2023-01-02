@@ -8,12 +8,12 @@ import store from './store';
 import shortcuts from './shortcuts';
 
 app['no-init-route'] = true;
+app.render(document.getElementById('root'), <Layout />);
 
 shortcuts();
 await plugins();
 await store();
 
-app.render(document.getElementById('root'), <Layout />);
 new Pages().mount('my-app');
 new Journals().mount('my-app');
 new Home().start('my-app');

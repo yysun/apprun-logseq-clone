@@ -1,3 +1,5 @@
+import Log from './logger';
+import app from 'apprun';
 import { get, set } from 'idb-keyval';
 import { data, get_page_content, add_page, update_page } from './model/index';
 import init_search from './search';
@@ -19,7 +21,7 @@ const get_file_handler = async (dirHandle, file_name) => {
 
 
 export const save_file = async (name) => {
-  const content  = get_page_content(name);
+  const content = get_page_content(name);
   const file_name = name + '.md';
   const fileHandle = await get_file_handler(dirHandle, file_name);
   const writable = await fileHandle.createWritable();
@@ -43,7 +45,7 @@ const process_file = async (fileHandle, dir) => {
   const page = data.pages.find(p => p.name === name);
   if (page && page.lastModified > lastModified) return;
   const text = await file.text();
-  if(!text) return;
+  if (!text) return;
   if (!page) {
     add_page(name, text, lastModified);
   } else if (page.lastModified < lastModified) {
@@ -54,6 +56,7 @@ const process_file = async (fileHandle, dir) => {
 const process_dir = async (dirHandle) => {
   let dir = dirHandle.name;
   if (dir.startsWith('.') || dir.startsWith('_') || dir.startsWith('bak')) return;
+  Log.info(dir);
   for await (const entry of dirHandle.values()) {
     if (entry.kind === 'file') {
       await process_file(entry, dir);
@@ -62,7 +65,6 @@ const process_dir = async (dirHandle) => {
       await process_dir(entry);
     }
   }
-
 }
 
 export default async () => {
@@ -78,6 +80,7 @@ const open_dir = async () => {
   hasAccess = true;
   await process_dir(dirHandle);
   init_search(data);
+  app.run('dir-processed', dirHandle.name);
   return data;
 }
 
