@@ -8,7 +8,10 @@ pre code {
   @apply text-sm;
 }
 
-:root {}
+:root {
+  --ana-link-color: #045591;
+}
+
 
 *:focus {
   outline: none;
@@ -58,6 +61,11 @@ pre code {
   width: 100%;
   color: rgb(67, 63, 56);
   flex-grow: 1;
+}
+
+.block-content a {
+  color: var(--ana-link-color);
+  cursor: pointer;
 }
 
 .bullet {
