@@ -1,8 +1,11 @@
+import app from 'apprun';
 import {
   data, init_data, add_page, find_block_page, find_block_index,
   create_block, find_block, delete_block,
   indent_block, outdent_block, split_block
 } from './index';
+
+app.on('save-file', () => { });
 
 test('properties', () => {
   const text = `

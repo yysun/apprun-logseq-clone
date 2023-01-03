@@ -1,7 +1,7 @@
 import Log from './logger';
 import app from 'apprun';
 import { get, set } from 'idb-keyval';
-import { data, get_page_content, add_page, update_page } from './model/index';
+import { data, get_page_content, add_page, update_page, find_page } from './model/index';
 import init_search from './search';
 export { data }
 
@@ -27,6 +27,7 @@ export const save_file = async (name) => {
   const writable = await fileHandle.createWritable();
   await writable.write(content);
   await writable.close();
+  find_page(name).lastModified = Date.now();
 }
 
 export const open_file = async (name) => {
@@ -67,6 +68,12 @@ const process_dir = async (dirHandle) => {
 }
 
 export default async () => {
+
+  app.on('save-file', async (name) => {
+    await save_file(name);
+    Log.info('file saved: ', name);
+  }, { delay: 1000 });
+
   dirHandle = await get("doc_root");
   if (dirHandle) {
     if (await dirHandle.queryPermission(options) === 'granted') {

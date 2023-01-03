@@ -1,3 +1,4 @@
+import app from 'apprun';
 import _md from 'markdown-it';
 import { v4 as uuidv4 } from 'uuid';
 const get_id = () => uuidv4();
@@ -42,7 +43,7 @@ export const init_data = () => {
   data.pages = [];
 }
 
-const find_page = name => {
+export const find_page = name => {
   const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
   const page = data.pages.find(p => p.id === page_block.id);
   return page;
@@ -52,20 +53,24 @@ const create_content = (page, level = 0) => {
   const { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
   let list = children?.map(child => create_content(child, level + 1))
-    .filter(c => !!c)
+    .filter(c => !!c.trim())
     .join('\n');
 
   if (block.type === 'page') return list;
   const leading_spaces = ' '.repeat((level - 1) * 2);
-  const content_lines = block.content.split('\n');
+  const content_lines = block.content.split('\n')
+    .map(line => line.replace('<span id="__caret"></span>', '').trim());
   const property_lines = Object.keys(block)
-    .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type')
-    .map(prop => prop + ':: ' + block[prop]);
+    .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type' && prop !== '_has_id')
+    .map(prop => prop !== 'id' || block['_has_id'] ? prop + ':: ' + block[prop] : '')
+    .map(line => line.trim())
+    .filter(line => !!line);
 
   const all_lines = property_lines.concat(content_lines.slice(1));
-  let content = leading_spaces + '- ' + content_lines[0] + '\n' +
-    all_lines.map(line => leading_spaces + '  ' + line).join('\n');
-
+  const content_rest = all_lines.map(line => leading_spaces + '  ' + line)
+    .filter(line => !!line.trim())
+    .join('\n');
+  let content = leading_spaces + '- ' + content_lines[0] + (content_rest ? '\n' + content_rest : '');
   if (content && list) {
     content = content + '\n' + list;
   } else if (!content && list) {
@@ -177,6 +182,8 @@ export function parse_properties(block) {
   }
   if (!block.id) {
     block.id = get_id();
+  } else {
+    block._has_id = true;
   }
 }
 
@@ -248,7 +255,9 @@ export const delete_block = (block) => {
 
 export const update_block = (block: BlockId, content: string) => {
   block = find_block(get_block_id(block));
+  if (!block || block.content === content) return;
   block.content = content;
+  app.run('save-file', block.page);
 }
 
 //#endregion
@@ -296,6 +305,7 @@ export const indent_block = (id: string): string | undefined => {
     prev.children = prev.children || [];
     prev.children.push({ id, children });
     parent.children.splice(pos, 1);
+    app.run('save-file', page.name);
     return id;
   }
 }
@@ -306,6 +316,7 @@ export const outdent_block = (id: string): string | undefined => {
     const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id);
     parent_parent.children.splice(parent_pos + 1, 0, { id, children });
     parent.children.splice(pos, 1);
+    app.run('save-file', page.name);
     return id;
   }
 }

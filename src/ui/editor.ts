@@ -71,15 +71,20 @@ export const editor_keydown = (_, e) => {
     node.parentElement.closest('.block-content');
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
+
+  const update = () => setTimeout(() => {
+    const md = to_markdown((element as HTMLElement).innerHTML);
+    update_block(id, md);
+  });
+
+
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
     return handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {
+    update();
     if (handle_backspace_key(e, id, element)) return data;
   } else if (key === 'Tab') {
     return handle_tab_key(e, id, element);
   }
-  if (id) {
-    const md = to_markdown((element as HTMLElement).innerHTML);
-    update_block(id, md);
-  }
+  update();
 }
