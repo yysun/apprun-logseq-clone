@@ -1,20 +1,31 @@
 import { to_markdown } from '../model/md';
 import {
-  data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block
+  data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block,
+  move_block_up, move_block_down
+
 } from '../model/index';
 import { create_caret, restore_caret, save_caret, split_element } from './caret';
 
-export const new_block_caret = (id, toStart) => {
+const save_block = (id, element) => {
+  setTimeout(() => {
+    const el = document.getElementById(id) as HTMLElement;
+    const md = to_markdown(el.innerHTML);
+    update_block(id, md);
+  });
+}
+
+const new_block_caret = (id, toStart) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
     create_caret(new_element, toStart);
   });
 }
 
-export const restore_block_caret = (id, caret_html = null) => {
+const restore_block_caret = (id, caret_html = null) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
     restore_caret(new_element, caret_html);
+    save_block(id, new_element);
   });
 }
 
@@ -65,6 +76,12 @@ const handle_tab_key = async (e, id, element) => {
 
 export const editor_keydown = (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+
+  // if ((ctrlKey || metaKey) && key.toLowerCase() === 'z') {
+  //   e.preventDefault();
+  //   return saved_data;
+  // }
+
   const node = document.getSelection().anchorNode;
   const element = node.nodeType === 1 &&
     (node as HTMLElement).classList.contains('block-content') ? node :
@@ -72,20 +89,38 @@ export const editor_keydown = (_, e) => {
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
 
-  const update = () => setTimeout(() => {
-    const md = to_markdown((element as HTMLElement).innerHTML);
-    update_block(id, md);
-  });
-
-
+  console.log(e);
+  if (altKey && key.startsWith('Arrow')) {
+    e.preventDefault();
+    let handled = false;
+    console.log(key);
+    const html = save_caret(element);
+    switch (key) {
+      case 'ArrowUp':
+        handled = move_block_up(id);
+        break;
+      case 'ArrowDown':
+        handled = move_block_up(id);
+        break;
+      case 'ArrowLeft':
+        handled = outdent_block(id);
+        break;
+      case 'ArrowRight':
+        handled = indent_block(id);
+        break;
+    }
+    if (handled) {
+      restore_block_caret(id, html);
+      return data;
+    }
+  }
+  save_block(id, element);
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
-    update();
     return handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {
-    update();
     if (handle_backspace_key(e, id, element)) return data;
   } else if (key === 'Tab') {
     return handle_tab_key(e, id, element);
   }
-  update();
+
 }

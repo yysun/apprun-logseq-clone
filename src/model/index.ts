@@ -4,19 +4,19 @@ import { v4 as uuidv4 } from 'uuid';
 const get_id = () => uuidv4();
 
 //#region types
-type BlockRef = { id: string };
-type Block = BlockRef & {
+type Block = {
+  id: string;
   content: string;
-  page?: string;
-  type?: string;
   [index: string]: any; // properties
 }
-
 type BlockId = string | Block;
-type Index = BlockRef & { children?: Index[] };
+
+type Index = {
+  id: string;
+  children?: Index[]
+};
 
 type PageIndex = Index & {
-  id: string;
   name: string;
   lastModified: number;
 }
@@ -63,8 +63,8 @@ const create_content = (page, level = 0) => {
   const property_lines = Object.keys(block)
     .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type' && prop !== '_has_id')
     .map(prop => prop !== 'id' || block['_has_id'] ? prop + ':: ' + block[prop] : '')
-    // .map(line => line.trim())
-    // .filter(line => !!line);
+  // .map(line => line.trim())
+  // .filter(line => !!line);
 
   const all_lines = property_lines.concat(content_lines.slice(1));
   const content_rest = all_lines.map(line => leading_spaces + '  ' + line)
@@ -247,10 +247,13 @@ export const create_block = (content: string): Block => {
   return block;
 }
 
-export const delete_block = (block) => {
-  const { parent, pos } = find_block_index(block);
-  parent.children.splice(pos, 1);
-  data.blocks = data.blocks.filter(b => b.id !== block.id);
+export const delete_block = (id: string) => {
+  const blockIndex = find_block_index(id);
+  if (blockIndex) {
+    const { parent, pos } = blockIndex
+    parent.children.splice(pos, 1);
+  }
+  data.blocks = data.blocks.filter(b => b.id !== id);
 }
 
 export const update_block = (block: BlockId, content: string) => {
@@ -282,7 +285,11 @@ export const find_page_index = (block: BlockId): PageIndex => {
 export const search_index = (parent: Index, id: string): BlockIndex => {
   if (!parent?.children) return null;
   const pos = parent.children.findIndex(c => c.id === id);
-  if (pos > -1) return { parent, pos, id, children: parent.children[pos].children };
+  if (pos > -1) return {
+    parent, pos, id,
+    get children() { return parent.children[pos].children },
+    set children(children) { parent.children[pos].children = children }
+  };
   let found;
   parent.children.every(child => {
     found = search_index(child, id);
@@ -293,12 +300,14 @@ export const search_index = (parent: Index, id: string): BlockIndex => {
 
 export const find_block_index = (block: BlockId): BlockIndex => {
   block = typeof block === 'string' ? find_block(block) : block;
+  if (!block) return null;
   const page = find_page_index(block);
   let found = search_index(page, block.id);
-  if (found) return { ...found, page };
+  if (found) found.page = page;
+  return found;
 }
 
-export const indent_block = (id: string): string | undefined => {
+export const indent_block = (id: string): boolean => {
   const { parent, pos, page, children } = find_block_index(id);
   if (pos > 0) {
     const prev = parent.children[pos - 1];
@@ -306,18 +315,18 @@ export const indent_block = (id: string): string | undefined => {
     prev.children.push({ id, children });
     parent.children.splice(pos, 1);
     app.run('save-file', page.name);
-    return id;
+    return true;
   }
 }
 
-export const outdent_block = (id: string): string | undefined => {
+export const outdent_block = (id: string): boolean => {
   const { parent, pos, page, children } = find_block_index(id);
   if (parent.id !== page.id) {
     const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id);
     parent_parent.children.splice(parent_pos + 1, 0, { id, children });
     parent.children.splice(pos, 1);
     app.run('save-file', page.name);
-    return id;
+    return true;
   }
 }
 
@@ -334,7 +343,7 @@ export const split_block = (id: string, part1: string, part2: string): Block => 
     const new_block = create_block(part2);
     new_block.page = page.name;
     update_block(old_block, part1);
-    if (children) {
+    if (children && children.length) {
       parent.children[pos].children.unshift({ id: new_block.id });
     } else {
       parent.children.splice(pos + 1, 0, { id: new_block.id });
@@ -344,14 +353,31 @@ export const split_block = (id: string, part1: string, part2: string): Block => 
 }
 
 export const merge_block = (id1: string, id2: string): Block => {
+  const blockIndex1 = find_block_index(id1);
+  const blockIndex2 = find_block_index(id2);
+  if (blockIndex2.children) {
+    blockIndex1.children = blockIndex1.children || [];
+    blockIndex1.children.push(...blockIndex2.children);
+  }
   const block1 = find_block(id1);
   const block2 = find_block(id2);
   update_block(block1, block1.content + '<span id="__caret"></span>' + block2.content);
-  delete_block(block2);
+  delete_block(id2);
   return block1;
 }
 
-export const move_block = (id: string, target: BlockId) => {
+export const move_block_up = (id: string): boolean => {
+  return true;
+}
+
+export const move_block_down = (id: string): boolean => {
+  return true;
+
+}
+
+export const move_block_to = (source: string, target: string): boolean => {
+  return true;
+
 }
 
 //#endregion

@@ -27,7 +27,7 @@ export default function Page({ page }) {
   let { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
   let list = children?.map(child => <Page page={child} />);
-
+  if (list?.length === 0) list = null;
   let content = block.content;
   if (block.type === 'page') {
     content = content.substring(content.lastIndexOf('/') + 1);
@@ -38,7 +38,7 @@ export default function Page({ page }) {
   return <div class={`block${block.type === 'page' ? ' page' : ''}`} >
     <div class="block-header" contenteditable="false">
       <div class="block-bullet">
-        <div class={`bullet ${list ? 'cursor-pointer bg-gray-500' : 'cursor-default  bg-gray-300'}`}
+        <div class={`bullet ${list ? 'cursor-pointer bg-gray-300' : 'cursor-default  bg-gray-100'}`}
           onclick={toggle_block_list}></div>
       </div>
       <div class="block-content" contenteditable="true" id={block.id}>

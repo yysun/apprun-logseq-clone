@@ -2,7 +2,7 @@ import app from 'apprun';
 import {
   data, init_data, add_page, find_block_page, find_block_index,
   create_block, find_block, delete_block,
-  indent_block, outdent_block, split_block
+  indent_block, outdent_block, split_block, merge_block, move_block
 } from './index';
 
 app.on('save-file', () => { });
@@ -354,4 +354,77 @@ test('split block - in middle - no children', () => {
   expect(find_block('_2').content).toBe('test');
   expect(find_block(parent.children[1].id).content).toBe('');
   expect(find_block(parent.children[1].id).page).toBe('p2');
+});
+
+
+test('merge block without children - same level', () => {
+  const text = `
+- 1
+  id:: _1
+- 2
+  id:: _2
+  `;
+  init_data();
+  add_page('p2', text, new Date());
+  merge_block('_1', '_2');
+  expect(find_block_index('_2')).toBeNull();
+  const block = find_block('_1');
+  expect(block.content).toBe('1<span id=\"__caret\"></span>2');
+});
+
+test('merge block without children - from child', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+  `;
+  init_data();
+  add_page('p2', text, new Date());
+  merge_block('_1', '_2');
+  expect(find_block_index('_2')).toBeNull();
+  const block = find_block('_1');
+  expect(block.content).toBe('1<span id=\"__caret\"></span>2');
+});
+
+test('merge block with children 1', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+      - 5
+        id:: _5
+  `;
+  init_data();
+  add_page('p2', text, new Date());
+  merge_block('_1', '_2');
+  expect(find_block_index('_2')).toBeNull();
+  const { children } = find_block_index('_1');
+  expect(children.length).toBe(2);
+});
+
+test('merge block with children 2', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+      - 5
+        id:: _5
+  `;
+  init_data();
+  add_page('p2', text, new Date());
+  merge_block('_3', '_4');
+  expect(find_block_index('_4')).toBeNull();
+  const blockIndex = find_block_index('_3');
+  expect(blockIndex.children.length).toBe(1);
 });
