@@ -320,11 +320,15 @@ export const indent_block = (id: string): boolean => {
 }
 
 export const outdent_block = (id: string): boolean => {
-  const { parent, pos, page, children } = find_block_index(id);
+  const blockIndex = find_block_index(id);
+  const { parent, pos, page } = blockIndex;
   if (parent.id !== page.id) {
     const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id);
+    const children = blockIndex.children || [];
+    const siblings = parent.children.slice(pos + 1);
+    if (siblings.length) children.push(...siblings);
     parent_parent.children.splice(parent_pos + 1, 0, { id, children });
-    parent.children.splice(pos, 1);
+    parent.children.splice(pos, siblings.length + 1);
     app.run('save-file', page.name);
     return true;
   }

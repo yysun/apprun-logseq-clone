@@ -2,7 +2,7 @@ import app from 'apprun';
 import {
   data, init_data, add_page, find_block_page, find_block_index,
   create_block, find_block, delete_block,
-  indent_block, outdent_block, split_block, merge_block, move_block
+  indent_block, outdent_block, split_block, merge_block, move_block_up, move_block_down, move_block_to
 } from './index';
 
 app.on('save-file', () => { });
@@ -145,7 +145,8 @@ test('indent block - first item cannot indent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  indent_block('_2');
+  const b = indent_block('_2');
+  expect(b).toBeUndefined();
   const { parent, pos, page } = find_block_index('_1');
   expect(parent.id).toBe(page.id);
 });
@@ -164,7 +165,8 @@ test('indent block - second item can indent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  indent_block('_3');
+  const b = indent_block('_3');
+  expect(b).toBe(true);
   const { parent, pos, page } = find_block_index('_3');
   expect(parent.id).toBe('_2');
 });
@@ -183,7 +185,8 @@ test('indent block - last item can indent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  indent_block('_3');
+  const b = indent_block('_3');
+  expect(b).toBe(true);
   const { parent, pos, page, children } = find_block_index('_3');
   expect(parent.id).toBe('_2');
   expect(children.length).toBe(1);
@@ -204,12 +207,13 @@ test('outdent block - first top item cannot outdent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  outdent_block('_1');
+  const b = outdent_block('_1');
+  expect(b).toBeUndefined();
   const { parent, pos, page } = find_block_index('_1');
   expect(parent.id).toBe(page.id);
 });
 
-test('outdent block - second item can outdent', () => {
+test('outdent block - with children', () => {
   const text = `
 - 1
   id:: _1
@@ -223,13 +227,38 @@ test('outdent block - second item can outdent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  outdent_block('_2');
+  const b = outdent_block('_2');
+  expect(b).toBe(true);
   const { parent, pos, page, children } = find_block_index('_2');
   expect(parent.id).toBe(page.id);
-  expect(children.length).toBe(1);
+  expect(children.length).toBe(2);
 });
 
-test('outdent block - last item cannot outdent', () => {
+test('outdent block - with children 2', () => {
+  const text = `
+- 1
+  id:: _1
+  prop:: value
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+    - 5
+      id:: _5
+  `;
+  init_data();
+  add_page('test', text, new Date());
+  const b = outdent_block('_3');
+  expect(b).toBe(true);
+  const { parent, pos, page, children } = find_block_index('_3');
+  expect(parent.id).toBe('_1');
+  expect(children.length).toBe(2);
+});
+
+
+test('outdent block - last item can outdent', () => {
   const text = `
 - 1
   id:: _1
@@ -243,7 +272,8 @@ test('outdent block - last item cannot outdent', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  outdent_block('_4');
+  const b = outdent_block('_4');
+  expect(b).toBe(true);
   const { parent, pos, page } = find_block_index('_4');
   expect(parent.id).toBe('_1');
 
