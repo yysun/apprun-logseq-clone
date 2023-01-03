@@ -53,7 +53,7 @@ const create_content = (page, level = 0) => {
   const { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
   let list = children?.map(child => create_content(child, level + 1))
-    .filter(c => !!c.trim())
+    // .filter(c => !!c.trim())
     .join('\n');
 
   if (block.type === 'page') return list;
@@ -63,8 +63,8 @@ const create_content = (page, level = 0) => {
   const property_lines = Object.keys(block)
     .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type' && prop !== '_has_id')
     .map(prop => prop !== 'id' || block['_has_id'] ? prop + ':: ' + block[prop] : '')
-    .map(line => line.trim())
-    .filter(line => !!line);
+    // .map(line => line.trim())
+    // .filter(line => !!line);
 
   const all_lines = property_lines.concat(content_lines.slice(1));
   const content_rest = all_lines.map(line => leading_spaces + '  ' + line)

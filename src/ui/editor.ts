@@ -79,6 +79,7 @@ export const editor_keydown = (_, e) => {
 
 
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
+    update();
     return handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {
     update();
