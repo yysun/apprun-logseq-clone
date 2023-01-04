@@ -4,7 +4,7 @@ import {
   create_block, find_block, delete_block,
   indent_block, outdent_block, split_block, merge_block, move_block_up, move_block_down, move_block_to,
   find_prev, find_next
-} from './index';
+} from '../model/index';
 
 app.on('save-file', () => { });
 

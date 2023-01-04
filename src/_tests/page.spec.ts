@@ -1,4 +1,4 @@
-import { data, init_data, parse_blocks, parse_page, add_page, get_page_content } from './index';
+import { data, init_data, parse_blocks, parse_page, add_page, get_page_content } from '../model/index';
 
 
 test('basic structure 1', () => {
