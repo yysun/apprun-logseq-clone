@@ -3,9 +3,9 @@ import Home from './home';
 import Journals from './ui/journals';
 import Pages from './ui/pages';
 import Layout from './ui/layout';
+import shortcuts from './ui/shortcuts';
 import plugins from './plugins';
 import store from './store';
-import shortcuts from './shortcuts';
 
 app['no-init-route'] = true;
 app.render(document.getElementById('root'), <Layout />);
