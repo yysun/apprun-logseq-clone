@@ -48,4 +48,5 @@ export default () => <>
     Tooltip
     <div id="arrow" class="absolute"></div>
   </div>
+  <div id="for-popups"></div>
 </>

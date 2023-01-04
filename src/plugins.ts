@@ -4,6 +4,7 @@ export default async () => {
   app['model'] = { data };
   try {
     // (await import('./ui/editor_toolbar')).default();
+    (await import('./ui/command-palette')).default();
   } catch (e) {
     console.error(e);
   }

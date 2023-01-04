@@ -2,8 +2,10 @@ import app from "apprun"
 import Log from "../logger";
 
 export const shortcuts = {
-  "ctrl+f": "@search",
-  "meta+f": "@search",
+  "ctrl+p": "@search",
+  "meta+p": "@search",
+  "ctrl+shift+p": "@command-palette",
+  "meta+shift+p": "@command-palette",
 }
 
 const queue = [];
@@ -39,7 +41,7 @@ export default () => {
     queue_timer = setTimeout(() => {
       queue.push(hotkey);
       timer && clearTimeout(timer);
-      timer = setTimeout(handle_hotkeys, 500)
+      timer = setTimeout(handle_hotkeys, 300)
     }, 50);
   })
 }
