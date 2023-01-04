@@ -24,7 +24,8 @@ export default class extends Component {
     return pages.length > 0 ?
       <div class="main-page">
         <h1>All Pages ({total})</h1>
-        <div class="editor" contenteditable="true" $onkeydown={editor_keydown}>
+        <div class="editor" contenteditable="true" $onkeydown={editor_keydown}
+        ref = {e=>e.focus()}>
           {pages.map(page => <Page page={page} />)}
         </div>
       </div> : !dirHandle ?

@@ -2,7 +2,8 @@ import app from 'apprun';
 import {
   data, init_data, add_page, find_block_page, find_block_index,
   create_block, find_block, delete_block,
-  indent_block, outdent_block, split_block, merge_block, move_block_up, move_block_down, move_block_to
+  indent_block, outdent_block, split_block, merge_block, move_block_up, move_block_down, move_block_to,
+  find_prev, find_next
 } from './index';
 
 app.on('save-file', () => { });
@@ -457,4 +458,133 @@ test('merge block with children 2', () => {
   expect(find_block_index('_4')).toBeNull();
   const blockIndex = find_block_index('_3');
   expect(blockIndex.children.length).toBe(1);
+});
+
+test('find next block', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(find_next('_1')).toBe('_2');
+  expect(find_next('_2')).toBe('_3');
+  expect(find_next('_3')).toBe('_4');
+  expect(find_next('_4')).toBe('_5');
+  expect(find_next('_5')).toBeUndefined();
+});
+
+test('find prev block', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(find_prev('_1')).not.toBeNull();
+  expect(find_prev('_2')).toBe('_1');
+  expect(find_prev('_3')).toBe('_2');
+  expect(find_prev('_4')).toBe('_3');
+  expect(find_prev('_5')).toBe('_4');
+});
+
+test('move block up - same parent', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(move_block_up('_1')).toBeUndefined();
+  move_block_up('_4');
+  const { parent } = find_block_index('_4');
+  expect(parent.id).toBe('_2');
+});
+
+test('move block down - same parent', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(move_block_down('_5')).toBeUndefined();
+  move_block_down('_3');
+  const { parent } = find_block_index('_3');
+  expect(parent.id).toBe('_2');
+});
+
+test('move block up - beyond parent', () => {
+  const text = `
+- 0
+  - 1
+    id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(move_block_up('_1')).toBeUndefined();
+  move_block_up('_3');
+  const { parent } = find_block_index('_3');
+  expect(parent.id).toBe('_1');
+});
+
+test('move block down - beyond parent', () => {
+  const text = `
+- 1
+  id:: _1
+  - 2
+    id:: _2
+    - 3
+      id:: _3
+    - 4
+      id:: _4
+  - 5
+    id:: _5
+  `;
+  init_data();
+  add_page('pp', text, new Date());
+  expect(move_block_down('_5')).toBeUndefined();
+  move_block_down('_4');
+  const { parent } = find_block_index('_4');
+  expect(parent.id).toBe('_5');
 });

@@ -57,7 +57,7 @@ pre code {
 }
 
 .block-content {
-  padding: 5px 50px 5px 5px;
+  padding: 2px 50px 2px 5px;
   width: 100%;
   color: rgb(67, 63, 56);
   flex-grow: 1;

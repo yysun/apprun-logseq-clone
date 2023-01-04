@@ -187,11 +187,12 @@ export function parse_properties(block) {
   }
 }
 
-export function add_page(name, text, lastModified) {
+export function add_page(name, text, lastModified): PageIndex {
   const blocks = parse_blocks(text);
   const { page, page_blocks } = parse_page(name, blocks, lastModified);
   data.blocks.push(...page_blocks);
-  if (page?.children?.length) data.pages.push(page);
+  if (page?.children?.length) data.pages.push(page)
+  return page;
 }
 
 export function update_page(name, text, lastModified) {
@@ -266,6 +267,35 @@ export const update_block = (block: BlockId, content: string) => {
 //#endregion
 
 //#region index functions
+
+const create_index = ({ id, children }): Index =>
+  children ? { id, children } : { id };
+
+const remove_from_parent = (index: BlockIndex): void => {
+  index.parent.children.splice(index.pos, 1);
+}
+const add_prev_sibling = (index: BlockIndex, new_index: Index): void => {
+  index.parent.children.splice(index.pos, 0, new_index);
+}
+const add_next_sibling = (index: BlockIndex, new_index: Index): void => {
+  index.parent.children.splice(index.pos + 1, 0, new_index);
+}
+
+const insert_child = (index: Index, new_index: Index): void => {
+  index.children = index.children || [];
+  index.children.unshift(new_index);
+}
+const append_child = (index: Index, new_index: Index): void => {
+  index.children = index.children || [];
+  index.children.push(new_index);
+}
+const prev_index = (index: BlockIndex): Index => index.parent.children[index.pos - 1];
+const next_index = (index: BlockIndex): Index => index.parent.children[index.pos + 1];
+
+const isTopLevel = ({ parent, page }) => parent.id === page.id;
+const isLast = ({ parent, pos }) => pos === parent.children.length - 1;
+const isFirst = ({ parent, pos }) => pos === 0 && !!parent;
+
 export const get_block_id = (block: BlockId): string => {
   return typeof block === 'string' ? block : block.id;
 }
@@ -370,18 +400,75 @@ export const merge_block = (id1: string, id2: string): Block => {
   return block1;
 }
 
+const combine_block_id = page => {
+  let list = page.children?.map(child => combine_block_id(child)) || [];
+  return list.length ? page.id + '\n' + list.join('\n') : page.id;
+}
+export const find_prev = (id: string): string => {
+  const page = find_page_index(id);
+  const blocks = combine_block_id(page).split('\n');
+  const pos = blocks.findIndex(b => b === id);
+  return blocks[pos - 1];
+}
+
+export const find_next = (id: string): string => {
+  const page = find_page_index(id);
+  const blocks = combine_block_id(page).split('\n');
+  const pos = blocks.findIndex(b => b === id);
+  return blocks[pos + 1];
+}
+
 export const move_block_up = (id: string): boolean => {
+  const source = find_block_index(id);
+  if (isTopLevel(source as any) && isFirst(source as any)) return;
+  const new_index = create_index(source as any);
+  const prev = source.parent.children[source.pos - 1]?.id;
+  if (prev) {
+    const target = find_block_index(prev);
+    if (!target) return;
+    remove_from_parent(source);
+    add_prev_sibling(target, new_index);
+  } else {
+    const parentIndex = find_block_index(source.parent.id);
+    const target = prev_index(parentIndex);
+    if (!target) return;
+    remove_from_parent(source);
+    append_child(target, new_index);
+  }
+  app.run('save-file', source.page.name);
   return true;
 }
-
 export const move_block_down = (id: string): boolean => {
+  const source = find_block_index(id);
+  if (isTopLevel(source as any) && isLast(source as any)) return;
+  const new_index = create_index(source as any);
+  const next = source.parent.children[source.pos + 1]?.id;
+  if (next) {
+    const target = find_block_index(next);
+    if (!target) return;
+    add_next_sibling(target, new_index);
+    remove_from_parent(source);
+  } else {
+    const parentIndex = find_block_index(source.parent.id);
+    const target = next_index(parentIndex);
+    if (!target) return;
+    insert_child(target, new_index);
+    remove_from_parent(source);
+  }
+  app.run('save-file', source.page.name);
   return true;
-
 }
 
-export const move_block_to = (source: string, target: string): boolean => {
-  return true;
 
+export const move_block_to = (sourceId: string, targetId: string): boolean => {
+  const source = find_block_index(sourceId);
+  const target = find_block_index(targetId);
+  if (!source || !target) return;
+  const new_index = create_index(source as any);
+  remove_from_parent(source);
+  append_child(target, new_index);
+  app.run('save-file', target.page.name);
+  return true;
 }
 
 //#endregion

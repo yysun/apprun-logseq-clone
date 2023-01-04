@@ -15,14 +15,19 @@ export const save_caret = (element) => {
 export const restore_caret = (element, html = null) => {
   const selection = window.getSelection();
   const range = new Range();
-  if (html) element.innerHTML = html;
-  range.selectNodeContents(element);
-  const anchor = element.querySelector('#__caret');
-  range.setStartAfter(anchor);
-  range.setEndAfter(anchor);
-  selection.removeAllRanges();
-  selection.addRange(range);
-  anchor.remove();
+  let anchor = document.querySelector('#__caret');
+  if (element) {
+    if (html) element.innerHTML = html;
+    range.selectNodeContents(element);
+    anchor = element.querySelector('#__caret');
+  }
+  if (anchor) {
+    range.setStartAfter(anchor);
+    range.setEndAfter(anchor);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    anchor.remove();
+  }
 }
 
 export const create_caret = (element, toStart = false) => {
