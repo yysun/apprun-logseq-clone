@@ -78,6 +78,7 @@ const handle_tab_key = async (e, id, element) => {
 export const editor_keydown = (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   const node = document.getSelection().anchorNode;
+  if (!node) return;
   const element = node.nodeType === 1 &&
     (node as HTMLElement).classList.contains('block-content') ? node :
     node.parentElement.closest('.block-content');

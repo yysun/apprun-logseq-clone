@@ -10,6 +10,7 @@ pre code {
 
 :root {
   --ana-link-color: #045591;
+  --ana-block-dragover-color: #aaaaaa;
 }
 
 
@@ -51,6 +52,10 @@ pre code {
 /* .block-content:hover {
   background: #eeeeee;
 } */
+
+.block-content.active {
+  border-bottom: 4px solid var(--ana-block-dragover-color);
+}
 
 .block-content.selected {
   background: #eeffee;

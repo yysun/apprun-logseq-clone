@@ -1,7 +1,7 @@
 import { app, Component, on } from 'apprun';
 import { format } from 'date-fns';
 import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
-import { editor_keydown } from './keyboard-events';
+import Editor from './editor';
 import Page from './page';
 
 export default class extends Component {
@@ -26,9 +26,9 @@ export default class extends Component {
     return pages.length > 0 ?
       <div class="main-page">
         <h1>Journals ({total})</h1>
-        <div class="editor" contenteditable="true" $onkeydown={editor_keydown}>
+        <Editor>
           {pages.map(page => <Page page={page} />)}
-        </div>
+        </Editor>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :
         <button $onclick={grant_access}>Grant access...</button>

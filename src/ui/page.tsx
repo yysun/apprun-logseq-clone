@@ -35,10 +35,10 @@ export default function Page({ page }) {
   }
   content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
-  return <div class={`block${block.type === 'page' ? ' page' : ''}`} >
+  return <div class={`block${block.type === 'page' ? ' page' : ''}`} draggable="true" key={ block.id }>
     <div class="block-header" contenteditable="false">
       <div class="block-bullet">
-        <div class={`bullet ${list ? 'cursor-pointer bg-gray-300' : 'cursor-default  bg-gray-100'}`}
+        <div class={`bullet cursor-pointer ${list ? 'bg-gray-300' : 'bg-gray-100'}`}
           onclick={toggle_block_list}></div>
       </div>
       <div class="block-content" contenteditable="true" id={block.id}>
