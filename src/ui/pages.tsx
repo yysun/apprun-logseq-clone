@@ -1,7 +1,7 @@
 import { app, Component, on } from 'apprun';
 import { data, dirHandle, select_dir, grant_access } from '../store';
 import Page from './page';
-import { editor_keydown } from './editor';
+import { editor_keydown } from './keyboard-events';
 
 export default class extends Component {
 
@@ -25,7 +25,7 @@ export default class extends Component {
       <div class="main-page">
         <h1>All Pages ({total})</h1>
         <div class="editor" contenteditable="true" $onkeydown={editor_keydown}
-        ref = {e=>e.focus()}>
+          ref={e => e.focus()}>
           {pages.map(page => <Page page={page} />)}
         </div>
       </div> : !dirHandle ?

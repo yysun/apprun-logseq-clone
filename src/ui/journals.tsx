@@ -1,7 +1,7 @@
 import { app, Component, on } from 'apprun';
-import {format } from 'date-fns';
+import { format } from 'date-fns';
 import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
-import { editor_keydown } from './editor';
+import { editor_keydown } from './keyboard-events';
 import Page from './page';
 
 export default class extends Component {
