@@ -1,8 +1,8 @@
-import { to_markdown } from '../model/md';
+import { to_markdown } from '../../model/md';
 import {
   data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block, find_prev, move_block_up, move_block_down
 
-} from '../model/index';
+} from '../../model/index';
 import { create_caret, restore_caret, save_caret, split_element } from './caret';
 
 const save_block = (id) => {
@@ -12,14 +12,14 @@ const save_block = (id) => {
       const md = to_markdown(el.innerHTML);
       update_block(id, md);
     }
-  },10);
+  }, 10);
 }
 
 const new_block_caret = (id, toStart) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
     create_caret(new_element, toStart);
-  },10);
+  }, 10);
 }
 
 const restore_block_caret = (id, caret_html = null) => {
@@ -27,7 +27,7 @@ const restore_block_caret = (id, caret_html = null) => {
     const new_element = document.getElementById(id);
     restore_caret(new_element, caret_html);
     save_block(id);
-  },10);
+  }, 10);
 }
 
 const handle_enter_key = (e, id, element) => {

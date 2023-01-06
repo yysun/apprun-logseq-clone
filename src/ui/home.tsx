@@ -1,5 +1,5 @@
 import { app, Component, on } from 'apprun';
-import { dirHandle, hasAccess, select_dir, grant_access } from './store';
+import { dirHandle, hasAccess, select_dir, grant_access } from '../store';
 
 export default class extends Component {
   view = () => {

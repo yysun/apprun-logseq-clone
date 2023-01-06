@@ -1,5 +1,5 @@
 import app from 'apprun';
-import { search } from '../search';
+import { search } from '../../search';
 
 let editing_block, selected_block;
 

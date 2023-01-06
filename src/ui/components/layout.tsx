@@ -1,6 +1,6 @@
 import app from 'apprun';
 import ToolBar from './top-toolbar';
-import resizable from './resizable';
+import resizable from '../utils/resizable';
 import Sidebar from './sidebar';
 
 app.on('@toggle-left-drawer', () => {

@@ -1,6 +1,6 @@
 import app from 'apprun';
 import Page from './page';
-import { editor_keydown } from './keyboard-events';
+import { editor_keydown } from '../utils/keyboard-events';
 
 export default ({ pages, editable }) =>
   <div class="page-list" contenteditable={editable}

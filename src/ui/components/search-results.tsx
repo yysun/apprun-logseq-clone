@@ -1,5 +1,5 @@
 import { app, Component } from 'apprun';
-import { data, find_block } from '../model';
+import { data, find_block } from '../../model';
 
 const Hit = ({ hit }) => {
   const block = find_block(hit);

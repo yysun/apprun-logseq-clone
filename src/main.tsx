@@ -1,13 +1,13 @@
 import app from 'apprun';
-import Home from './home';
+import Home from './ui/home';
 import Journals from './ui/journals';
 import Pages from './ui/pages';
-import Layout from './ui/layout';
+import Layout from './ui/components/layout';
 import shortcuts from './shortcuts';
 import plugins from './plugins';
 import store from './store';
 import search from './search';
-import searchResults from './ui/search-results';
+import searchResults from './ui/components/search-results';
 import Block from './ui/block';
 
 app['no-init-route'] = true;

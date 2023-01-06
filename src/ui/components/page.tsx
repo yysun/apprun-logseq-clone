@@ -1,8 +1,8 @@
 import { app, safeHTML } from 'apprun';
-import { to_html } from '../model/md';
-import { data } from '../store';
-import { create_caret } from './caret';
-import { editor_drag, editor_drag_over, editor_drop } from './mouse-events';
+import { to_html } from '../../model/md';
+import { data } from '../../store';
+import { create_caret } from '../utils/caret';
+import { editor_drag, editor_drag_over, editor_drop } from '../utils/mouse-events';
 
 
 const toggle = el => {

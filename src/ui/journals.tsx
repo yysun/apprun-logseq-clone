@@ -1,7 +1,7 @@
 import { app, Component, on } from 'apprun';
 import { format } from 'date-fns';
 import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
-import PageList from './page-list';
+import PageList from './components/page-list';
 
 export default class extends Component {
 

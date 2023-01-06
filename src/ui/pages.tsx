@@ -1,7 +1,7 @@
 import { app, Component, on } from 'apprun';
 import { data, dirHandle, select_dir, grant_access } from '../store';
-import Page from './page';
-import { editor_keydown } from './keyboard-events';
+import Page from './components/page';
+import { editor_keydown } from './utils/keyboard-events';
 
 export default class extends Component {
 

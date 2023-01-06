@@ -1,5 +1,5 @@
 import { app, Component } from 'apprun';
-import { data } from '../store';
+import { data } from '../../store';
 
 const get_day_class = date => {
   return data.blocks.some(b => b.page === date) ? ' has-page' : '';
