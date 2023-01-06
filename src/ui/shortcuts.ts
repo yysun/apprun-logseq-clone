@@ -13,7 +13,7 @@ let timer, queue_timer;
 
 const run_shortcut = (shortcut, e) => {
   const command = shortcuts[shortcut];
-  Log.info(shortcut, '==>', command);
+  // Log.info(shortcut, '==>', command);
   if (!command) return;
   else if (typeof command === 'string') app.run(command);
   else if (typeof command === 'function') command(e);

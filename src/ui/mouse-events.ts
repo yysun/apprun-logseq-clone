@@ -5,7 +5,7 @@ export const editor_drag = function (e) {
   const new_source = e.target.querySelector('.block-content')
   if (!new_source || new_source === source) return;
   source = new_source;
-  source && console.log('drag', source.id);
+  // source && console.log('drag', source.id);
   drag = true;
 };
 
@@ -18,7 +18,7 @@ export const editor_drag_over = function (e) {
   target && target.classList.remove('active');
   target = new_target;
   target && target.classList.add('active');
-  target && console.log('!drag over', target.id);
+  // target && console.log('!drag over', target.id);
 }
 
 export const editor_drop = function (e) {
@@ -29,5 +29,5 @@ export const editor_drop = function (e) {
     e.target.closest('.block-content');
   if (!new_target) return;
   new_target.classList.remove('active');
-  console.log('drop', new_target.id);
+  console.log('move', source.id, '==>', new_target.id);
 }
