@@ -9,13 +9,45 @@ pre code {
 }
 
 :root {
-  --ana-text-color:rgb(67, 63, 56);
+  --ana-text-color: rgb(67, 63, 56);
   --ana-link-color: #045591;
   --ana-block-dragover-color: #aaaaaa;
 }
 
 *:focus {
   outline: none;
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 5px 8.7px 5px;
+  border-color: transparent transparent #eee transparent;
+}
+
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8.7px 5px 0 5px;
+  border-color: #eee transparent transparent transparent;
+}
+
+.arrow-right {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 8.7px;
+  border-color: transparent transparent transparent #eee;
+}
+
+.arrow-left {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 8.7px 5px 0;
+  border-color: transparent #eee transparent transparent;
 }
 
 .main-page {
@@ -37,6 +69,7 @@ pre code {
 
 .block-list {
   border-left: 1px solid #eeeeee;
+  padding-left: 15px;
 }
 
 .block-list:hover {
@@ -78,16 +111,36 @@ pre code {
   cursor: pointer;
 }
 
-.bullet {
+.block-bullet{
+  margin-left: -20px;
+}
+
+.block-bullet .bullet {
   width: 8px;
   height: 8px;
   border-radius: 4px;
   margin-top: 12px;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
-.bullet.collapsed {
-  @apply bg-indigo-500
+.block-bullet .bullet-arrow {
+  margin-top: 11px;
+  margin-right: 5px;
+  cursor: pointer;
+  visibility: collapse;
+}
+
+.block-bullet:hover .bullet-arrow.arrow-down {
+  visibility: visible;
+}
+
+.bullet-arrow.arrow-right.has-child {
+  visibility: visible;
+  @apply border-l-gray-300;
+}
+
+.bullet-arrow.arrow-down.has-child {
+  @apply border-t-gray-300;
 }
 
 .block-content img {

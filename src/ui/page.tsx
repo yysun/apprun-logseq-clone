@@ -15,6 +15,13 @@ const toggle_block_list = e => {
   if (list) {
     toggle(list);
     e.target.classList.toggle('collapsed');
+    if (list.style.display === 'none') {
+      e.target.classList.remove('arrow-down');
+      e.target.classList.add('arrow-right');
+    } else {
+      e.target.classList.remove('arrow-right');
+      e.target.classList.add('arrow-down');
+    }
   }
   create_caret(content);
 }
@@ -54,15 +61,16 @@ export default function Page({ page, editable }) {
 
   return <div class={`block${block.type === 'page' ? ' page' : ''}`} key={block.id}>
     <div class="block-header" contenteditable="false">
-      <div class="block-bullet" onmousedown={bullet_mousedown} onmouseup={bullet_mouseup}>
-        <div class={`bullet cursor-pointer ${list ? 'bg-gray-300' : 'bg-gray-100'}`}
-          onclick={toggle_block_list}></div>
+      <div class="block-bullet flex">
+        <div class={`bullet-arrow ${list ? 'arrow-down has-child' : 'arrow-right'}`} onclick={toggle_block_list}>
+        </div>
+        <div class={`bullet cursor-pointer bg-gray-300`}></div>
       </div>
       <div class="block-content" contenteditable={editable} id={block.id}>
         {content}
       </div>
       <div class="block-handle"></div>
     </div>
-  { list && <div class="block-list">{list}</div> }
+    {list && <div class="block-list">{list}</div>}
   </div >;
 }
