@@ -9,6 +9,7 @@ pre code {
 }
 
 :root {
+  --ana-text-color:rgb(67, 63, 56);
   --ana-link-color: #045591;
   --ana-block-dragover-color: #aaaaaa;
 }
@@ -22,6 +23,12 @@ pre code {
   max-width: 880px;
   margin: 0 auto;
   /* font-size: 0.92em; */
+}
+
+.main-page *,
+#right-panel-main * {
+  @apply text-gray-600;
+  /* color: var(--ana-text-color); */
 }
 
 .page {
@@ -60,9 +67,8 @@ pre code {
 }
 
 .block-content {
-  padding: 2px 50px 2px 5px;
+  padding: 3px 50px 3px 5px;
   width: 100%;
-  color: rgb(67, 63, 56);
   flex-grow: 1;
   user-select: text;
 }
@@ -132,6 +138,7 @@ pre {
 
 .calendar {
   font-size: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .calendar-grid {
@@ -158,4 +165,9 @@ pre {
 .day.has-page {
   @apply bg-yellow-200;
   border-radius: 50%;
+}
+
+.right-panel-toolbar-button {
+  padding: 10px 10px 0 10px;
+  margin-right: 20px;
 }

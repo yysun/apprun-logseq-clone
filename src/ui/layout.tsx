@@ -37,7 +37,7 @@ app.on('@show-right-panel', () => {
 
 export default () => <>
   <div id="left-panel" class="h-screen flex-1">
-    <div id="left-tool-bar" class="h-10 w-full sticky z-10">
+    <div id="left-tool-bar" class="h-10 w-full sticky z-20 bg-white">
       <ToolBar />
     </div>
     <div id="left-main" class="flex-1 flex flex-row pl-64">
@@ -52,9 +52,10 @@ export default () => <>
   </div>
   <div class="resizer bg-gray-200 w-1 h-screen" data-direction='horizontal' ref={e => resizable(e)}></div>
   <div id="right-panel" class="w-1 h-screen transition-all duration-150">
-
-    <div id="right-panel-toolbar" class="h-10 w-full sticky z-10"></div>
-    <div id="right-panel-main" class="px-4"></div>
+    <div id="right-panel-toolbar" class="h-9 w-full sticky z-10 text-sm flex justify-end border-b border-gray-100">
+      <button class="right-panel-toolbar-button">Search</button>
+    </div>
+    <div id="right-panel-main" class="p-4"></div>
   </div>
 
   <div id="floating" class="absolute left-0 top-0 max-w-max hidden">

@@ -8,19 +8,25 @@ const Hit = ({ hit }) => {
   </li>
 }
 export default class extends Component {
-  state = data
   view = ({ pages, hits, pattern }) => {
-    if (!hits?.length) return;
+    hits = hits || [];
     return <div class="search-results">
-      <div>{pattern}: {hits.length}</div>
+      <div class="w-full flex">
+        <span class="flex-1"></span>
+        <input class="px-3 py-1 rounded-md border border-gray-300"
+          placeholder="search ..." value={pattern || ''}
+          onInput={e => app.run('@search', e.target.value)} />
+      </div>
+      <div>{hits.length ? `Found: ${hits.length}` : ''}</div>
       <ul>
-        {hits.map(hit => <Hit hit={hit} />)}
+        {hits.length ? hits.map(hit => <Hit hit={hit} />) : ''}
       </ul>
     </div>
   };
   update = {
     '@search-results': (state, hits, pattern) => {
       app.run('@show-right-panel')
+      if (!pattern) return;
       return ({ ...state, hits, pattern })
     }
   }

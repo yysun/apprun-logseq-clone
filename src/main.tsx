@@ -20,4 +20,4 @@ search();
 new Pages().mount('my-app');
 new Journals().mount('my-app');
 new Home().start('my-app');
-new searchResults().mount('right-panel-main');
+new searchResults().start('right-panel-main');

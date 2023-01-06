@@ -26,6 +26,7 @@ const options = {
 export const search = query => {
   // const fuse = new Fuse(data?.blocks || [], options);
   // return fuse.search(query);
+  if (!query) return [];
   return data?.blocks?.filter(b => b.content?.includes(query))
     .map(b => b.id);
 }
