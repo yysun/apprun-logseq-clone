@@ -8,6 +8,7 @@ import plugins from './plugins';
 import store from './store';
 import search from './search';
 import searchResults from './ui/search-results';
+import Block from './ui/block';
 
 app['no-init-route'] = true;
 app.render(document.getElementById('root'), <Layout />);
@@ -20,4 +21,6 @@ search();
 new Pages().mount('my-app');
 new Journals().mount('my-app');
 new Home().start('my-app');
-new searchResults().start('right-panel-main');
+new Block().mount('my-app');
+new searchResults().mount('right-panel-main');
+

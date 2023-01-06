@@ -121,6 +121,8 @@ pre code {
   border-radius: 4px;
   margin-top: 12px;
   margin-right: 5px;
+  cursor: pointer;
+  @apply bg-gray-300
 }
 
 .block-bullet .bullet-arrow {
