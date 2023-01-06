@@ -59,7 +59,7 @@ export default class extends Component {
     };
 
     return <div class="calendar">
-      <div class="w-full p-1 flex">
+      <div class="w-full px-1 flex">
         <button $onclick='-1'>&lt;&lt;</button>
         <div class="flex-1 text-center">{months[date.getMonth()]}, {date.getFullYear()}</div>
         <button $onclick='+1'>&gt;&gt;</button>

@@ -13,7 +13,6 @@ pre code {
   --ana-block-dragover-color: #aaaaaa;
 }
 
-
 *:focus {
   outline: none;
 }
@@ -132,13 +131,12 @@ pre {
 }
 
 .calendar {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-top: 10px;
 }
 
 .prev-month,
