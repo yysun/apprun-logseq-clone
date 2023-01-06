@@ -4,13 +4,17 @@ import { editor_drag, editor_drag_over, editor_drop } from './mouse-events';
 
 export default class extends Component {
   view = ({ children }) => {
-    return <div class="editor" contenteditable="true" $onkeydown={editor_keydown}>
+    return <div class="editor" contenteditable="true" onkeydown={editor_keydown}>
       {children}
     </div>;
   }
 
+  // get new children
+  mounted = (_, children: any[]) => ({ children })
+
   rendered = () => {
     const blocks = this['element'].querySelectorAll('.block');
+    blocks.draggable = true;
     for (const block of blocks) {
       block.addEventListener('drag', editor_drag);
       block.addEventListener('dragover', editor_drag_over);

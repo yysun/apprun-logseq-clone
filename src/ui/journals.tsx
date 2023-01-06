@@ -1,12 +1,11 @@
 import { app, Component, on } from 'apprun';
 import { format } from 'date-fns';
 import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
-import Editor from './editor';
-import Page from './page';
+import PageList from './page-list';
 
 export default class extends Component {
 
-  @on('#journals')
+  @on('#journals, @refresh')
   show = () => {
     let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
     const today = format(new Date(), 'yyyy_MM_dd');
@@ -26,9 +25,7 @@ export default class extends Component {
     return pages.length > 0 ?
       <div class="main-page">
         <h1>Journals ({total})</h1>
-        <Editor>
-          {pages.map(page => <Page page={page} />)}
-        </Editor>
+        <PageList pages={pages} editable></PageList>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :
         <button $onclick={grant_access}>Grant access...</button>
