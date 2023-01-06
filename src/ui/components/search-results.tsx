@@ -26,7 +26,7 @@ export default class extends Component {
   update = {
     '@search-results': (state, hits, pattern) => {
       app.run('@show-right-panel')
-      if (!pattern) return;
+      if (!pattern) return state;
       return ({ ...state, hits, pattern })
     }
   }
