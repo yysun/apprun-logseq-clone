@@ -23,7 +23,7 @@ export default class extends Component {
     pages = pages.sort((a, b) => b.name.localeCompare(a.name));
     const total = pages.length;
     return pages.length > 0 ?
-      <div class="main-page">
+      <div class="main-page px-3">
         <h1>Journals ({total})</h1>
         <PageList pages={pages} editable></PageList>
       </div> : !dirHandle ?

@@ -5,13 +5,6 @@ import { editor_keydown } from './keyboard-events';
 
 export default class extends Component {
 
-  // @on('@search')
-  // search = (state, pattern) => {
-  //   if (!pattern) return { ...state, hits: null, pattern };
-  //   const hits = search(pattern);//.map(r => ({ id: r.item.id, matches: r.matches }));
-  //   return { ...state, hits, pattern }
-  // }
-
   @on('#pages')
   show = () => data;
   state = data;
@@ -26,7 +19,7 @@ export default class extends Component {
         <h1>All Pages ({total})</h1>
         <div class="editor" contenteditable="true" $onkeydown={editor_keydown}
           ref={e => e.focus()}>
-          {pages.map(page => <Page page={page} />)}
+          {pages.map(page => <Page page={page} editable />)}
         </div>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :

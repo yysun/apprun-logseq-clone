@@ -21,7 +21,6 @@ pre code {
   min-width: 300px;
   max-width: 880px;
   margin: 0 auto;
-  padding: 0 10px;
   /* font-size: 0.92em; */
 }
 
@@ -65,6 +64,7 @@ pre code {
   width: 100%;
   color: rgb(67, 63, 56);
   flex-grow: 1;
+  user-select: text;
 }
 
 .block-content a {

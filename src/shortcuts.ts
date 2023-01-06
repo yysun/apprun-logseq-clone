@@ -1,9 +1,7 @@
 import app from "apprun"
-import Log from "../logger";
+import Log from "./logger";
 
 export const shortcuts = {
-  "ctrl+p": "@search",
-  "meta+p": "@search",
   "ctrl+shift+p": "@command-palette",
   "meta+shift+p": "@command-palette",
 }
@@ -20,7 +18,7 @@ const run_shortcut = (shortcut, e) => {
 }
 
 const handle_hotkeys = (e) => {
-  if(!queue.length) return;
+  if (!queue.length) return;
   run_shortcut(queue[0], e);
   for (let i = 1; i < queue.length; i++) {
     const shortcut = queue.slice(0, i + 1).join(',');
@@ -31,21 +29,27 @@ const handle_hotkeys = (e) => {
   timer = null;
 }
 
+export const add_shortcut = (shortcut, command) => {
+  if (!shortcut || !command) return;
+  if (shortcuts[shortcut]) {
+    Log.warn(`Shortcut ${shortcut} is already defined.`)
+  }
+  shortcuts[shortcut] = command;
+}
+
 export default () => {
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Alt' || e.key === 'Control' || e.key === 'Meta' || e.key === 'Shift') return;
     if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey && !e.key.startsWith('F')) return;
     const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
-    const hotkey= `${ctrlKey ? 'ctrl+' : ''}${metaKey ? 'meta+' : ''}${shiftKey ? 'shift+' : ''}${altKey ? 'alt+' : ''}${key.toLowerCase()}`
+    const hotkey = `${ctrlKey ? 'ctrl+' : ''}${metaKey ? 'meta+' : ''}${shiftKey ? 'shift+' : ''}${altKey ? 'alt+' : ''}${key.toLowerCase()}`
     queue_timer && clearTimeout(queue_timer);
     queue_timer = setTimeout(() => {
       queue.push(hotkey);
       timer && clearTimeout(timer);
-      timer = setTimeout(handle_hotkeys, 300)
+      timer = setTimeout(() => handle_hotkeys(e), 300)
     }, 50);
-  })
-}
+  });
 
-export const add_shortcut = (shortcut, command) => {
-  shortcuts[shortcut] = command;
+  app.on('@add-shortcut', add_shortcut);
 }

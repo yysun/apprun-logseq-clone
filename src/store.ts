@@ -2,7 +2,6 @@ import Log from './logger';
 import app from 'apprun';
 import { get, set } from 'idb-keyval';
 import { data, get_page_content, add_page, update_page, find_page } from './model/index';
-import init_search from './search';
 export { data }
 
 const options = { 'mode': 'readwrite' };
@@ -85,7 +84,6 @@ export default async () => {
 const open_dir = async () => {
   hasAccess = true;
   await process_dir(dirHandle);
-  init_search(data);
   app.run('dir-processed', dirHandle.name);
   return data;
 }

@@ -3,7 +3,7 @@ import ToolBar from './top-toolbar';
 import resizable from './resizable';
 import Sidebar from './sidebar';
 
-app.on('toggle-left-drawer', () => {
+app.on('@toggle-left-drawer', () => {
   const drawer = document.getElementById('left-drawer');
   const main = document.getElementById('left-main');
   if (!drawer.style.left || drawer.style.left === '0px') {
@@ -15,7 +15,7 @@ app.on('toggle-left-drawer', () => {
   }
 });
 
-app.on('toggle-right-panel', () => {
+app.on('@toggle-right-panel', () => {
   const panel = document.getElementById('right-panel');
   const main = document.getElementById('left-main');
   const width = parseInt((panel.style.width || '0px').replace('px', ''));
@@ -23,6 +23,15 @@ app.on('toggle-right-panel', () => {
     panel.style.width = main.clientWidth / 2 + 'px';
   } else {
     panel.style.width = '4px';
+  }
+});
+
+app.on('@show-right-panel', () => {
+  const panel = document.getElementById('right-panel');
+  const width = parseInt((panel.style.width || '0px').replace('px', ''));
+  const main = document.getElementById('left-main');
+  if (width < 10) {
+    panel.style.width = main.clientWidth / 2 + 'px';
   }
 });
 
@@ -42,7 +51,11 @@ export default () => <>
     </div>
   </div>
   <div class="resizer bg-gray-200 w-1 h-screen" data-direction='horizontal' ref={e => resizable(e)}></div>
-  <div id="right-panel" class="w-1 h-screen"></div>
+  <div id="right-panel" class="w-1 h-screen transition-all duration-150">
+
+    <div id="right-panel-toolbar" class="h-10 w-full sticky z-10"></div>
+    <div id="right-panel-main" class="px-4"></div>
+  </div>
 
   <div id="floating" class="absolute left-0 top-0 max-w-max hidden">
     Tooltip

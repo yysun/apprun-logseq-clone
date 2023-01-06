@@ -24,7 +24,22 @@ const create_content = content => {
   return safeHTML(content)[0];
 }
 
+
+
 export default function Page({ page, editable }) {
+
+  const bullet_mousedown = e => {
+    const block = e.target.closest('.block');
+    if (!block || !editable) return;
+    // block.draggable = true;
+    // Object.assign(block, {ondrag, ondragover, ondrop});
+  };
+
+  const bullet_mouseup = e => {
+    const block = e.target.closest('.block');
+    if (!block) return;
+    block.draggable = false;
+  }
 
   let { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
@@ -37,14 +52,9 @@ export default function Page({ page, editable }) {
   }
   content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
-  return <div class={`block${block.type === 'page' ? ' page' : ''}`} key={block.id}
-    draggable={editable}
-    ondrag={editable && editor_drag}
-    ondragover={editable && editor_drag_over}
-    ondrop={editable && editor_drop}
-  >
+  return <div class={`block${block.type === 'page' ? ' page' : ''}`} key={block.id}>
     <div class="block-header" contenteditable="false">
-      <div class="block-bullet">
+      <div class="block-bullet" onmousedown={bullet_mousedown} onmouseup={bullet_mouseup}>
         <div class={`bullet cursor-pointer ${list ? 'bg-gray-300' : 'bg-gray-100'}`}
           onclick={toggle_block_list}></div>
       </div>
