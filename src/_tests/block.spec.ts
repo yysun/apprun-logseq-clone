@@ -1,6 +1,6 @@
 import app from 'apprun';
 import {
-  data, init_data, add_page, find_block_page, find_block_index,
+  data, init_data, add_page, find_page_name, find_block_index,
   create_block, find_block, delete_block,
   indent_block, outdent_block, split_block, merge_block, move_block_up, move_block_down, move_block_to,
   find_prev, find_next
@@ -34,7 +34,7 @@ test('find block page', () => {
   `;
   init_data();
   add_page('test', text, new Date());
-  const name = find_block_page('_1');
+  const name = find_page_name('_1');
   expect(name).toBe('test');
 });
 

@@ -5,7 +5,7 @@ import PageList from './components/page-list';
 
 export default class extends Component {
 
-  @on('#journals, @refresh')
+  @on('#journals')
   show = () => {
     let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
     const today = format(new Date(), 'yyyy_MM_dd');

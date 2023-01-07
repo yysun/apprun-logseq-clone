@@ -233,7 +233,6 @@ export const delete_page = (name) => {
   data.pages = data.pages.filter(p => p.name !== name);
 }
 
-
 //#region block functions
 
 export const find_block = (id: string): Block => {
@@ -300,14 +299,14 @@ export const get_block_id = (block: BlockId): string => {
   return typeof block === 'string' ? block : block.id;
 }
 
-export const find_block_page = (block: BlockId): string => {
+export const find_page_name = (block: BlockId): string => {
   return typeof block === 'string' ?
     data.blocks.find(b => b.id === block)?.page :
     block.page;
 }
 
 export const find_page_index = (block: BlockId): PageIndex => {
-  const page = find_block_page(block);
+  const page = find_page_name(block);
   const page_index = data.pages.find(p => p.name === page);
   return page_index;
 }
@@ -338,14 +337,35 @@ export const find_block_index = (block: BlockId): BlockIndex => {
   return found;
 }
 
-export const find_block_parents = (block: BlockId): Block[] => {
-  const parents = [];
+export const find_block_path = (id: BlockId): (Block & Index)[] => {
+  // const block_id = get_block_id(block);
+  // const page_index = find_page_index(block);
+  // if (block_id === page_index.id) {
+  //   return [{...find_block(block_id), ...page_index }];
+  // }
+  // const block_index = find_block_index(block_id);
+  // const tree = create_tree(page_index);
+  // const filtered = filter(([id]) => id === block_id, tree);
+  // const reduced = reduce((acc, [id]) => {
+  //   acc.push(id)
+  //   return acc;
+  // }, filtered, []);
+  // const blocks = reduced.map(id => find_block(id));
+  // blocks[blocks.length - 1].children = block_index.children;
+  // return blocks;
+
+  const block_id = get_block_id(id);
+  const page_index = find_page_index(block_id);
+  const block = find_block(block_id);
+  if (block_id === page_index.id) {
+    return [{ ...block, ...page_index }];
+  }
   const index = find_block_index(block);
-  if (!index) return parents;
-  let {parent} = index;
+  const parents = [{ ...block, children: index.children }];
+  let { parent } = index;
   do {
     const p_block = find_block(parent.id);
-    parents.unshift(p_block);
+    parents.unshift({ ...p_block, children: [] });
     parent = find_block_index(parent.id)?.parent
   } while (parent)
   return parents;

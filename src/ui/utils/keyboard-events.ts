@@ -18,7 +18,7 @@ const save_block = (id) => {
 const new_block_caret = (id, toStart) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
-    create_caret(new_element, toStart);
+    new_element && create_caret(new_element, toStart);
   }, 10);
 }
 
