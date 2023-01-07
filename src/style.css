@@ -111,7 +111,7 @@ pre code {
   cursor: pointer;
 }
 
-.block-bullet{
+.block-bullet {
   margin-left: -20px;
 }
 
@@ -122,7 +122,6 @@ pre code {
   margin-top: 12px;
   margin-right: 5px;
   cursor: pointer;
-  @apply bg-gray-300
 }
 
 .block-bullet .bullet-arrow {
@@ -220,6 +219,17 @@ pre {
 .day.has-page {
   @apply bg-yellow-200;
   border-radius: 50%;
+}
+
+.toolbar-button {
+  margin: auto 0.25rem;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.toolbar-button:hover {
+  @apply bg-gray-100;
 }
 
 .right-panel-toolbar-button {

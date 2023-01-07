@@ -30,8 +30,10 @@ app.on('@show-right-panel', () => {
   const panel = document.getElementById('right-panel');
   const width = parseInt((panel.style.width || '0px').replace('px', ''));
   const main = document.getElementById('left-main');
+  const new_width = (main.clientWidth - 224 - 4)/ 2;
   if (width < 10) {
-    panel.style.width = main.clientWidth / 2 + 'px';
+    panel.style.width = new_width + 'px';
+    document.getElementById('left-panel').style.width = new_width + 'px';
   }
 });
 

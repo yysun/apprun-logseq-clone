@@ -24,7 +24,7 @@ export default class extends Component {
     const total = pages.length;
     return pages.length > 0 ?
       <div class="main-page px-3">
-        <h1>Journals ({total})</h1>
+        <h1 class="pb-4">Journals ({total})</h1>
         <PageList pages={pages} editable></PageList>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :
