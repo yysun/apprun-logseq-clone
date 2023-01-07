@@ -57,7 +57,7 @@ export default () => <>
     <div id="right-panel-toolbar" class="h-9 w-full sticky z-10 text-sm flex justify-end border-b border-gray-100">
       <button class="right-panel-toolbar-button">Search</button>
     </div>
-    <div id="right-panel-main" class="p-4"></div>
+    <div id="right-panel-main" class="h-screen overflow-scroll pb-24 p-4"></div>
   </div>
 
   <div id="floating" class="absolute left-0 top-0 max-w-max hidden">
