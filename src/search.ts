@@ -26,17 +26,19 @@ const options = {
 export const search = query => {
   // const fuse = new Fuse(data?.blocks || [], options);
   // return fuse.search(query);
-  if (!query) return [];
-  return data?.blocks?.filter(b => b.content?.includes(query))
-    .map(b => b.id);
+  const results = !query ? [] :
+    data?.blocks?.filter(b => b.content?.includes(query))
+      .map(b => b.id);
+  return results;
 }
 
 export const search_selection = () => {
   const sel = window.getSelection();
-  const pattern = sel?.toString();
-  const result = search(sel?.toString());
-  app.run('@search-results', result, pattern);
+  const query = sel?.toString();
+  const results = search(query);
+  app.run('@search-results', results, query);
 }
+
 export default () => {
   app.run('@add-shortcut', 'ctrl+f', search_selection);
   app.run('@add-shortcut', 'meta+f', search_selection);

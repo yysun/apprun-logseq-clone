@@ -1,5 +1,6 @@
 import { app, Component } from 'apprun';
 import { data, find_block } from '../../model';
+import { search } from '../../search';
 
 const Hit = ({ hit }) => {
   const block = find_block(hit);
@@ -8,14 +9,14 @@ const Hit = ({ hit }) => {
   </li>
 }
 export default class extends Component {
-  view = ({ pages, hits, pattern }) => {
+  view = ({ pages, hits, query }) => {
     hits = hits || [];
     return <div class="search-results">
       <div class="w-full flex">
         <span class="flex-1"></span>
         <input class="px-3 py-1 rounded-md border border-gray-300"
-          placeholder="search ..." value={pattern || ''}
-          onInput={e => app.run('@search', e.target.value)} />
+          placeholder="search ..." value={query || ''}
+          $oninput='search' />
       </div>
       <div>{hits.length ? `Found: ${hits.length}` : ''}</div>
       <ul>
@@ -24,10 +25,15 @@ export default class extends Component {
     </div>
   };
   update = {
-    '@search-results': (state, hits, pattern) => {
+    'search': (_, e) => ({
+      hits: search(e.target.value),
+      query: e.target.value
+    }),
+
+    '@search-results': (state, hits, query) => {
       app.run('@show-right-panel')
-      if (!pattern) return state;
-      return ({ ...state, hits, pattern })
-    }
+      if (!query) return state;
+      return ({ ...state, hits, query })
+    },
   }
 }
