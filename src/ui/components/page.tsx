@@ -59,7 +59,7 @@ export default function Page({ page, editable }) {
   }
   content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
-  return <div class={`block${block.type === 'page' ? ' page' : ''}`} key={block.id}>
+  return <div class={`block${block.type === 'page' ? ' page' : ''}`}>
     <div class="block-header" contenteditable="false">
       <div class="block-bullet flex">
         <div class={`bullet-arrow ${list ? 'arrow-down has-child' : 'arrow-right'}`} onclick={toggle_block_list}>

@@ -332,9 +332,23 @@ export const find_block_index = (block: BlockId): BlockIndex => {
   block = typeof block === 'string' ? find_block(block) : block;
   if (!block) return null;
   const page = find_page_index(block);
+  // if (block.id === page.id) return page; TODO: fix this
   let found = search_index(page, block.id);
   if (found) found.page = page;
   return found;
+}
+
+export const find_block_parents = (block: BlockId): Block[] => {
+  const parents = [];
+  const index = find_block_index(block);
+  if (!index) return parents;
+  let {parent} = index;
+  do {
+    const p_block = find_block(parent.id);
+    parents.unshift(p_block);
+    parent = find_block_index(parent.id)?.parent
+  } while (parent)
+  return parents;
 }
 
 export const indent_block = (id: string): boolean => {
