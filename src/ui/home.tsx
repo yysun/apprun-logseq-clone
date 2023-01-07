@@ -8,6 +8,9 @@ export default class extends Component {
 
   }
   rendered = () => {
-    if (hasAccess) app.run('#journals');
+    if (hasAccess) {
+      app.run('#journals');
+      history.pushState({}, '', '#journals');
+    }
   }
 }
