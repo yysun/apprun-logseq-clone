@@ -1,15 +1,16 @@
 {
   "name": "apprun-log-sql-clone",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A clone of Logseq in AppRun",
   "main": "main.js",
+  "bin": "cli.js",
   "scripts": {
     "test": "jest",
     "start": "electron .",
     "build": "vite build --sourcemap --minify",
     "watch": "vite build --sourcemap --watch",
     "dev": "vite dev --port 8080",
-    "preview": "vite preview --port 8080",
+    "serve": "node cli docs",
     "create-types": "tsc src/model/index.ts --declaration --emitDeclarationOnly --skipLibCheck"
   },
   "repository": "",
@@ -33,5 +34,12 @@
     "typescript": "^4.9.4",
     "uuid": "^9.0.0",
     "vite": "^4.0.3"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "commander": "^9.5.0",
+    "express": "^4.18.2",
+    "ws": "^8.11.0"
   }
 }
