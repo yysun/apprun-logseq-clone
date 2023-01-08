@@ -1,7 +1,5 @@
 import { app, Component, on } from 'apprun';
 import { data, dirHandle, select_dir, grant_access } from '../store';
-import Page from './components/page-view';
-import { editor_keydown } from './utils/keyboard-events';
 
 export default class extends Component {
 
@@ -17,9 +15,10 @@ export default class extends Component {
     return pages.length > 0 ?
       <div class="main-page">
         <h1 class="pb-4">All Pages ({total})</h1>
-        <div class="editor" contenteditable="true" $onkeydown={editor_keydown}
-          ref={e => e.focus()}>
-          {pages.map(page => <Page page={page} editable />)}
+        <div class="all-pages">
+          {pages.map(page => <li>
+            <a href={`#page/${page.id}`}>{page.name}</a>
+          </li>)}
         </div>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :
@@ -27,3 +26,5 @@ export default class extends Component {
   }
 
 }
+
+

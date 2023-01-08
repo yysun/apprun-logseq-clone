@@ -55,7 +55,7 @@ export default function Page({ page, editable }) {
   let content = block.content;
   if (block.type === 'page') {
     content = content.substring(content.lastIndexOf('/') + 1);
-    content = `<h1 contenteditable="false">${content}</h1>`;
+    content = `<h1 contenteditable="false"><a href="#page/${block.id}">${content}</a></h1>`;
   }
   content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
