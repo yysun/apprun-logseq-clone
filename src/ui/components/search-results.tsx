@@ -1,13 +1,18 @@
 import { app, Component } from 'apprun';
-import { data, find_block } from '../../model';
+import Mark from 'mark.js';
 import { search } from '../../search';
+import { find_block_path } from '../../model';
+import Block from './block-view';
 
 const Hit = ({ hit }) => {
-  const block = find_block(hit);
+  const blocks = find_block_path(hit);
   return <li>
-    {block.content}
+    <Block blocks={blocks} />
   </li>
 }
+
+let marker;
+
 export default class extends Component {
   view = ({ pages, hits, query }) => {
     hits = hits || [];
@@ -19,7 +24,7 @@ export default class extends Component {
           $oninput='search' />
       </div>
       <div>{hits.length ? `Found: ${hits.length}` : ''}</div>
-      <ul>
+      <ul class="search-results-blocks">
         {hits.length ? hits.map(hit => <Hit hit={hit} />) : ''}
       </ul>
     </div>
@@ -35,5 +40,14 @@ export default class extends Component {
       if (!query) return state;
       return ({ ...state, hits, query })
     },
+  }
+
+  rendered = ({ query}) => {
+    marker = new Mark(".search-results-blocks");
+    marker.mark(query);
+  }
+
+  unload = () => {
+    marker = null;
   }
 }
