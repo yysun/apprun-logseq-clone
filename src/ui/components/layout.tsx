@@ -5,7 +5,7 @@ import Sidebar from './sidebar';
 
 app.on('@toggle-left-drawer', () => {
   const drawer = document.getElementById('left-drawer');
-  const main = document.getElementById('left-main');
+  const main = document.getElementById('left-panel-container');
   if (!drawer.style.left || drawer.style.left === '0px') {
     drawer.style.left = '-1000px';
     main.style.paddingLeft = '0px';
@@ -17,7 +17,7 @@ app.on('@toggle-left-drawer', () => {
 
 app.on('@toggle-right-panel', () => {
   const panel = document.getElementById('right-panel');
-  const main = document.getElementById('left-main');
+  const main = document.getElementById('left-panel-container');
   const width = parseInt((panel.style.width || '0px').replace('px', ''));
   if (width < 10) {
     panel.style.width = main.clientWidth / 2 + 'px';
@@ -29,8 +29,8 @@ app.on('@toggle-right-panel', () => {
 app.on('@show-right-panel', () => {
   const panel = document.getElementById('right-panel');
   const width = parseInt((panel.style.width || '0px').replace('px', ''));
-  const main = document.getElementById('left-main');
-  const new_width = (main.clientWidth - 224 - 4)/ 2;
+  const main = document.getElementById('left-panel-container');
+  const new_width = (main.clientWidth - 224 - 4) / 2;
   if (width < 10) {
     panel.style.width = new_width + 'px';
     document.getElementById('left-panel').style.width = new_width + 'px';
@@ -39,15 +39,15 @@ app.on('@show-right-panel', () => {
 
 export default () => <>
   <div id="left-panel" class="h-screen flex-1">
-    <div id="left-tool-bar" class="h-10 w-full sticky z-20 bg-white">
+    <div id="left-toolbar" class="h-10 w-full sticky z-20 bg-white">
       <ToolBar />
     </div>
-    <div id="left-main" class="flex-1 flex flex-row pl-64">
+    <div id="left-panel-container" class="flex-1 flex flex-row pl-64">
       <div id="left-drawer" class="absolute top-0 left-0 w-56 h-screen overflow-scroll
       transition-all duration-150 bg-gray-100">
         <Sidebar />
       </div>
-      <div id="left-content" class="flex-1 h-screen overflow-scroll pb-24">
+      <div id="left-panel-main" class="flex-1 h-screen overflow-scroll pb-24">
         <div id="my-app"></div>
       </div>
     </div>

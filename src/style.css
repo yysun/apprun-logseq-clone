@@ -107,7 +107,8 @@ pre code {
   user-select: text;
 }
 
-.block-content a {
+#left-panel-main a,
+#right-panel-main a {
   color: var(--ana-link-color);
   cursor: pointer;
 }
