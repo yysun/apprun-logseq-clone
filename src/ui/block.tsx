@@ -7,8 +7,9 @@ export default class extends Component {
 
   view = () => {
     const blocks = find_block_path(this.block_id);
-    console.log(blocks);
-    return <Block blocks={blocks} />;
+    return <div class="main-page px-3">
+      <Block blocks={blocks} />
+    </div>;
   }
 
   update = {

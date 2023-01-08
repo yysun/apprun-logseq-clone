@@ -11,11 +11,11 @@ export default function Block({ blocks }) {
     parents = blocks.slice(0, blocks.length - 1);
     children = [blocks[blocks.length - 1]];
   }
-  return <div class="main-page px-3">
+  return <div class="w-full">
     <div class="breadcrum flex pb-4">
-      {parents.map(p => <div class="flex">
+      {parents.map((p, i) => <div class="flex">
         <a href={`#block/${p.id}`}>{p.content.substring(p.content.lastIndexOf('/') + 1)}</a>
-        <div class="breadcrum-arrow mx-2 mt-2"></div>
+        {i !== parents.length - 1 ? <div class="breadcrum-arrow mx-2 mt-2"></div> : ''}
       </div>
       )}
     </div>
