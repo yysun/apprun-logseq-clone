@@ -19,7 +19,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "@floating-ui/dom": "^1.1.0",
-    "@types/jest": "^29.2.4",
+    "@types/jest": "^29.2.5",
     "apprun": "^3.30.2",
     "autoprefixer": "^10.4.13",
     "date-fns": "^2.29.3",
