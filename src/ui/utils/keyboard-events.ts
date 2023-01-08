@@ -82,6 +82,7 @@ export const editor_keydown = (_, e) => {
   const element = node.nodeType === 1 &&
     (node as HTMLElement).classList.contains('block-content') ? node :
     node.parentElement.closest('.block-content');
+  if(!element) return;
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
 

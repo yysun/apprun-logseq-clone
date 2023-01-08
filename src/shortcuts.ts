@@ -4,8 +4,8 @@ import Log from "./logger";
 export const shortcuts = {
   "ctrl+shift+p": "@command-palette",
   "meta+shift+p": "@command-palette",
-  "alt+arrowleft": () => history.back(),
-  "alt+arrowright": () => history.forward(),
+  "alt+shift+arrowleft": () => history.back(),
+  "alt+shift+arrowright": () => history.forward(),
 }
 
 const queue = [];
