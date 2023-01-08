@@ -1,4 +1,4 @@
-import { to_markdown } from '../../model/md';
+import { to_markdown } from './md';
 import {
   data, find_block_index, indent_block, outdent_block, split_block, update_block, merge_block, find_prev, move_block_up, move_block_down
 
@@ -82,7 +82,7 @@ export const editor_keydown = (_, e) => {
   const element = node.nodeType === 1 &&
     (node as HTMLElement).classList.contains('block-content') ? node :
     node.parentElement.closest('.block-content');
-  if(!element) return;
+  if (!element) return;
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
 
