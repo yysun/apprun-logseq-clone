@@ -1,5 +1,5 @@
 import app from 'apprun';
-import Page from './page';
+import Page from './page-view';
 import { editor_keydown } from '../utils/keyboard-events';
 
 export default ({ pages, editable }) =>

@@ -1,6 +1,6 @@
 import { app } from 'apprun';
 import { editor_keydown } from '../utils/keyboard-events';
-import Page from './page';
+import Page from './page-view';
 
 export default function Block({ blocks }) {
   let parents, children
