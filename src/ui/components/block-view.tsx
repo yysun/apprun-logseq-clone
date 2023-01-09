@@ -1,6 +1,5 @@
 import { app } from 'apprun';
-import { editor_keydown } from '../utils/keyboard-events';
-import Page from './page-view';
+import Editor from './editor';
 
 export default function Block({ blocks }) {
   let parents, children
@@ -19,8 +18,6 @@ export default function Block({ blocks }) {
       </div>
       )}
     </div>
-    <div contenteditable="true" $onkeydown={editor_keydown}>
-      {children.map(block => <Page page={block} editable mode={0} />)}
-    </div>
+    <Editor pages={blocks} editable={true} mode={0} />
   </div>;
 }

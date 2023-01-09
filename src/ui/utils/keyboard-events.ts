@@ -75,6 +75,10 @@ const handle_tab_key = async (e, id, element) => {
   return data;
 }
 
+export const editor_keyup = (e) => {
+  console.log(e);
+}
+
 export const editor_keydown = (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   const node = document.getSelection().anchorNode;

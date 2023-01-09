@@ -1,16 +1,14 @@
 import { app, Component } from 'apprun';
 import { find_page_index } from '../model';
-import Page from './components/page-view';
-import { editor_keydown } from './utils/keyboard-events';
+import Editor from './components/editor';
 
 export default class extends Component {
   block_id;
 
   view = () => {
     const page = find_page_index(this.block_id);
-    return <div class="main-page px-3" contenteditable="true"
-      $onkeydown={editor_keydown}>
-      <Page page={page} editable={true} mode={1} />
+    return <div class="main-page px-3">
+      <Editor pages={[page]} editable={true} mode={1} />
     </div>;
   }
 
