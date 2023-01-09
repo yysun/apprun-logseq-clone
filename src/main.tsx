@@ -3,7 +3,7 @@ import shortcuts from './shortcuts';
 import plugins from './plugins';
 import store from './store';
 import search from './search';
-import searchResults from './ui/components/search-results';
+import SearchResults from './ui/search';
 import Layout from './ui/components/layout';
 import Home from './ui/home';
 import Journals from './ui/journals';
@@ -24,5 +24,5 @@ new Journals().mount('my-app');
 new Home().start('my-app');
 new Block().mount('my-app');
 new Page().mount('my-app');
-new searchResults().mount('right-panel-main');
+new SearchResults().mount('right-panel-main');
 

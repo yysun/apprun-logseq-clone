@@ -8,13 +8,13 @@ export default class extends Component {
   view = block_id => {
     const blocks = find_block_path(block_id);
     return <div class="main-page px-3">
-      <Block blocks={blocks} />
+      <Block blocks={blocks} editable={true} />
     </div>;
   }
 
   update = {
     '#block, @refresh': (state, block_id) => {
-      if (location.hash.startsWith('#block')) return block_id;
+      if (location.hash.startsWith('#block')) return block_id || state;
     }
   }
 }

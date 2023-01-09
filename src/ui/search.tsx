@@ -1,8 +1,8 @@
 import { app, Component } from 'apprun';
 import Mark from 'mark.js';
-import { search } from '../../search';
-import { find_block_path } from '../../model';
-import Block from './block-view';
+import { search } from '../search';
+import { find_block_path } from '../model';
+import Block from './components/block-view';
 
 const toggle_block_list = e => {
   const content_block = e.target.parentElement.querySelector('.block');

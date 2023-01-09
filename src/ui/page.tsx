@@ -15,7 +15,7 @@ export default class extends Component {
 
   update = {
     '#page, @refresh': (state, block_id) => {
-      if (location.hash.startsWith('#page')) return block_id;
+      if (location.hash.startsWith('#page')) return block_id || state;
     }
   }
 }
