@@ -8,7 +8,8 @@ export default class extends Component {
   view = block_id => {
     const page = find_page_index(block_id);
     return <div class="main-page px-3">
-      <Editor pages={[page]} editable={true} mode={1} />
+      <h1 class="py-4" contenteditable="false">{page.name}</h1>
+      <Editor pages={[page]} editable={true} includePageName={false} />
     </div>;
   }
 

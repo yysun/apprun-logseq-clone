@@ -33,7 +33,7 @@ const create_content = content => {
 
 
 
-export default function Page({ page, editable, mode }) {
+export default function Page({ page: blockIndex, editable, includePageName }) {
 
   const bullet_mousedown = e => {
     const block = e.target.closest('.block');
@@ -48,17 +48,17 @@ export default function Page({ page, editable, mode }) {
     block.draggable = false;
   }
 
-  let { id, children } = page;
+  let { id, children } = blockIndex;
   const block = data.blocks.find(b => b.id === id);
-  let list = children?.map(child => <Page page={child} editable={editable} mode={0} />);
+  let list = children?.map(child => <Page page={child} editable={editable} includePageName={includePageName} />);
   if (list?.length === 0) list = null;
   let content = block.content;
   if (block.type === 'page') {
     content = content.substring(content.lastIndexOf('/') + 1);
   }
 
-  if (mode === 1 && block.type === 'page') return <div>
-    <h1 class="py-4" contenteditable="false">{content}</h1>
+  if (!includePageName && block.type === 'page') return <div>
+    {/* <h1 class="py-4" contenteditable="false">{content}</h1> */}
     {list && <div class="">{list}</div>}
   </div>;
 

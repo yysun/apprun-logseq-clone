@@ -22,7 +22,7 @@ const Hit = ({ hit }) => {
   const blocks = find_block_path(hit);
   return <li class="flex mb-4">
     <div class="search-results-arrow arrow-down mt-2 mr-3" onclick={toggle_block_list}></div>
-    <Block blocks={blocks} />
+    <Block blocks={blocks} editable={false} />
   </li>
 }
 

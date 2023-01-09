@@ -14,7 +14,7 @@ export default class extends Component {
       <div class="main-page px-3">
         <h1 class="pb-4">Journals ({total})</h1>
         <div class="page-list" >
-          <Editor pages={pages} editable={true} mode={0} />
+          <Editor pages={pages} editable={true} includePageName={true} />
         </div>
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :

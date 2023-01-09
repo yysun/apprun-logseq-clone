@@ -53,7 +53,7 @@ export default () => <>
     </div>
   </div>
   <div class="resizer bg-gray-200 w-1 h-screen" data-direction='horizontal' ref={e => resizable(e)}></div>
-  <div id="right-panel" class="w-1 h-screen transition-all duration-150 text-sm ">
+  <div id="right-panel" class="w-1 h-screen transition-all duration-150">
     <div id="right-panel-toolbar" class="h-9 w-full sticky z-10 border-b border-gray-100 flex">
       <span class="flex-1"></span>
       <button class="right-panel-toolbar-button">Search</button>
