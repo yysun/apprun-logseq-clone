@@ -6,7 +6,7 @@ import {
   find_prev, find_next
 } from '../model/index';
 
-app.on('save-file', () => { });
+app.on('@save-file', () => { });
 
 test('properties', () => {
   const text = `

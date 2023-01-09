@@ -29,11 +29,13 @@ const Hit = ({ hit }) => {
 let marker;
 
 export default class extends Component {
-  view = ({ pages, hits, query }) => {
+
+  state = { hits: [], query: '' };
+  view = ({ hits, query }) => {
     hits = hits || [];
     return <div class="search-results">
       <div class="w-full flex items-center mb-4">
-        <div class="flex-1">{hits.length ? `Found: ${hits.length}` : ''}</div>
+        <div class="flex-1">{`Found: ${hits.length}`}</div>
         <input class="px-3 py-1 rounded-md border border-gray-300"
           placeholder="search ..." value={query || ''}
           $oninput='search' />
@@ -54,10 +56,17 @@ export default class extends Component {
       if (!query) return state;
       return ({ ...state, hits, query })
     },
+
+    '@refresh': ({ query }) => ({
+      hits: search(query),
+      query
+    })
   }
 
-  rendered = ({ query}) => {
-    marker = new Mark(".search-results-blocks");
-    marker.mark(query);
+  rendered = ({ query }) => {
+    if (query) {
+      marker = new Mark(".search-results-blocks");
+      marker.mark(query);
+    }
   }
 }

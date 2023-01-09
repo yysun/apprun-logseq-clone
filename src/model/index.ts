@@ -156,7 +156,7 @@ export const update_block = (block: BlockId, content: string) => {
   block = find_block(get_block_id(block));
   if (!block || block.content === content) return;
   block.content = content;
-  app.run('save-file', block.page);
+  app.run('@save-file', block.page);
 }
 
 //#endregion
@@ -234,22 +234,6 @@ export const find_block_index = (block: BlockId): BlockIndex => {
 }
 
 export const find_block_path = (id: BlockId): (Block & Index)[] => {
-  // const block_id = get_block_id(block);
-  // const page_index = find_page_index(block);
-  // if (block_id === page_index.id) {
-  //   return [{...find_block(block_id), ...page_index }];
-  // }
-  // const block_index = find_block_index(block_id);
-  // const tree = create_tree(page_index);
-  // const filtered = filter(([id]) => id === block_id, tree);
-  // const reduced = reduce((acc, [id]) => {
-  //   acc.push(id)
-  //   return acc;
-  // }, filtered, []);
-  // const blocks = reduced.map(id => find_block(id));
-  // blocks[blocks.length - 1].children = block_index.children;
-  // return blocks;
-
   const block_id = get_block_id(id);
   const page_index = find_page_index(block_id);
   const block = find_block(block_id);
@@ -274,7 +258,7 @@ export const indent_block = (id: string): boolean => {
     prev.children = prev.children || [];
     prev.children.push({ id, children });
     parent.children.splice(pos, 1);
-    app.run('save-file', page.name);
+    app.run('@save-file', page.name);
     return true;
   }
 }
@@ -289,7 +273,7 @@ export const outdent_block = (id: string): boolean => {
     if (siblings.length) children.push(...siblings);
     parent_parent.children.splice(parent_pos + 1, 0, { id, children });
     parent.children.splice(pos, siblings.length + 1);
-    app.run('save-file', page.name);
+    app.run('@save-file', page.name);
     return true;
   }
 }
@@ -302,6 +286,7 @@ export const split_block = (id: string, part1: string, part2: string): Block => 
     parent.children.splice(pos, 0, { id: new_block.id });
     new_block.page = page.name;
     update_block(old_block, part2);
+    app.run('@save-file', page.name);
     return old_block;
   } else {
     const new_block = create_block(part2);
@@ -312,11 +297,12 @@ export const split_block = (id: string, part1: string, part2: string): Block => 
     } else {
       parent.children.splice(pos + 1, 0, { id: new_block.id });
     }
+    app.run('@save-file', page.name);
     return new_block;
   }
 }
 
-export const merge_block = (id1: string, id2: string): Block => {
+export const merge_block = (id1: string, id2: string): string => {
   const blockIndex1 = find_block_index(id1);
   const blockIndex2 = find_block_index(id2);
   if (blockIndex2.children) {
@@ -325,9 +311,10 @@ export const merge_block = (id1: string, id2: string): Block => {
   }
   const block1 = find_block(id1);
   const block2 = find_block(id2);
-  update_block(block1, block1.content + '<span id="__caret"></span>' + block2.content);
+  const html = block1.content + '<span id="__caret"></span>' + block2.content;
   delete_block(id2);
-  return block1;
+  update_block(block1, html);
+  return html;
 }
 
 const combine_block_id = page => {
@@ -365,7 +352,7 @@ export const move_block_up = (id: string): boolean => {
     remove_from_parent(source);
     append_child(target, new_index);
   }
-  app.run('save-file', source.page.name);
+  app.run('@save-file', source.page.name);
   return true;
 }
 export const move_block_down = (id: string): boolean => {
@@ -385,7 +372,7 @@ export const move_block_down = (id: string): boolean => {
     insert_child(target, new_index);
     remove_from_parent(source);
   }
-  app.run('save-file', source.page.name);
+  app.run('@save-file', source.page.name);
   return true;
 }
 
@@ -397,7 +384,7 @@ export const move_block_to = (sourceId: string, targetId: string): boolean => {
   const new_index = create_index(source as any);
   remove_from_parent(source);
   append_child(target, new_index);
-  app.run('save-file', target.page.name);
+  app.run('@save-file', target.page.name);
   return true;
 }
 

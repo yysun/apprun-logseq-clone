@@ -68,7 +68,7 @@ const process_dir = async (dirHandle) => {
 
 export default async () => {
 
-  app.on('save-file', async (name) => {
+  app.on('@save-file', async (name) => {
     await save_file(name);
     Log.info('file saved: ', name);
   }, { delay: 1000 });

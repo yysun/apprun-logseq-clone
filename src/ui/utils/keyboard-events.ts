@@ -4,20 +4,20 @@ import {
 
 } from '../../model/index';
 import { create_caret, restore_caret, save_caret, split_element } from './caret';
+import app from 'apprun';
 
 
 const new_block_caret = (id, toStart) => {
   setTimeout(() => {
-    const new_element = document.getElementById(id);
-    new_element && create_caret(new_element, toStart);
+  const element = document.getElementById(id);
+    element && create_caret(element, toStart);
   }, 10);
 }
 
 const restore_block_caret = (id, caret_html = null) => {
   setTimeout(() => {
-    const new_element = document.getElementById(id);
-    restore_caret(new_element, caret_html);
-    // save_block(id);
+    const element = document.getElementById(id);
+    restore_caret(element, caret_html);
   }, 10);
 }
 
@@ -34,13 +34,13 @@ const handle_enter_key = (e, id, element) => {
   } else {
     const new_block = split_block(id, text1, text2);
     new_block_caret(new_block.id, true);
-  }
-  return data;
+  };
+  return true;
 };
 
 const handle_backspace_key = (e, id, element) => {
   const [c1, c2] = split_element(element);
-  const text1 = to_markdown(c1), text2 = to_markdown(c2);
+  const text1 = to_markdown(c1);
   const index = find_block_index(id);
   if (text1 || !index) return;
   e.preventDefault();
@@ -49,12 +49,12 @@ const handle_backspace_key = (e, id, element) => {
   const isFirstChild = pos === 0;
   if (isTopLevel && isFirstChild) return;
   const prevBlockId = find_prev(id);
-  merge_block(prevBlockId, id);
-  restore_block_caret(prevBlockId);
-  return data;
+  const html = merge_block(prevBlockId, id);
+  restore_block_caret(prevBlockId, html);
+  return true;
 }
 
-const handle_tab_key = async (e, id, element) => {
+const handle_tab_key = (e, id, element) => {
   e.preventDefault();
   const html = save_caret(element);
   if (e.shiftKey) {
@@ -63,10 +63,10 @@ const handle_tab_key = async (e, id, element) => {
     indent_block(id);
   }
   restore_block_caret(id, html);
-  return data;
+  return true;
 }
 
-const get_element = () : HTMLElement => {
+const get_element = (): HTMLElement => {
   const node = document.getSelection().anchorNode;
   if (!node) return;
   const element = node.nodeType === 1 &&
@@ -76,13 +76,16 @@ const get_element = () : HTMLElement => {
 }
 
 export const editor_keyup = (e) => {
+
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   if (metaKey || ctrlKey || shiftKey || altKey ||
     key === 'Tab' || key === 'Enter' || key === 'Escape' ||
+    key === 'Alt' || key === 'Control' || key === 'Meta' || key === 'Shift' ||
     key.startsWith('F') || key.startsWith('Arrow')) return;
 
   const element = get_element();
   if (!element) return;
+  e.preventDefault();
   const id = element.id;
   const md = to_markdown(element.innerHTML);
   update_block(id, md);
@@ -95,9 +98,9 @@ export const editor_keydown = (e) => {
   const id = element.id;
   console.assert(id, 'Block id note found', element);
 
+  let handled = false;
   if (altKey && key.startsWith('Arrow')) {
     e.preventDefault();
-    let handled = false;
     const html = save_caret(element);
     switch (key) {
       case 'ArrowUp':
@@ -115,16 +118,19 @@ export const editor_keydown = (e) => {
     }
     if (handled) {
       restore_block_caret(id, html);
-      return data;
     }
   }
 
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
-    return handle_enter_key(e, id, element);
+    handled = handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {
-    if (handle_backspace_key(e, id, element)) return data;
+    handled = handle_backspace_key(e, id, element);
   } else if (key === 'Tab') {
-    return handle_tab_key(e, id, element);
+    handled = handle_tab_key(e, id, element);
   }
 
+  if (handled) {
+    e.preventDefault();
+    app.run('@refresh')
+  }
 }

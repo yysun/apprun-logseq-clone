@@ -1,24 +1,13 @@
-import { app, Component, on } from 'apprun';
+import { app, Component } from 'apprun';
 import { format } from 'date-fns';
 import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
 import Editor from './components/editor';
 export default class extends Component {
 
-  @on('#journals')
-  show = () => {
-    let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
-    const today = format(new Date(), 'yyyy_MM_dd');
-    if (!pages.some(p => p.name === `journals/${today}`)) {
-      new_page(`journals/${today}`, '- ');
-    }
-    pages = data.pages?.filter(p => p.name.startsWith('journals/'));
-    return data;
-  }
-
   state = data;
 
-  view = ({ pages }) => {
-    pages = data.pages?.filter(p => p.name.startsWith('journals/'));
+  view = (data) => {
+    let pages = data.pages?.filter(p => p.name.startsWith('journals/'));
     pages = pages.sort((a, b) => b.name.localeCompare(a.name));
     const total = pages.length;
     return pages.length > 0 ?
@@ -30,6 +19,17 @@ export default class extends Component {
       </div> : !dirHandle ?
         <button $onclick={select_dir}>Open...</button> :
         <button $onclick={grant_access}>Grant access...</button>
+  }
+
+  update = {
+    '#journals, @refresh': () => {
+      let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
+      const today = format(new Date(), 'yyyy_MM_dd');
+      if (!pages.some(p => p.name === `journals/${today}`)) {
+        new_page(`journals/${today}`, '- ');
+      }
+      if (location.hash.startsWith('#journals')) return data;
+    }
   }
 
 }
