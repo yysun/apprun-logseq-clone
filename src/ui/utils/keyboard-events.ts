@@ -5,15 +5,6 @@ import {
 } from '../../model/index';
 import { create_caret, restore_caret, save_caret, split_element } from './caret';
 
-const save_block = (id) => {
-  setTimeout(() => {
-    const el = document.getElementById(id) as HTMLElement;
-    if (el) {
-      const md = to_markdown(el.innerHTML);
-      update_block(id, md);
-    }
-  }, 10);
-}
 
 const new_block_caret = (id, toStart) => {
   setTimeout(() => {
@@ -26,7 +17,7 @@ const restore_block_caret = (id, caret_html = null) => {
   setTimeout(() => {
     const new_element = document.getElementById(id);
     restore_caret(new_element, caret_html);
-    save_block(id);
+    // save_block(id);
   }, 10);
 }
 
@@ -75,19 +66,33 @@ const handle_tab_key = async (e, id, element) => {
   return data;
 }
 
-export const editor_keyup = (e) => {
-  console.log(e);
-}
-
-export const editor_keydown = (_, e) => {
-  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+const get_element = () : HTMLElement => {
   const node = document.getSelection().anchorNode;
   if (!node) return;
   const element = node.nodeType === 1 &&
-    (node as HTMLElement).classList.contains('block-content') ? node :
+    (node as HTMLElement)?.classList.contains('block-content') ? node :
     node.parentElement.closest('.block-content');
+  return element as HTMLElement;
+}
+
+export const editor_keyup = (e) => {
+  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+  if (metaKey || ctrlKey || shiftKey || altKey ||
+    key === 'Tab' || key === 'Enter' || key === 'Escape' ||
+    key.startsWith('F') || key.startsWith('Arrow')) return;
+
+  const element = get_element();
   if (!element) return;
-  const id = (element as HTMLDivElement).id;
+  const id = element.id;
+  const md = to_markdown(element.innerHTML);
+  update_block(id, md);
+}
+
+export const editor_keydown = (e) => {
+  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+  const element = get_element();
+  if (!element) return;
+  const id = element.id;
   console.assert(id, 'Block id note found', element);
 
   if (altKey && key.startsWith('Arrow')) {
@@ -113,7 +118,7 @@ export const editor_keydown = (_, e) => {
       return data;
     }
   }
-  save_block(id);
+
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
     return handle_enter_key(e, id, element);
   } else if (key === 'Backspace') {
