@@ -20,7 +20,7 @@ export default function Block({ blocks }) {
       )}
     </div>
     <div contenteditable="true" $onkeydown={editor_keydown}>
-      {children.map(block => <Page page={block} editable />)}
+      {children.map(block => <Page page={block} editable mode={0} />)}
     </div>
   </div>;
 }
