@@ -1,4 +1,5 @@
 import app from 'apprun';
+import { select_dir } from '../../store'
 import Calender from './calander';
 
 let menu;
@@ -23,6 +24,11 @@ const toggle_calendar = e => {
 
 app.on('dir-processed', dir =>
   document.getElementById('current-dir-name').innerText = dir);
+
+const open_new_dir = async () => {
+  await select_dir();
+  location.reload();
+}
 
 export default () => <>
   <nav class="mt-10">
@@ -51,7 +57,7 @@ export default () => <>
           </li> */}
           <hr class="h-1 py-1" />
           <li class="h-8 text-sm opacity-70 px-4">
-            <a>
+            <a $onclick={open_new_dir}>
               <span>Open Folder ...</span>
             </a>
           </li>
