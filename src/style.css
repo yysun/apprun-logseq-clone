@@ -179,6 +179,14 @@ h3 {
   width: 680px;
 }
 
+.block-content p {
+  min-height: 24px;
+}
+
+#__caret {
+  display: none;
+}
+
 .editor {
   border: 0;
   padding: 5px;

@@ -5,17 +5,30 @@ const md = _md({ html: true, breaks: true, linkify: true });
 const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
 
 export const to_html = content => {
-  content = md.render(content);
-  content = content.replace(wiki_link, (match, p1) => `<a href="#${p1}">${p1}</a>`);
+  content = md.render(content)
+  content = content.replace(wiki_link, (match, p1) => `<a href="#page/${p1}">${p1}</a>`);
   return content;
 }
 
-export const to_markdown = html => {
+export const to_markdown = (html, keepSpan=true) => {
+  html = html.replace()
   const td = new turndown({
     headingStyle: 'atx',
     bulletListMarker: '-',
     codeBlockStyle: 'fenced',
     fence: '```',
   });
-  return td.turndown(html);
+  td.addRule('wiki_link', {
+    filter: 'a',
+    replacement: (content, node) => {
+      const href = node.getAttribute('href');
+      if (href.startsWith('#page/')) {
+        return `[[${href.slice(6)}]]`;
+      }
+      return content;
+    }
+  });
+  keepSpan && td.keep(['span']);
+  const md = td.turndown(html);
+  return md;
 }

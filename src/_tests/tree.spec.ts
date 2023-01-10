@@ -30,6 +30,6 @@ test('get page content 3', () => {
   const path = find_block_path('_2');
   console.log(JSON.stringify(path, null, 2));
   expect(path.length).toBe(3);
-  expect(path[2]).toBe('_2');
+  expect(path[2].id).toBe('_2');
 
 });

@@ -8,25 +8,22 @@ export const save_caret = (element) => {
   if (!range) return;
   const anchor = document.createElement('span');
   anchor.id = '__caret';
+  anchor.innerText = '.';
   range.insertNode(anchor);
   return element.innerHTML
 }
 
-export const restore_caret = (element, html = null) => {
+export const restore_caret = (element) => {
   const selection = window.getSelection();
   const range = new Range();
-  let anchor = document.querySelector('#__caret');
-  if (element) {
-    if (html) element.innerHTML = html;
-    range.selectNodeContents(element);
-    anchor = element.querySelector('#__caret');
-  }
+  let anchor = element.querySelector('#__caret');
   if (anchor) {
     range.setStartAfter(anchor);
     range.setEndAfter(anchor);
     selection.removeAllRanges();
     selection.addRange(range);
     anchor.remove();
+    return true;
   }
 }
 

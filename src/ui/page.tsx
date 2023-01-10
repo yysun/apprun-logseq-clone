@@ -18,7 +18,7 @@ export default class extends Component {
 
   update = {
     '#page, @refresh': (state, path, name) => {
-      name = path + '/' + name;
+      if (path && name) name = path + '/' + name;
       if (name === '[new]') {
         return add_page('pages/[new]', '- ', Date.now()).name;
       }

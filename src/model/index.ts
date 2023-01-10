@@ -31,6 +31,7 @@ export type Data = {
 }
 //#endregion
 
+const CREATE_SPAN = '<span id="__caret">.</span>';
 export const data: Data = {
   blocks: [],
   pages: []
@@ -57,7 +58,7 @@ export const create_page_markdown = (page, level = 0) => {
   if (block.type === 'page') return list;
   const leading_spaces = ' '.repeat((level - 1) * 2);
   const content_lines = block.content.split('\n')
-    .map(line => line.replace('<span id="__caret"></span>', '').trim());
+    .map(line => line.replace(CREATE_SPAN, '').trim());
   const property_lines = Object.keys(block)
     .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type' && prop !== '_has_id')
     .map(prop => prop !== 'id' || block['_has_id'] ? prop + ':: ' + block[prop] : '')
@@ -282,14 +283,14 @@ export const split_block = (id: string, part1: string, part2: string): Block => 
   const { parent, pos, page, children } = find_block_index(id);
   const old_block = find_block(id);
   if (!part1) { // at beginning of block
-    const new_block = create_block(part1);
+    const new_block = create_block('');
     parent.children.splice(pos, 0, { id: new_block.id });
     new_block.page = page.name;
-    update_block(old_block, part2);
+    update_block(old_block, CREATE_SPAN + part2);
     app.run('@save-file', page.name);
     return old_block;
   } else {
-    const new_block = create_block(part2);
+    const new_block = create_block(CREATE_SPAN + part2);
     new_block.page = page.name;
     update_block(old_block, part1);
     if (children && children.length) {
@@ -311,7 +312,7 @@ export const merge_block = (id1: string, id2: string): string => {
   }
   const block1 = find_block(id1);
   const block2 = find_block(id2);
-  const html = block1.content + '<span id="__caret"></span>' + block2.content;
+  const html = block1.content + CREATE_SPAN + block2.content;
   delete_block(id2);
   update_block(block1, html);
   return html;

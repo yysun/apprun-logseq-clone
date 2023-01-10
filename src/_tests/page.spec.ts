@@ -1,4 +1,4 @@
-import { data, init_data, add_page, get_page_markdown } from './index';
+import { data, init_data, add_page, get_page_markdown } from '../model/index';
 
 test('get page content 1', () => {
   const text = `- 1

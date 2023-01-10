@@ -1,9 +1,9 @@
 import { app, safeHTML } from 'apprun';
-import { to_html } from '../utils/md';
+import { to_html, to_markdown } from '../utils/md';
 import { data } from '../../store';
-import { create_caret } from '../utils/caret';
+import { create_caret, restore_caret } from '../utils/caret';
+import { update_block } from '../../model';
 import { editor_drag, editor_drag_over, editor_drop } from '../utils/mouse-events';
-
 
 const toggle = el => {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
@@ -31,6 +31,12 @@ const create_content_html = content => {
   return safeHTML(content)[0];
 }
 
+const create_caret_cleanup = (el) => {
+  if (restore_caret(el)) {
+    const md = to_markdown(el.innerHTML, false); //no span
+    update_block(el.id, md);
+  }
+}
 
 export default function Page({ page: blockIndex, editable, includePageName }) {
 
@@ -61,7 +67,7 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
   if (block.type === 'page') {
     content = <h1 class="py-4" contenteditable="false"><a href={`#page/${blockIndex.name}`}>{content}</a></h1>;
   } else {
-    content = create_content_html(content) || <textarea style="height:18px; width:1px"></textarea>;
+    content = create_content_html(content) || <p></p>
   }
 
   return <div class={`block${block.type === 'page' ? ' page' : ''}`}>
@@ -73,7 +79,7 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
           <div class={`bullet ${list ? 'bg-gray-300' : 'bg-gray-100'}`}></div>
         </a>
       </div>
-      <div class="block-content" contenteditable={editable} id={block.id}>
+      <div class="block-content" contenteditable={editable} id={block.id} ref={editable ? create_caret_cleanup : null}>
         {content}
       </div>
       <div class="block-handle"></div>

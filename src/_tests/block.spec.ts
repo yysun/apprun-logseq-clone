@@ -361,7 +361,7 @@ test('split block - in middle - has children', () => {
   expect(children[0].id).not.toBe('_3');
   expect(children[1].id).toBe('_3');
   expect(find_block('_2').content).toBe('123');
-  expect(find_block(children[0].id).content).toBe('456');
+  expect(find_block(children[0].id).content).toBe('<span id=\"__caret\">.</span>456');
   expect(find_block(children[0].id).page).toBe('p1');
 });
 
@@ -383,7 +383,7 @@ test('split block - in middle - no children', () => {
   expect(parent.children[0].id).toBe('_2');
   expect(parent.children[1].id).not.toBe('_2');
   expect(find_block('_2').content).toBe('test');
-  expect(find_block(parent.children[1].id).content).toBe('');
+  expect(find_block(parent.children[1].id).content).toBe('<span id=\"__caret\">.</span>');
   expect(find_block(parent.children[1].id).page).toBe('p2');
 });
 
@@ -400,7 +400,7 @@ test('merge block without children - same level', () => {
   merge_block('_1', '_2');
   expect(find_block_index('_2')).toBeNull();
   const block = find_block('_1');
-  expect(block.content).toBe('1<span id=\"__caret\"></span>2');
+  expect(block.content).toBe('1<span id=\"__caret\">.</span>2');
 });
 
 test('merge block without children - from child', () => {
@@ -415,7 +415,7 @@ test('merge block without children - from child', () => {
   merge_block('_1', '_2');
   expect(find_block_index('_2')).toBeNull();
   const block = find_block('_1');
-  expect(block.content).toBe('1<span id=\"__caret\"></span>2');
+  expect(block.content).toBe('1<span id=\"__caret\">.</span>2');
 });
 
 test('merge block with children 1', () => {

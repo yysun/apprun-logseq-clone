@@ -1,4 +1,4 @@
-import { parse_blocks, parse_page } from './parser';
+import { parse_blocks, parse_page } from '../model/parser';
 
 test('basic structure 1', () => {
   const text = `
