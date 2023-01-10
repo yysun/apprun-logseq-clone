@@ -35,7 +35,7 @@ const handle_backspace_key = (e, id, element) => {
   return true;
 }
 
-const handle_tab_key = (e, id, element) => {
+const handle_tab_key = (e, id) => {
   e.preventDefault();
   if (e.shiftKey) {
     outdent_block(id);
@@ -45,19 +45,47 @@ const handle_tab_key = (e, id, element) => {
   return true;
 }
 
-export const editor_keydown = (e) => {
-  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+const get_element = (): HTMLElement => {
   const node = document.getSelection().anchorNode;
   if (!node) return;
   const element = node.nodeType === 1 &&
-    (node as HTMLElement).classList.contains('block-content') ? node :
+    (node as HTMLElement)?.classList.contains('block-content') ? node :
     node.parentElement.closest('.block-content');
+  return element as HTMLElement;
+}
+
+const refresh = (e, id, element, save) => {
+  e.preventDefault();
+  if (save) {
+    save_caret(element);
+    const md = to_markdown(element.innerHTML);
+    update_block(id, md);
+  }
+  app.run('@refresh');
+};
+
+export const editor_keyup = (e) => {
+
+  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+  if (metaKey || ctrlKey || shiftKey || altKey ||
+    key === 'Tab' || key === 'Enter' || key === 'Escape' || key === 'Tab' ||
+    key === 'Alt' || key === 'Control' || key === 'Meta' || key === 'Shift' ||
+    key.startsWith('F') || key.startsWith('Arrow')) return;
+
+  const element = get_element();
+  if (!element) return;
+  const id = (element as HTMLDivElement).id;
+  e.preventDefault();
+  refresh(e, id, element, true)
+}
+
+export const editor_keydown = (e) => {
+  const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
+  const element = get_element()
   if (!element) return;
   const id = (element as HTMLDivElement).id;
   console.assert(id, 'Block id note found', element);
-  console.assert(id, 'Block id note found', element);
   let handled = false;
-
   if (altKey && key.startsWith('Arrow')) {
     e.preventDefault();
     switch (key) {
@@ -74,27 +102,19 @@ export const editor_keydown = (e) => {
         handled = indent_block(id);
         break;
     }
+    if (handled) {
+      return refresh(e, id, element, true);
+    }
   }
 
   if (key === 'Enter' && !shiftKey && !ctrlKey && !metaKey && !altKey) {
-    handled = handle_enter_key(e, id, element);
+    handle_enter_key(e, id, element);
+    refresh(e, id, element, false);
   } else if (key === 'Backspace') {
     handled = handle_backspace_key(e, id, element);
+    handled && refresh(e, id, element, false)
   } else if (key === 'Tab') {
-    handled = handle_tab_key(e, id, element);
-  }
-
-  const save_and_refresh = () => {
-    save_caret(element);
-    const md = to_markdown(element.innerHTML);
-    update_block(id, md);
-    app.run('@refresh')
-  };
-
-  if (handled) {
-    e.preventDefault();
-    save_and_refresh()
-  } else {
-    setTimeout(save_and_refresh, 10)
+    handled = handle_tab_key(e, id);
+    handled && refresh(e, id, element, true)
   }
 }

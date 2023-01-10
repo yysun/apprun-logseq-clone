@@ -27,7 +27,7 @@ app.on('dir-processed', dir =>
 
 const open_new_dir = async () => {
   await select_dir();
-  location.reload();
+  location.hash = "#journals";
 }
 
 export default () => <>
@@ -57,7 +57,7 @@ export default () => <>
           </li> */}
           <hr class="h-1 py-1" />
           <li class="h-8 text-sm opacity-70 px-4">
-            <a $onclick={open_new_dir}>
+            <a onclick={open_new_dir}>
               <span>Open Folder ...</span>
             </a>
           </li>
