@@ -1,7 +1,7 @@
 import Log from './logger';
 import app from 'apprun';
 import { get, set } from 'idb-keyval';
-import { data, get_page_content, add_page, update_page, find_page } from './model/index';
+import { data, get_page_markdown, add_page, update_page, find_page } from './model/index';
 export { data }
 
 const options = { 'mode': 'readwrite' };
@@ -20,7 +20,7 @@ const get_file_handler = async (dirHandle, file_name) => {
 
 
 export const save_file = async (name) => {
-  const content = get_page_content(name);
+  const content = get_page_markdown(name);
   const file_name = name + '.md';
   const fileHandle = await get_file_handler(dirHandle, file_name);
   const writable = await fileHandle.createWritable();
@@ -103,7 +103,7 @@ export const grant_access = async () => {
   return await open_dir();
 }
 
-export const new_page = async (name, text) => {
+export const new_page = (name, text) => {
   add_page(name, text, Date.now());
   return data;
 }

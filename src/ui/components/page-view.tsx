@@ -26,11 +26,10 @@ const toggle_block_list = e => {
   create_caret(content);
 }
 
-const create_content = content => {
+const create_content_html = content => {
   content = to_html(content);
   return safeHTML(content)[0];
 }
-
 
 
 export default function Page({ page: blockIndex, editable, includePageName }) {
@@ -53,9 +52,6 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
   let list = children?.map(child => <Page page={child} editable={editable} includePageName={includePageName} />);
   if (list?.length === 0) list = null;
   let content = block.content;
-  if (block.type === 'page') {
-    content = content.substring(content.lastIndexOf('/') + 1);
-  }
 
   if (!includePageName && block.type === 'page') return <div>
     {/* <h1 class="py-4" contenteditable="false">{content}</h1> */}
@@ -63,9 +59,10 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
   </div>;
 
   if (block.type === 'page') {
-    content = `<h1 class="py-4" contenteditable="false"><a href="#page/${block.id}">${content}</a></h1>`;
+    content = <h1 class="py-4" contenteditable="false"><a href={`#page/${blockIndex.name}`}>{content}</a></h1>;
+  } else {
+    content = create_content_html(content) || <textarea style="height:18px; width:1px"></textarea>;
   }
-  content = create_content(content) || <textarea style="height:18px; width:1px"></textarea>;
 
   return <div class={`block${block.type === 'page' ? ' page' : ''}`}>
     <div class="block-header" contenteditable="false">

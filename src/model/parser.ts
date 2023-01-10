@@ -27,7 +27,8 @@ export function parse_page(name, blocks, lastModified) {
     lastModified
   };
 
-  page_blocks.push({ id: page.id, page: name, content: name, type: 'page' });
+  const page_name = name.substring(name.lastIndexOf('/') + 1);
+  page_blocks.push({ id: page.id, page: name, content: page_name, type: 'page' });
   page_blocks.sort((a, b) => a.id.localeCompare(b.id));
   return { page, page_blocks };
 }

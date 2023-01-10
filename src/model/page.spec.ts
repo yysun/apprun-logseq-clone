@@ -1,4 +1,4 @@
-import { data, init_data, add_page, get_page_content } from './index';
+import { data, init_data, add_page, get_page_markdown } from './index';
 
 test('get page content 1', () => {
   const text = `- 1
@@ -9,7 +9,7 @@ test('get page content 1', () => {
 
   init_data();
   add_page('test_page', text, new Date());
-  const content = get_page_content('test_page');
+  const content = get_page_markdown('test_page');
   expect(content).toBe(text);
 });
 
@@ -21,7 +21,7 @@ test('get page content 1', () => {
     id:: _2`;
   init_data();
   add_page('test2', text, new Date());
-  const content = get_page_content('test2');
+  const content = get_page_markdown('test2');
   expect(content).toBe(text);
 });
 
@@ -39,6 +39,6 @@ test('get page content 3', () => {
   content of 3`;
   init_data();
   add_page('test2', text, new Date());
-  const content = get_page_content('test2');
+  const content = get_page_markdown('test2');
   expect(content).toBe(text);
 });

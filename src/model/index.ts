@@ -2,30 +2,30 @@ import app from 'apprun';
 import { parse_page, parse_blocks, parse_properties } from './parser';
 
 //#region types
-type Block = {
+export type Block = {
   id: string;
   content: string;
   [index: string]: any; // properties
 }
-type BlockId = string | Block;
+export type BlockId = string | Block;
 
-type Index = {
+export type Index = {
   id: string;
   children?: Index[]
 };
 
-type PageIndex = Index & {
+export type PageIndex = Index & {
   name: string;
   lastModified: number;
 }
 
-type BlockIndex = Index & {
+export type BlockIndex = Index & {
   parent: Index;
   pos: number;
   page?: PageIndex;
 }
 
-type Data = {
+export type Data = {
   blocks: Block[];
   pages: PageIndex[];
 }
@@ -41,7 +41,7 @@ export const init_data = () => {
   data.pages = [];
 }
 
-export const find_page = name => {
+export const find_page = (name: string): PageIndex => {
   const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
   const page = data.pages.find(p => p.id === page_block.id);
   return page;
@@ -77,7 +77,7 @@ export const create_page_markdown = (page, level = 0) => {
   return content;
 };
 
-export const get_page_content = (name) => {
+export const get_page_markdown = (name) => {
   const page = find_page(name);
   if (!page) return {}
   return create_page_markdown(page);

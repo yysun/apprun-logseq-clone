@@ -1,4 +1,4 @@
-import { app, Component, on } from 'apprun';
+import { app, Component } from 'apprun';
 import { dirHandle, hasAccess, select_dir, grant_access } from '../store';
 
 export default class extends Component {

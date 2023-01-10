@@ -8,7 +8,7 @@ export default class extends Component {
   state = data;
 
   view = ({ pages }) => {
-    pages = data.pages?.filter(p => !p.name.startsWith('journals/')) || [];
+    pages = data.pages?.filter(p => p.name.startsWith('pages/')) || [];
     pages = pages.sort((a, b) => b.name.localeCompare(a.name));
     const total = pages.length;
 
@@ -17,7 +17,7 @@ export default class extends Component {
         <h1 class="pb-4">All Pages ({total})</h1>
         <div class="all-pages">
           {pages.map(page => <li>
-            <a href={`#page/${page.id}`}>{page.name}</a>
+            <a href={`#page/${page.name}`}>{page.name}</a>
           </li>)}
         </div>
       </div> : !dirHandle ?
