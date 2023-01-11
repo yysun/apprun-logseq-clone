@@ -37,6 +37,16 @@ app.on('@show-right-panel', () => {
   }
 });
 
+window.addEventListener('click', e => {
+  const target = e.target as HTMLAnchorElement
+  if (target.tagName === 'A' && target.href.startsWith('http')) {
+    // e.preventDefault();
+  } else if (target.tagName === 'A' && target.dataset.isPage) {
+    const hash = target.href.substring(target.href.indexOf('#'));
+    location.hash = hash;
+  }
+});
+
 export default () => <>
   <div id="left-panel" class="h-screen flex-1">
     <div id="left-toolbar" class="h-10 w-full sticky z-20">

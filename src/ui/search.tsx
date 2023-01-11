@@ -36,7 +36,10 @@ export default class extends Component {
     return <div class="search-results">
       <div class="w-full flex items-center mb-4">
         <div class="flex-1">{`Found: ${hits.length}`}</div>
-        <input class="px-3 py-1 rounded-md border border-gray-300"
+        <a class="toolbar-button" $onclick='add-new-page' title="add page">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" style="font-size: 20px;"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="9"></circle><line x1="9" y1="12" x2="15" y2="12"></line><line x1="12" y1="9" x2="12" y2="15"></line></svg>
+        </a>
+        <input class="px-3 py-1 rounded-md border border-gray-300" id="txtSearch"
           placeholder="search ..." value={query || ''}
           $oninput='search' />
       </div>
@@ -60,7 +63,13 @@ export default class extends Component {
     '@refresh': ({ query }) => ({
       hits: search(query),
       query
-    })
+    }),
+
+    'add-new-page': () => {
+      const input = document.getElementById('txtSearch') as HTMLInputElement;
+      input.value && app.run('#page', 'pages', input.value);
+    }
+
   }
 
   rendered = ({ query }) => {

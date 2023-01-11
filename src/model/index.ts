@@ -44,6 +44,7 @@ export const init_data = () => {
 
 export const find_page = (name: string): PageIndex => {
   const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
+  if(!page_block) return null;
   const page = data.pages.find(p => p.id === page_block.id);
   return page;
 }

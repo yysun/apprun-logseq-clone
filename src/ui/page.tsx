@@ -1,7 +1,9 @@
 import { app, Component } from 'apprun';
+import sanitize from 'sanitize-filename';
 import { find_page, add_page, find_block } from '../model';
 import Editor from './components/editor';
 import Page from './components/page-view';
+import Log from '../logger';
 
 export default class extends Component {
   state = ''; //name
@@ -20,10 +22,12 @@ export default class extends Component {
 
   update = {
     '#page': (state, path, name) => {
+      name = sanitize(decodeURI(name));
       app.run('@search', name);
       name = path + '/' + name;
       const page = find_page(name);
       if (!page) {
+        Log.info('Creating a new page: ' + name);
         add_page(name, '- ', Date.now()).name;
       }
       return name;

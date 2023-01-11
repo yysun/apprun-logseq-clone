@@ -104,7 +104,3 @@ export const grant_access = async () => {
   return await open_dir();
 }
 
-export const new_page = (name, text) => {
-  add_page(name, text, Date.now());
-  return data;
-}
