@@ -1,24 +1,25 @@
 import { app, Component } from 'apprun';
 import { format } from 'date-fns';
-import { data, dirHandle, select_dir, grant_access, new_page } from '../store';
+import { data, new_page } from '../store';
 import Editor from './components/editor';
+import Page from './components/page-view';
+
 export default class extends Component {
 
   state = data;
-
   view = (data) => {
-    let pages = data.pages?.filter(p => p.name.startsWith('journals/'));
-    pages = pages.sort((a, b) => b.name.localeCompare(a.name));
+    let pages = data.pages?.filter(p => p.name.startsWith('journals/'))
+      .sort((a, b) => b.name.localeCompare(a.name))
+      .map(page => <Page page={page} editable={true} includePageName={true} />)
+
     const total = pages.length;
     return pages.length > 0 ?
       <div class="main-page px-3">
         <h1 class="pb-4">Journals ({total})</h1>
         <div class="page-list" >
-          <Editor pages={pages} editable={true} includePageName={true} />
+          <Editor children={pages} />
         </div>
-      </div> : !dirHandle ?
-        <button $onclick={select_dir}>Open...</button> :
-        <button $onclick={grant_access}>Grant access...</button>
+      </div> : <div>No journals found</div>;
   }
 
   update = {

@@ -1,5 +1,5 @@
 import { app } from 'apprun';
-import Editor from './editor';
+import Page from './page-view';
 
 function BlockTrail({ blocks }) {
 
@@ -19,10 +19,10 @@ export default function Block({ blocks, editable }) {
     children = blocks[0].children;
   } else {
     parents = blocks.slice(0, blocks.length - 1);
-    children = [blocks[blocks.length - 1]];
+    children = [blocks.at(-1)];
   }
   return <div class="w-full">
     <BlockTrail blocks={parents} />
-    <Editor pages={children} editable={editable} includePageName={false} />
+    <Page page={children[0]} editable={editable} includePageName={false} />
   </div>;
 }

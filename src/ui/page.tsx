@@ -1,6 +1,7 @@
 import { app, Component } from 'apprun';
 import { find_page, add_page, find_block } from '../model';
 import Editor from './components/editor';
+import Page from './components/page-view';
 
 export default class extends Component {
   state = ''; //name
@@ -8,21 +9,28 @@ export default class extends Component {
   view = name => {
     const page = find_page(name);
     const block = find_block(page.id);
+    const page_view = <Page page={page} editable={true} includePageName={false} />
     return <div class="main-page px-3">
       <div contenteditable="true" $onkeydown={'change_page_name'} $onfocusout={'change_page_name'}>
         <h1 class="py-4">{block.content}</h1>
       </div>
-      <Editor pages={[page]} editable={true} includePageName={false} />
+      <Editor children={page_view} />
     </div>;
   }
 
   update = {
-    '#page, @refresh': (state, path, name) => {
-      if (path && name) name = path + '/' + name;
-      if (name === '[new]') {
-        return add_page('pages/[new]', '- ', Date.now()).name;
+    '#page': (state, path, name) => {
+      app.run('@search', name);
+      name = path + '/' + name;
+      const page = find_page(name);
+      if (!page) {
+        add_page(name, '- ', Date.now()).name;
       }
-      if (location.hash.startsWith('#page')) return name || state;
+      return name;
+    },
+
+    '@refresh': (state) => {
+      if (location.hash.startsWith('#page')) return state;
     },
 
     'change_page_name': (state, e) => {

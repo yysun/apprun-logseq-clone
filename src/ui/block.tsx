@@ -1,6 +1,7 @@
 import { app, Component } from 'apprun';
 import { find_block_path } from '../model';
 import Block from './components/block-view';
+import Editor from './components/editor';
 
 export default class extends Component {
   state = '';  // block_id;
@@ -8,7 +9,9 @@ export default class extends Component {
   view = block_id => {
     const blocks = find_block_path(block_id);
     return <div class="main-page px-3">
-      <Block blocks={blocks} editable={true} />
+      <div class="block-view" >
+        <Editor children={<Block blocks={blocks} editable={true} />} />
+      </div>
     </div>;
   }
 
