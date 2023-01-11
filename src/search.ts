@@ -27,7 +27,7 @@ export const search = query => {
   // const fuse = new Fuse(data?.blocks || [], options);
   // return fuse.search(query);
   const results = !query ? [] :
-    data?.blocks?.filter(b => b.content?.includes(query))
+    data?.blocks?.filter(b => b.content?.toLowerCase().includes(query.toLowerCase()))
       .map(b => b.id);
   return results;
 }
@@ -42,5 +42,9 @@ export const search_selection = () => {
 export default () => {
   app.run('@add-shortcut', 'ctrl+f', search_selection);
   app.run('@add-shortcut', 'meta+f', search_selection);
+  app.on('@search', query => {
+    const results = search(query);
+    app.run('@search-results', results, query);
+  });
 };
 
