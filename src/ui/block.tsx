@@ -10,13 +10,13 @@ export default class extends Component {
     const blocks = find_block_path(block_id);
     return <div class="main-page px-3">
       <div class="block-view" >
-        <Editor children={<Block blocks={blocks} editable={true} />} />
+        <Editor pages={()=><Block blocks={blocks} editable={true} />} />
       </div>
     </div>;
   }
 
   update = {
-    '#block, @refresh': (state, block_id) => {
+    '#block': (state, block_id) => {
       if (location.hash.startsWith('#block')) return block_id || state;
     }
   }

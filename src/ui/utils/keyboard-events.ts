@@ -79,8 +79,14 @@ const save = (id, element) => {
   update_block(id, md);
 }
 
-export const editor_keyup = (e) => {
+const refresh = (e) => {
+  e.preventDefault();
+  const source = e.target.closest('.editor');
+  // let other editors refresh later
+  setTimeout(() => app.run('//refresh', source), 10);
+};
 
+export const editor_keyup = (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   if (metaKey || ctrlKey || shiftKey || altKey ||
     key === 'Tab' || key === 'Enter' || key === 'Escape' || key === 'Tab' ||
@@ -90,11 +96,11 @@ export const editor_keyup = (e) => {
   const element = get_element();
   if (!element) return;
   const id = (element as HTMLDivElement).id;
-  e.preventDefault();
   save(id, element);
+  refresh(e); // let other editors refresh, don't refresh this editor
 }
 
-export const editor_keydown = (e) => {
+export const editor_keydown = (state, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
   const element = get_element()
   if (!element) return;
@@ -110,5 +116,9 @@ export const editor_keydown = (e) => {
   } else if (key === 'Tab') {
     handled = handle_tab_key(e, id, element);
   }
-  handled && app.run('@refresh');
+
+  if (handled) {
+    refresh(e); // let other editors refresh later
+    return { ...state, source: null }; // let this editor refresh immediately
+  }
 }

@@ -11,12 +11,12 @@ export default class extends Component {
   view = name => {
     const page = find_page(name);
     const block = find_block(page.id);
-    const page_view = <Page page={page} editable={true} includePageName={false} />
+    const page_view = () => <Page page={page} editable={true} includePageName={false} />
     return <div class="main-page px-3">
       <div contenteditable="true" $onkeydown={'change_page_name'} $onfocusout={'change_page_name'}>
         <h1 class="py-4">{block.content}</h1>
       </div>
-      <Editor children={page_view} />
+      <Editor pages={page_view} />
     </div>;
   }
 
@@ -31,10 +31,6 @@ export default class extends Component {
         add_page(name, '- ', Date.now()).name;
       }
       return name;
-    },
-
-    '@refresh': (state) => {
-      if (location.hash.startsWith('#page')) return state;
     },
 
     'change_page_name': (state, e) => {

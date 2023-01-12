@@ -3,6 +3,7 @@ import Mark from 'mark.js';
 import { search } from '../search';
 import { find_block_path } from '../model';
 import Block from './components/block-view';
+import Editor from './components/editor';
 
 const toggle_block_list = e => {
   const content_block = e.target.parentElement.querySelector('.block');
@@ -22,7 +23,7 @@ const Hit = ({ hit }) => {
   const blocks = find_block_path(hit);
   return <li class="flex mb-4">
     <div class="search-results-arrow arrow-down mt-2 mr-3" onclick={toggle_block_list}></div>
-    <Block blocks={blocks} editable={false} />
+    <Block blocks={blocks} editable={true} />
   </li>
 }
 
@@ -44,7 +45,7 @@ export default class extends Component {
           $oninput='search' />
       </div>
       <ul class="search-results-blocks">
-        {hits.length ? hits.map(hit => <Hit hit={hit} />) : ''}
+        <Editor pages={()=>hits.map(hit => <Hit hit={hit} />)} />
       </ul>
     </div>
   };
@@ -59,11 +60,6 @@ export default class extends Component {
       if (!query) return state;
       return ({ ...state, hits, query })
     },
-
-    '@refresh': ({ query }) => ({
-      hits: search(query),
-      query
-    }),
 
     'add-new-page': () => {
       const input = document.getElementById('txtSearch') as HTMLInputElement;
