@@ -9,15 +9,7 @@ const handle_enter_key = (e, id, element) => {
   e.preventDefault();
   const [c1, c2] = split_element(element);
   const text1 = to_markdown(c1), text2 = to_markdown(c2);
-  const { parent, page } = find_block_index(id);
-  const isTopLevel = parent.id === page.id;
-  const isEmpty = !text1 && !text2;
-  if (!isTopLevel && isEmpty) {
-    outdent_block(id);
-  } else {
-    split_block(id, text1, text2);
-  };
-  return true;
+  return  split_block(id, text1, text2);
 };
 
 const handle_backspace_key = (e, id, element) => {

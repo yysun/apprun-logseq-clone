@@ -13,7 +13,7 @@ export const save_caret = (element) => {
   return element.innerHTML
 }
 
-export const restore_caret = (element) => {
+export const restore_caret = (element): HTMLElement => {
   const selection = window.getSelection();
   const range = new Range();
   let anchor = element.querySelector('#__caret');
@@ -23,7 +23,7 @@ export const restore_caret = (element) => {
     selection.removeAllRanges();
     selection.addRange(range);
     anchor.remove();
-    return true;
+    return range.commonAncestorContainer as HTMLElement;
   }
 }
 

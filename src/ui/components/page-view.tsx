@@ -1,8 +1,7 @@
 import { app, safeHTML } from 'apprun';
-import { to_html, to_markdown } from '../utils/md';
-import { data } from '../../store';
-import { create_caret, restore_caret } from '../utils/caret';
-import { update_block } from '../../model';
+import { to_html } from '../utils/md';
+import { data, remove_caret_span } from '../../model';
+import { create_caret } from '../utils/caret';
 import { editor_drag, editor_drag_over, editor_drop } from '../utils/mouse-events';
 
 const toggle = el => {
@@ -29,13 +28,6 @@ const toggle_block_list = e => {
 const create_content_html = content => {
   content = to_html(content);
   return safeHTML(content)[0];
-}
-
-const create_caret_cleanup = (el) => {
-  if (restore_caret(el)) {
-    const md = to_markdown(el.innerHTML, false); //no span
-    update_block(el.id, md);
-  }
 }
 
 export default function Page({ page: blockIndex, editable, includePageName }) {
@@ -70,6 +62,7 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
     content = create_content_html(content) || <p></p>
   }
 
+  block.content = remove_caret_span(block.content);
   return <div class={`block${block.type === 'page' ? ' page' : ''}`}>
     <div class="block-header" contenteditable="false">
       <div class="block-bullet flex items-center w-7">
@@ -79,7 +72,7 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
           <div class={`bullet ${list ? 'bg-gray-300' : 'bg-gray-100'}`}></div>
         </a>
       </div>
-      <div class="block-content" contenteditable={editable} id={block.id} ref={editable ? create_caret_cleanup : null}>
+      <div class="block-content" contenteditable={editable} id={block.id}>
         {content}
       </div>
       <div class="block-handle"></div>

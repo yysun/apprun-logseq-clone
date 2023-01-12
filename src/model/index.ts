@@ -42,9 +42,11 @@ export const init_data = () => {
   data.pages = [];
 }
 
+export const remove_caret_span = text => text.replaceAll(CREATE_SPAN, '');
+
 export const find_page = (name: string): PageIndex => {
   const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
-  if(!page_block) return null;
+  if (!page_block) return null;
   const page = data.pages.find(p => p.id === page_block.id);
   return page;
 }
@@ -59,7 +61,7 @@ export const create_page_markdown = (page, level = 0) => {
   if (block.type === 'page') return list;
   const leading_spaces = ' '.repeat((level - 1) * 2);
   const content_lines = block.content.split('\n')
-    .map(line => line.replace(CREATE_SPAN, '').trim());
+    .map(line => remove_caret_span(line).trim());
   const property_lines = Object.keys(block)
     .filter(prop => prop !== 'page' && prop !== 'content' && prop !== 'type' && prop !== '_has_id')
     .map(prop => prop !== 'id' || block['_has_id'] ? prop + ':: ' + block[prop] : '')
@@ -137,10 +139,11 @@ export const find_block = (id: string): Block => {
   return data.blocks.find(b => b.id === id);
 }
 
-export const create_block = (content: string): Block => {
+export const create_block = (content: string, page: string): Block => {
   if (!content) content = '- '
   const block = parse_blocks(content)[0];
   parse_properties(block);
+  block.page = page;
   data.blocks.push(block);
   return block;
 }
@@ -280,28 +283,36 @@ export const outdent_block = (id: string): boolean => {
   }
 }
 
-export const split_block = (id: string, part1: string, part2: string): Block => {
-  const { parent, pos, page, children } = find_block_index(id);
+export const split_block = (id: string, part1: string, part2: string): boolean => {
   const old_block = find_block(id);
-  if (!part1) { // at beginning of block
-    const new_block = create_block('');
+  part2 = remove_caret_span(part2);
+  const { parent, pos, page, children } = find_block_index(id);
+  const isTopLevel = parent.id === page.id;
+  const isEmpty = !part1 && !part2;
+  let new_block;
+
+  if (!isTopLevel && isEmpty) { // outdent empty block
+    outdent_block(id);
+    update_block(old_block, CREATE_SPAN);
+    new_block = old_block;
+  } else if (!part1) { // at beginning of block
+    new_block = create_block('', page.name);
     parent.children.splice(pos, 0, { id: new_block.id });
     new_block.page = page.name;
     update_block(old_block, CREATE_SPAN + part2);
-    app.run('@save-file', page.name);
-    return old_block;
-  } else {
-    const new_block = create_block(CREATE_SPAN + part2);
+  } else { // create new block
+    new_block = create_block(CREATE_SPAN + part2, page.name);
     new_block.page = page.name;
     update_block(old_block, part1);
-    if (children && children.length) {
+    if (children && children.length) { // as child
       parent.children[pos].children.unshift({ id: new_block.id });
-    } else {
+    } else { // as sibling
       parent.children.splice(pos + 1, 0, { id: new_block.id });
     }
-    app.run('@save-file', page.name);
-    return new_block;
   }
+
+  app.run('@save-file', page.name);
+  return new_block.id;
 }
 
 export const merge_block = (id1: string, id2: string): string => {
@@ -313,7 +324,7 @@ export const merge_block = (id1: string, id2: string): string => {
   }
   const block1 = find_block(id1);
   const block2 = find_block(id2);
-  const html = block1.content + CREATE_SPAN + block2.content;
+  const html = remove_caret_span(block1.content) + CREATE_SPAN + remove_caret_span(block2.content);
   delete_block(id2);
   update_block(block1, html);
   return html;
