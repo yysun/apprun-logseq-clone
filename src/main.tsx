@@ -1,4 +1,5 @@
 import app from 'apprun';
+import { setLogLevel, LogLevel } from './logger';
 import shortcuts from './shortcuts';
 import plugins from './plugins';
 import store from './store';
@@ -10,6 +11,8 @@ import Journals from './ui/journals';
 import Block from './ui/block';
 import Pages from './ui/pages';
 import Page from './ui/page';
+
+setLogLevel(LogLevel.Warn);
 
 app['no-init-route'] = true;
 app.render(document.getElementById('root'), <Layout />);

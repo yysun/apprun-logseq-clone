@@ -1,6 +1,6 @@
 import app from 'apprun';
 
-enum LogLevel {
+export enum LogLevel {
   Debug = 0,
   Info,
   Warn,
@@ -10,6 +10,7 @@ enum LogLevel {
 let logLevel: LogLevel = localStorage.getItem('logLevel') ?
   parseInt(localStorage.getItem('logLevel')) :
   LogLevel.Info;
+  
 export const setLogLevel = (level: LogLevel) => {
   logLevel = level;
   localStorage.setItem('logLevel', level.toString());
