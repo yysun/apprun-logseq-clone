@@ -68,7 +68,7 @@ export default function Page({ page: blockIndex, editable, includePageName }) {
       <div class="block-bullet flex items-center w-7">
         <div class={`bullet-arrow ${list ? 'arrow-down has-child' : 'arrow-right'}`} onclick={toggle_block_list}>
         </div>
-        <a href={`#block/${block.id}`}>
+        <a href={`#block/${block.id}`} data-is-block="true">
           <div class={`bullet ${list ? 'bg-gray-300' : 'bg-gray-100'}`}></div>
         </a>
       </div>

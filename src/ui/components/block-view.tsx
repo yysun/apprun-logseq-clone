@@ -5,7 +5,7 @@ function BlockTrail({ blocks }) {
 
   return <div class="breadcrum flex pb-4">
     {blocks.map((p, i) => <div class="flex">
-      <a href={`#block/${p.id}`}>{p.content.substring(p.content.lastIndexOf('/') + 1)}</a>
+      <a href={`#block/${p.id}`} data-is-block="true">{p.content.substring(p.content.lastIndexOf('/') + 1)}</a>
       {i !== blocks.length - 1 ? <div class="breadcrum-arrow mx-2 mt-2"></div> : ''}
     </div>
     )}

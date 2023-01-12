@@ -39,11 +39,13 @@ app.on('@show-right-panel', () => {
 
 window.addEventListener('click', e => {
   const target = e.target as HTMLAnchorElement
-  if (target.tagName === 'A' && target.href.startsWith('http')) {
-    // e.preventDefault();
-  } else if (target.tagName === 'A' && target.dataset.isPage) {
-    const hash = target.href.substring(target.href.indexOf('#'));
-    location.hash = hash;
+  if (target.tagName === 'A') {
+    if (target.href.startsWith('http')) {
+      // e.preventDefault();
+    } else if (target.dataset.isPage || target.dataset.isBlock) {
+      const hash = target.href.substring(target.href.indexOf('#'));
+      location.hash = hash;
+    }
   }
 });
 
