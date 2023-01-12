@@ -15,7 +15,7 @@ const handle_enter_key = (e, id, element) => {
 
 const handle_backspace_key = (e, id, element) => {
   const [c1, c2] = split_element(element);
-  const text1 = to_markdown(c1, false); //no span
+  const text1 = to_markdown(c1);
   const index = find_block_index(id);
   if (text1 || !index) return;
   e.preventDefault();

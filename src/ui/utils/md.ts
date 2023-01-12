@@ -10,7 +10,7 @@ export const to_html = content => {
   return content;
 }
 
-export const to_markdown = (html, keepCaret = true) => {
+export const to_markdown = (html) => {
   const td = new turndown({
     headingStyle: 'atx',
     bulletListMarker: '-',
@@ -18,7 +18,7 @@ export const to_markdown = (html, keepCaret = true) => {
     fence: '```',
 
     blankReplacement(content, node) {
-      if (keepCaret && node.tagName === 'SPAN' && node.id === '__caret') {
+      if (node.tagName === 'SPAN' && node.id === '__caret') {
         return '<span id="__caret"></span> ';
       }
       return content;
