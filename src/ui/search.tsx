@@ -45,7 +45,9 @@ export default class extends Component {
           $oninput='search' />
       </div>
       <ul class="search-results-blocks">
-        <Editor pages={()=>hits.map(hit => <Hit hit={hit} />)} />
+        <Editor>
+          {() => hits.map(hit => <Hit hit={hit} />)}
+        </Editor>
       </ul>
     </div>
   };

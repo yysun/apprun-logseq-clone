@@ -11,12 +11,13 @@ export default class extends Component {
   view = name => {
     const page = find_page(name);
     const block = find_block(page.id);
-    const page_view = () => <Page page={page} editable={true} includePageName={false} />
     return <div class="main-page px-3">
       <div contenteditable="true" $onkeydown={'change_page_name'} $onfocusout={'change_page_name'}>
         <h1 class="py-4">{block.content}</h1>
       </div>
-      <Editor pages={page_view} />
+      <Editor>
+        {() => <Page page={page} editable={true} includePageName={false} />}
+      </Editor>
     </div>;
   }
 

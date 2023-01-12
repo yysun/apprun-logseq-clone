@@ -10,11 +10,10 @@ const set_caret = (el) => {
 
 export default class extends Component {
   editor;
-  view = ({ pages }) => {
-    const children = pages && pages();
+  view = ({ children }) => {
     return <div class="editor" contenteditable="true"
       $onkeydown={editor_keydown} $onkeyup={editor_keyup}>
-      {children}
+      {children[0]()}
     </div>;
   }
 
@@ -33,5 +32,4 @@ export default class extends Component {
     !state.source && set_caret(this.editor);
   }
 
-  mounted = props => props;
 }

@@ -17,7 +17,7 @@ export default class extends Component {
       <div class="main-page px-3">
         <h1 class="pb-4">Journals ({total})</h1>
         <div class="page-list" >
-          <Editor pages={pages} />
+          <Editor>{pages}</Editor>
         </div>
       </div> : <div>No journals found</div>;
   }

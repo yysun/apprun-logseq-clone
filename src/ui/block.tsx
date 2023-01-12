@@ -10,7 +10,9 @@ export default class extends Component {
     const blocks = find_block_path(block_id);
     return <div class="main-page px-3">
       <div class="block-view" >
-        <Editor pages={()=><Block blocks={blocks} editable={true} />} />
+        <Editor>
+          {() => <Block blocks={blocks} editable={true} />}
+        </Editor>
       </div>
     </div>;
   }
