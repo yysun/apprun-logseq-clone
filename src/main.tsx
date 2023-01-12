@@ -12,7 +12,7 @@ import Block from './ui/block';
 import Pages from './ui/pages';
 import Page from './ui/page';
 
-setLogLevel(LogLevel.Warn);
+setLogLevel(LogLevel.Info);
 
 app['no-init-route'] = true;
 app.render(document.getElementById('root'), <Layout />);
