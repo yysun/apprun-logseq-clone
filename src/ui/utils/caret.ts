@@ -6,9 +6,10 @@ const get_range = () => {
 export const save_caret = (element) => {
   const range = get_range();
   if (!range) return;
-  const anchor = document.createElement('span');
+  let anchor = element.querySelector('#__caret');
+  if (anchor) anchor.remove();
+  anchor = document.createElement('span');
   anchor.id = '__caret';
-  anchor.innerText = '.';
   range.insertNode(anchor);
   return element.innerHTML
 }

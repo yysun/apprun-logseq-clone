@@ -31,7 +31,7 @@ export type Data = {
 }
 //#endregion
 
-const CREATE_SPAN = '<span id="__caret">.</span>';
+const CREATE_SPAN = '<span id="__caret"></span>';
 export const data: Data = {
   blocks: [],
   pages: []

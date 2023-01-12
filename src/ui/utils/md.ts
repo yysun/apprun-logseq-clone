@@ -10,14 +10,21 @@ export const to_html = content => {
   return content;
 }
 
-export const to_markdown = (html, keepSpan=true) => {
-  html = html.replace()
+export const to_markdown = (html, keepCaret = true) => {
   const td = new turndown({
     headingStyle: 'atx',
     bulletListMarker: '-',
     codeBlockStyle: 'fenced',
     fence: '```',
+
+    blankReplacement(content, node) {
+      if (keepCaret && node.tagName === 'SPAN' && node.id === '__caret') {
+        return '<span id="__caret"></span> ';
+      }
+      return content;
+    },
   });
+
   td.addRule('wiki_link', {
     filter: 'a',
     replacement: (content, node) => {
@@ -28,7 +35,7 @@ export const to_markdown = (html, keepSpan=true) => {
       return content;
     }
   });
-  keepSpan && td.keep(['span']);
+
   const md = td.turndown(html);
   return md;
 }
