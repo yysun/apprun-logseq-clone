@@ -9,8 +9,9 @@ export default class extends Component {
   }
   rendered = () => {
     if (hasAccess) {
-      history.pushState({}, '', '#journals');
-      app.run('#journals');
+      const hash = location.hash || '#journals';
+      history.pushState({}, '', hash);
+      app.route(hash);
     }
   }
 }

@@ -24,8 +24,8 @@ search();
 
 new Pages().mount('my-app');
 new Journals().mount('my-app');
-new Home().start('my-app');
 new Block().mount('my-app');
 new Page().mount('my-app');
 new SearchResults().mount('right-panel-main');
+new Home().start('my-app');
 

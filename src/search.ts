@@ -27,7 +27,9 @@ export const search = query => {
   // const fuse = new Fuse(data?.blocks || [], options);
   // return fuse.search(query);
   const results = !query ? [] :
-    data?.blocks?.filter(b => b.content?.toLowerCase().includes(query.toLowerCase()))
+    data?.blocks?.filter(b =>
+      b.type !== 'page' &&
+      b.content?.toLowerCase().includes(query.toLowerCase()))
       .map(b => b.id);
   return results;
 }
