@@ -18,21 +18,14 @@ export const to_markdown = (html) => {
     fence: '```',
 
     blankReplacement(content, node) {
-      if (node.tagName === 'SPAN' && node.id === '__caret') {
-        return '<span id="__caret"></span> ';
-      }
-      return content;
+      return (node.tagName === 'SPAN' && node.id === '__caret') ? '<span id="__caret"></span>' : content;
     },
   });
 
   td.addRule('wiki_link', {
     filter: 'a',
     replacement: (content, node) => {
-      const href = node.getAttribute('href');
-      if (href.startsWith('#page/')) {
-        return `[[${href.slice(6)}]]`;
-      }
-      return content;
+      return node.dataset.isPage && node.textContent ? `[[${node.textContent}]]` : content
     }
   });
 
