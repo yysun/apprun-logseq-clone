@@ -88,10 +88,9 @@ const refresh = (e) => {
 
 export const editor_keyup = (_, e) => {
   const { key, metaKey, ctrlKey, shiftKey, altKey } = e;
-  if (metaKey || ctrlKey || shiftKey || altKey ||
-    key === 'Tab' || key === 'Enter' || key === 'Escape' || key === 'Tab' ||
+  if (key === 'Tab' || key === 'Enter' || key === 'Escape' || key === 'Tab' ||
     key === 'Alt' || key === 'Control' || key === 'Meta' || key === 'Shift' ||
-    key.startsWith('F') || key.startsWith('Arrow')) return;
+    key === 'CapsLock' || key.startsWith('F') || key.startsWith('Arrow')) return;
 
   const element = get_element();
   if (!element) return;
