@@ -241,6 +241,7 @@ export const find_block_index = (block: BlockId): BlockIndex => {
 export const find_block_path = (id: BlockId): (Block & Index)[] => {
   const block_id = get_block_id(id);
   const page_index = find_page_index(block_id);
+  if (!page_index) return null;
   const block = find_block(block_id);
   if (block_id === page_index.id) {
     return [{ ...block, ...page_index }];

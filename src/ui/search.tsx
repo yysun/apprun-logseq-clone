@@ -56,7 +56,7 @@ export default class extends Component {
     }),
 
     '@search-results': (state, hits, query) => {
-      app.run('@show-right-panel')
+      app.run('@show-right-panel');
       if (!query) return state;
       return ({ ...state, hits, query })
     },
