@@ -27,7 +27,8 @@ app.on('dir-processed', dir =>
 
 const open_new_dir = async () => {
   await select_dir();
-  location.hash = "#journals";
+  if (location.hash === "#journals") location.reload();
+  else location.hash = "#journals";
 }
 
 export default () => <>
