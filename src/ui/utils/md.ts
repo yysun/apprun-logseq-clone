@@ -18,14 +18,15 @@ export const to_markdown = (html) => {
     fence: '```',
 
     blankReplacement(content, node) {
-      return (node.tagName === 'SPAN' && node.id === '__caret') ? '<span id="__caret"></span>' : content;
+      return (node.tagName === 'SPAN' && node.id === '__caret') ? '<span id="__caret"></span> ' : content;
     },
   });
 
   td.addRule('wiki_link', {
     filter: 'a',
     replacement: (content, node) => {
-      return node.dataset.isPage && node.textContent ? `[[${node.textContent}]]` : content
+      const isPage = node.getAttribute('data-is-page');
+      return isPage && node.textContent ? `[[${node.textContent}]]` : content
     }
   });
 

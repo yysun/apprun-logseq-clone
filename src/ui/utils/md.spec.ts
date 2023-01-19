@@ -19,19 +19,19 @@ test('to_markdown with caret span 2', () => {
 });
 
 test('to_markdown without caret span', () => {
-  const html = '<p>hello <span id="__caret"></span> world</p>';
-  const md = to_markdown(html, false);
+  const html = '<p>hello <span id="__xcaret"></span> world</p>';
+  const md = to_markdown(html);
   expect(md).toBe('hello world');
 });
 
 test('to_markdown without caret span 2', () => {
-  const html = '<p>hello <span id="__caret"></span> <span style="color:red">world</span></p>';
-  const md = to_markdown(html, false);
+  const html = '<p>hello <span id="__xcaret"></span> <span style="color:red">world</span></p>';
+  const md = to_markdown(html);
   expect(md).toBe('hello world');
 });
 
 test('to_markdown with wiki links', () => {
-  const html = '<p>hello <a href="#page/abc">abc</a> world</p>';
+  const html = '<p>hello <a href="#page/abc" data-is-page="true">abc</a> world</p>';
   const md = to_markdown(html);
   expect(md).toBe('hello [[abc]] world');
 
@@ -43,4 +43,11 @@ test('to_markdown with wiki links', () => {
 //   const html = '<p>2022_12_07</p>';
 //   const md = to_markdown(html);
 //   expect(md).toBe('2022_12_07');
+// });
+
+
+// test('handle code block', () => {
+//   const html ='<p>```<br>code block test<br>```</p>';
+//   const md = to_markdown(html);
+//   expect(md).toBe('```\ncode block test\n```');
 // });
