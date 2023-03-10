@@ -21,7 +21,7 @@
     "@floating-ui/dom": "^1.1.0",
     "@types/jest": "^29.2.6",
     "apprun": "^3.30.2",
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.14",
     "date-fns": "^2.29.3",
     "electron": "^22.0.3",
     "fuse.js": "^6.6.2",
