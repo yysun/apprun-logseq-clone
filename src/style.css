@@ -1,6 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Custom theme extensions can be added here if needed */
+}
 
 @layer components {}
 
@@ -13,12 +15,15 @@ pre code {
   --ana-link-color: #045591;
   --ana-block-dragover-color: #aaaaaa;
 }
+
 h1 {
   @apply text-2xl;
 }
+
 h2 {
   @apply text-xl;
 }
+
 h3 {
   @apply text-lg;
 }
