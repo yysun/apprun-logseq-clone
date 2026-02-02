@@ -1,3 +1,22 @@
+/**
+ * Calendar Component for Journals
+ * 
+ * Features:
+ * - Monthly calendar view
+ * - Navigate between months with previous/next buttons
+ * - Highlights days with journal entries
+ * - Shows current day
+ * - Displays previous/next month days for context
+ * 
+ * State:
+ * - Hidden by default (collapsed)
+ * - Visibility controlled by parent sidebar component
+ * - State persisted via localStorage in sidebar
+ * 
+ * Changes:
+ * - 2026-02-01: Set default state to hidden (collapsed)
+ */
+
 import { app, Component } from 'apprun';
 import { data } from '../../store';
 
@@ -58,7 +77,7 @@ export default class extends Component {
       return cls;
     };
 
-    return <div class="calendar">
+    return <div class="calendar hidden">
       <div class="w-full px-1 flex">
         <button $onclick='-1'>&lt;&lt;</button>
         <div class="flex-1 text-center">{months[date.getMonth()]}, {date.getFullYear()}</div>
