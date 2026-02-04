@@ -5,6 +5,14 @@
  * 
  * https://www.electronjs.org/docs/latest/tutorial/sandbox
  */
+
+const { contextBridge } = require('electron');
+
+// Expose Electron flag to the renderer via contextBridge
+contextBridge.exposeInMainWorld('electronAPI', {
+  isElectron: true
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector)

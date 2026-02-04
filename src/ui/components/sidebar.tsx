@@ -4,7 +4,7 @@
  * Features:
  * - Database selector with dropdown menu for switching workspaces
  * - Journals menu with collapsible calendar
- * - Pages menu for accessing all pages
+ * - Pages menu with collapsible pages list
  * 
  * Journals Calendar:
  * - Collapsed by default
@@ -13,16 +13,27 @@
  * - Caret rotates -90deg when collapsed, 0deg when expanded
  * - Smooth CSS transition on caret rotation
  * 
+ * Pages List:
+ * - Collapsed by default
+ * - State persisted to localStorage (key: 'pages-collapsed')
+ * - Click caret icon to toggle collapse/expand
+ * - Click icon or label to navigate to #pages view
+ * - Shows list of all pages from pages/ directory
+ * - Caret rotates -90deg when collapsed, 0deg when expanded
+ * 
  * Changes:
  * - 2026-02-01: Added Pages menu item with file-text icon
  * - 2026-02-01: Implemented collapsible Journals calendar with persistent state
+ * - 2026-02-01: Implemented collapsible Pages list with persistent state
  */
 
 import app from 'apprun';
 import { select_dir } from '../../store'
 import Calender from './calander';
+import PagesList from './pages-list';
 
 const JOURNALS_COLLAPSED_KEY = 'journals-collapsed';
+const PAGES_COLLAPSED_KEY = 'pages-collapsed';
 
 let menu;
 const toggle_popup = e => {
@@ -56,6 +67,24 @@ const toggle_calendar = e => {
   }
 }
 
+const toggle_pages_list = e => {
+  e.preventDefault();
+  const pagesList = document.querySelector('.pages-list');
+  const isHidden = pagesList.classList.toggle('hidden');
+  // Persist state to localStorage
+  localStorage.setItem(PAGES_COLLAPSED_KEY, isHidden ? 'true' : 'false');
+
+  // Rotate the caret icon
+  const caret = e.target.closest('span').querySelector('svg') || e.target.closest('svg');
+  if (caret) {
+    if (isHidden) {
+      (caret as HTMLElement).style.transform = 'rotate(-90deg)';
+    } else {
+      (caret as HTMLElement).style.transform = 'rotate(0deg)';
+    }
+  }
+}
+
 // Initialize calendar state from localStorage
 const initCalendarState = () => {
   const isCollapsed = localStorage.getItem(JOURNALS_COLLAPSED_KEY) !== 'false';
@@ -73,8 +102,26 @@ const initCalendarState = () => {
   }
 }
 
+// Initialize pages list state from localStorage
+const initPagesListState = () => {
+  const isCollapsed = localStorage.getItem(PAGES_COLLAPSED_KEY) !== 'false';
+  const pagesList = document.querySelector('.pages-list');
+  const caret = document.querySelector('.pages-caret') as HTMLElement;
+
+  if (pagesList) {
+    if (isCollapsed) {
+      pagesList.classList.add('hidden');
+      if (caret) caret.style.transform = 'rotate(-90deg)';
+    } else {
+      pagesList.classList.remove('hidden');
+      if (caret) caret.style.transform = 'rotate(0deg)';
+    }
+  }
+}
+
 // Initialize on mount
 setTimeout(initCalendarState, 100);
+setTimeout(initPagesListState, 100);
 
 app.on('dir-processed', dir =>
   document.getElementById('current-dir-name').innerText = dir);
@@ -140,8 +187,8 @@ export default () => <>
       </li>
       <Calender />
       <li class="h-9">
-        <a class="flex items-center text-sm" href="#pages">
-          <span>
+        <a class="flex items-center text-sm cursor-pointer">
+          <span onclick="location.hash='#pages'">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -151,9 +198,16 @@ export default () => <>
               <line x1="9" y1="17" x2="15" y2="17"></line>
             </svg>
           </span>
-          <span class="ml-2 flex-1">Pages</span>
+          <span class="ml-2 flex-1" onclick="location.hash='#pages'">Pages</span>
+          <span class="" onclick={toggle_pages_list}>
+            <svg class="pages-caret icon icon-tabler icon-tabler-caret-down" style="transition: transform 0.2s ease;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M6 10l6 6l6 -6h-12"></path>
+            </svg>
+          </span>
         </a>
       </li>
+      <PagesList />
     </ul>
   </nav>
 </>

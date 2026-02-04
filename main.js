@@ -5,14 +5,14 @@ const path = require('path')
 function createWindow() {
 
   app.commandLine.appendSwitch("enable-experimental-web-platform-features");
-  
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     frame: true,
-    // titleBarStyle: 'hiddenInset',
-    // trafficLightPosition: {x: 16, y: 16},
+    titleBarStyle: 'hiddenInset',
+    trafficLightPosition: { x: 16, y: 16 },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
 

@@ -265,8 +265,15 @@ pre {
   border-radius: 50%;
 }
 
+.title-bar {
+  -webkit-app-region: drag;
+}
+
 .toolbar-button {
-  margin: auto 0.25rem;
+  -webkit-app-region: no-drag;
+  margin-top: 10px;
+  margin-bottom: auto;
+  margin-right: 0.25rem;
   padding: 4px;
   cursor: pointer;
   border-radius: 50%;
@@ -274,6 +281,11 @@ pre {
 
 .toolbar-button:hover {
   @apply bg-gray-100;
+}
+
+.app-title {
+  -webkit-app-region: drag;
+  user-select: none;
 }
 
 .right-panel-toolbar-button {

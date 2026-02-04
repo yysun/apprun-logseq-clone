@@ -6,6 +6,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "jest",
+    "prestart": "npm run build",
     "start": "electron .",
     "build": "vite build --sourcemap --minify",
     "watch": "vite build --sourcemap --watch",
