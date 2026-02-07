@@ -128,8 +128,8 @@ app.on('dir-processed', dir =>
 
 const open_new_dir = async () => {
   await select_dir();
-  if (location.hash === "#journals") location.reload();
-  else location.hash = "#journals";
+  if (location.pathname === "/journals") location.reload();
+  else location.href = "/journals";
 }
 
 export default () => <>
@@ -171,7 +171,7 @@ export default () => <>
         </ul>
       </li>
       <li class="h-9">
-        <a class="flex items-center text-sm" href="#journals">
+        <a class="flex items-center text-sm" href="/journals">
           <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><rect x="4" y="5" width="16" height="16" rx="2"></rect><line x1="16" y1="3" x2="16" y2="7"></line><line x1="8" y1="3" x2="8" y2="7"></line><line x1="4" y1="11" x2="20" y2="11"></line><line x1="11" y1="15" x2="12" y2="15"></line><line x1="12" y1="15" x2="12" y2="18"></line>
             </svg>
@@ -188,7 +188,7 @@ export default () => <>
       <Calender />
       <li class="h-9">
         <a class="flex items-center text-sm cursor-pointer">
-          <span onclick="location.hash='#pages'">
+          <span onclick="location.href='/pages'">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -198,7 +198,7 @@ export default () => <>
               <line x1="9" y1="17" x2="15" y2="17"></line>
             </svg>
           </span>
-          <span class="ml-2 flex-1" onclick="location.hash='#pages'">Pages</span>
+          <span class="ml-2 flex-1" onclick="location.href='/pages'">Pages</span>
           <span class="" onclick={toggle_pages_list}>
             <svg class="pages-caret icon icon-tabler icon-tabler-caret-down" style="transition: transform 0.2s ease;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

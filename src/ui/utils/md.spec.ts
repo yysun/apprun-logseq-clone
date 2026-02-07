@@ -3,7 +3,7 @@ import { to_html, to_markdown } from './md';
 test('to_html with wiki link', () => {
   const md = 'hello [[abc]] world';
   const html = to_html(md);
-  expect(html).toBe('<p>hello <a href="#page/pages/abc" data-is-page="true">abc</a> world</p>\n');
+  expect(html).toBe('<p>hello <a href="/page/pages/abc" data-is-page="true">abc</a> world</p>\n');
 });
 
 test('to_markdown with caret span', () => {
@@ -31,7 +31,7 @@ test('to_markdown without caret span 2', () => {
 });
 
 test('to_markdown with wiki links', () => {
-  const html = '<p>hello <a href="#page/abc" data-is-page="true">abc</a> world</p>';
+  const html = '<p>hello <a href="/page/abc" data-is-page="true">abc</a> world</p>';
   const md = to_markdown(html);
   expect(md).toBe('hello [[abc]] world');
 

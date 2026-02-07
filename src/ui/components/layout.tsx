@@ -41,10 +41,10 @@ window.addEventListener('click', e => {
   const target = e.target as HTMLAnchorElement
   if (target.tagName === 'A') {
     if (target.href.startsWith('http')) {
-      // e.preventDefault();
+      // external links - allow default behavior
     } else if (target.dataset.isPage || target.dataset.isBlock) {
-      const hash = target.href.substring(target.href.indexOf('#'));
-      location.hash = hash;
+      const url = new URL(target.href);
+      window.location.href = url.pathname;
     }
   }
 });

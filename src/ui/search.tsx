@@ -45,7 +45,7 @@ export default class extends Component {
           $oninput='search' />
       </div>
       <ul class="search-results-blocks">
-        <Editor pages={()=>hits.map(hit => <Hit hit={hit} />)} />
+        <Editor pages={() => hits.map(hit => <Hit hit={hit} />)} />
       </ul>
     </div>
   };
@@ -63,7 +63,7 @@ export default class extends Component {
 
     'add-new-page': () => {
       const input = document.getElementById('txtSearch') as HTMLInputElement;
-      input.value && app.run('#page', 'pages', input.value);
+      input.value && app.run('/page', 'pages', input.value);
     }
 
   }

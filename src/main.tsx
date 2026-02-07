@@ -14,18 +14,23 @@ import Page from './ui/page';
 
 setLogLevel(LogLevel.Info);
 
-app['no-init-route'] = true;
-app.render(document.getElementById('root'), <Layout />);
-
 shortcuts();
 await plugins();
 await store();
 search();
 
-new Pages().mount('my-app');
-new Journals().mount('my-app');
-new Page().mount('my-app');
+app.render(document.getElementById('root'), <Layout />);
+
+// Register routes using pretty URLs (no hash navigation)
+app.addComponents('my-app', {
+  '/': Home,
+  '/journals': Journals,
+  '/pages': Pages,
+  '/page': Page
+});
+
+// Register right panel components
 new Block().mount('right-panel-main');
 new SearchResults().mount('right-panel-main');
-new Home().start('my-app');
+
 

@@ -6,7 +6,7 @@ const wiki_link = /\#?\[\[([^\]|]+)(\|[^\]]+)?\]\]/g;
 
 export const to_html = content => {
   content = md.render(content)
-  content = content.replace(wiki_link, (match, p1) => `<a href="#page/pages/${p1}" data-is-page="true">${p1}</a>`);
+  content = content.replace(wiki_link, (match, p1) => `<a href="/page/pages/${p1}" data-is-page="true">${p1}</a>`);
   return content;
 }
 

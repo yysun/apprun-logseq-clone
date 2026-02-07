@@ -23,13 +23,13 @@ export default class extends Component {
   }
 
   update = {
-    '#journals': () => {
+    '/journals': () => {
       let pages = data.pages?.filter(p => p.name.startsWith('journals/')) || [];
       const today = format(new Date(), 'yyyy_MM_dd');
       if (!pages.some(p => p.name === `journals/${today}`)) {
         add_page(`journals/${today}`, '- ', Date.now());
       }
-      if (location.hash.startsWith('#journals')) return data;
+      if (location.pathname.startsWith('/journals')) return data;
     }
   }
 

@@ -21,7 +21,7 @@ export default class extends Component {
   }
 
   update = {
-    '#page': (state, path, name) => {
+    '/page': (state, path, name) => {
       name = sanitize(decodeURI(name));
       app.run('@search', name);
       name = path + '/' + name;

@@ -17,10 +17,10 @@ export default class extends Component {
   }
 
   update = {
-    '#block': (state, block_id) => {
+    '/block': (state, block_id) => {
       app.run('@show-right-panel');
       return block_id;
-      // if (location.hash.startsWith('#block')) return block_id || state;
+      // if (location.pathname.startsWith('/block')) return block_id || state;
     }
   }
 }
