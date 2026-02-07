@@ -5,7 +5,7 @@ import Editor from './components/editor';
 import Page from './components/page-view';
 
 export default class extends Component {
-
+  is_global_event = () => true;
   state = data;
   view = (data) => {
     const pages = () => data.pages?.filter(p => p.name.startsWith('journals/'))
@@ -29,6 +29,9 @@ export default class extends Component {
       if (!pages.some(p => p.name === `journals/${today}`)) {
         add_page(`journals/${today}`, '- ', Date.now());
       }
+      if (location.pathname.startsWith('/journals')) return data;
+    },
+    'dir-processed': () => {
       if (location.pathname.startsWith('/journals')) return data;
     }
   }

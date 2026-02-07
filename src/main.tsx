@@ -14,14 +14,9 @@ import Page from './ui/page';
 
 setLogLevel(LogLevel.Info);
 
-shortcuts();
-await plugins();
-await store();
-search();
+
 
 app.render(document.getElementById('root'), <Layout />);
-
-// Register routes using pretty URLs (no hash navigation)
 app.addComponents('my-app', {
   '/': Home,
   '/journals': Journals,
@@ -33,4 +28,7 @@ app.addComponents('my-app', {
 new Block().mount('right-panel-main');
 new SearchResults().mount('right-panel-main');
 
-
+shortcuts();
+await plugins();
+await store();
+search();

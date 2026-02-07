@@ -5,6 +5,7 @@ export default class extends Component {
 
   state = data;
 
+  is_global_event = () => true;
   view = ({ pages }) => {
     pages = data.pages?.filter(p => p.name.startsWith('pages/')) || [];
     pages = pages.sort((a, b) => b.name.localeCompare(a.name));
@@ -24,7 +25,10 @@ export default class extends Component {
   }
 
   update = {
-    '/pages': () => data
+    '/pages': () => data,
+    'dir-processed': () => {
+      if (location.pathname.startsWith('/pages')) return data;
+    }
   }
 
 }

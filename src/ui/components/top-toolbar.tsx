@@ -42,7 +42,6 @@ console.log('isElectron:', isElectron);
 
 export default () => {
   const buttonMargin = isElectron ? 'ml-20' : 'ml-2';
-  console.log('Button margin:', buttonMargin);
 
   return <div class='flex h-full items-center px-3 title-bar'>
     <a class={`toolbar-button ${buttonMargin}`} onclick={toggleSidebar} title="close sidebar" ref={el => { sidebarButton = el; updateSidebarIcon(true); }}>
