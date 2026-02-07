@@ -1,3 +1,13 @@
+/**
+ * Features:
+ * - Renders journal pages sorted by date and shows a total count.
+ * - Ensures today's journal page exists when visiting the journals route.
+ * Implementation notes:
+ * - Uses the shared `Editor` wrapper for editable outline behavior.
+ * - List content is produced by a page-rendering function.
+ * Recent changes:
+ * - Switched `Editor` usage from `pages` prop to JSX children function (`<Editor>{pages}</Editor>`).
+ */
 import { app, Component } from 'apprun';
 import { format } from 'date-fns';
 import { data, add_page } from '../model';
@@ -17,7 +27,7 @@ export default class extends Component {
       <div class="main-page px-3">
         <h1 class="pb-4">Journals ({total})</h1>
         <div class="page-list" >
-          <Editor pages={pages} />
+          <Editor>{pages}</Editor>
         </div>
       </div> : <div>No journals found</div>;
   }

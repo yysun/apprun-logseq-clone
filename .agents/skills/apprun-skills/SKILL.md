@@ -419,6 +419,45 @@ export default class Modal extends Component<State> {
 
 **Requirements:** Close button + backdrop click + stopPropagation
 
+## JSX Children Renderer Pattern
+
+Use this when a JSX-embedded class component should accept content as children, for example:
+`<Editor>{pages}</Editor>` where `pages` is a render function.
+
+```typescript
+type EditorProps = {
+  pages?: () => any; // optional backward-compatible prop API
+  children?: any;    // from JSX children
+};
+
+type EditorState = EditorProps & {
+  source?: HTMLElement | null;
+};
+
+export default class Editor extends Component<EditorState> {
+  // Required for AppRun JSX attribute typing to avoid TS2607
+  declare props: Readonly<EditorProps>;
+
+  mounted = (props: EditorProps = {}, children: any[] = []): EditorState => {
+    const safeProps = props || {};
+    const normalizedChildren = children.length === 1 ? children[0] : children;
+    const pages = safeProps.pages ?? (typeof normalizedChildren === 'function' ? normalizedChildren : undefined);
+    const content = pages ? undefined : normalizedChildren;
+    return { ...safeProps, pages, children: content };
+  };
+
+  view = ({ pages, children }: EditorState) => {
+    const content = pages ? pages() : children;
+
+    return <div class="editor">{content}</div>;
+  };
+}
+```
+
+**Notes:**
+- Keep backward compatibility by supporting both `<Editor pages={pages} />` and `<Editor>{pages}</Editor>`.
+- In AppRun class components rendered via JSX, include `declare props` so attributes are type-safe.
+
 ## Functional Component
 
 ```typescript
@@ -600,6 +639,7 @@ class Modal extends Component {
 | Top-Level Routed | `state = async` | `state = async () => { const data = await api.fetch(); return { data }; }` |
 
 **❌ NEVER mix both** `mounted()` and `state = async`
+**TypeScript rule:** for class components used as JSX tags, add `declare props: Readonly<Props>;` to avoid TS2607.
 
 ### State Updates
 
@@ -1024,6 +1064,7 @@ describe('save', () => {
 - [ ] Helper functions
 - [ ] Action functions (exported for `$onclick` and testing)
 - [ ] Component class with `mounted` or `state = async`
+- [ ] JSX class components declare `props` for TS compatibility
 
 ### TypeScript Types
 - [ ] Props interface
@@ -1042,6 +1083,7 @@ describe('save', () => {
 - [ ] Include `loading`, `error`, `successMessage?`
 - [ ] Return new state to re-render
 - [ ] Use `mounted()` for JSX embedded
+- [ ] If using JSX children content, merge children in `mounted(props, children)`
 - [ ] Use `state = async` only for routed pages
 - [ ] Never mix both
 

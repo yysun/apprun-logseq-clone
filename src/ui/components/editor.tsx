@@ -1,13 +1,16 @@
 /**
  * Features:
  * - Renders a contenteditable editor wrapper for page/block outline content.
+ * - Accepts content renderer via `pages` prop or JSX children function.
  * - Wires keyboard handlers and restores caret position after re-render.
  * Implementation notes:
- * - State is initialized from mounted JSX props and can carry a refresh source marker.
+ * - State is initialized from mounted JSX props/children and can carry a refresh source marker.
+ * - Children normalization is done in `mounted` so `view` only consumes normalized state.
  * - Keeps a local editor element reference to avoid cross-editor caret resets.
  * Recent changes:
- * - Added explicit props/state typing and a `props` field for AppRun JSX compatibility.
- * - This fixes TS2607 on usages like `<Editor pages={...} />`.
+ * - Moved child array/function normalization from `view` into `mounted`.
+ * - Kept backward compatibility for both `<Editor pages={pages} />` and `<Editor>{pages}</Editor>`.
+ * - Hardened `mounted` to handle null/undefined props from JSX component mount calls.
  */
 import { app, Component } from 'apprun';
 import { editor_keydown, editor_keyup } from '../utils/keyboard-events';
@@ -16,6 +19,7 @@ import { restore_caret } from '../utils/caret';
 
 type EditorProps = {
   pages?: () => any;
+  children?: any;
 };
 
 type EditorState = EditorProps & {
@@ -32,11 +36,11 @@ export default class extends Component<EditorState> {
   props: EditorProps;
   editor: HTMLElement | null = null;
 
-  view = ({ pages }: EditorState) => {
-    const children = pages && pages();
+  view = ({ pages, children }: EditorState) => {
+    const content = pages ? pages() : children;
     return <div class="editor" contenteditable="true"
       $onkeydown={editor_keydown} $onkeyup={editor_keyup}>
-      {children}
+      {content}
     </div>;
   }
 
@@ -58,5 +62,11 @@ export default class extends Component<EditorState> {
     !state.source && set_caret(this.editor);
   }
 
-  mounted = (props: EditorProps) => props;
+  mounted = (props: EditorProps = {}, children: any[] = []): EditorState => {
+    const safeProps = props || {};
+    const normalizedChildren = children.length === 1 ? children[0] : children;
+    const pages = safeProps.pages ?? (typeof normalizedChildren === 'function' ? normalizedChildren : undefined);
+    const content = pages ? undefined : normalizedChildren;
+    return { ...safeProps, pages, children: content };
+  };
 }
