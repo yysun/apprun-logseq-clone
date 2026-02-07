@@ -1,27 +1,32 @@
 /**
  * Sidebar Navigation Component
- * 
+ *
  * Features:
  * - Database selector with dropdown menu for switching workspaces
  * - Journals menu with collapsible calendar
  * - Pages menu with collapsible pages list
- * 
+ *
+ * Implementation notes:
+ * - Journals and Pages navigation use anchor href routes for AppRun route events.
+ * - Caret clicks call toggle handlers that prevent default navigation.
+ *
  * Journals Calendar:
  * - Collapsed by default
  * - State persisted to localStorage (key: 'journals-collapsed')
  * - Click caret icon to toggle collapse/expand
  * - Caret rotates -90deg when collapsed, 0deg when expanded
  * - Smooth CSS transition on caret rotation
- * 
+ *
  * Pages List:
  * - Collapsed by default
  * - State persisted to localStorage (key: 'pages-collapsed')
  * - Click caret icon to toggle collapse/expand
- * - Click icon or label to navigate to #pages view
+ * - Click icon or label to navigate to /pages
  * - Shows list of all pages from pages/ directory
  * - Caret rotates -90deg when collapsed, 0deg when expanded
- * 
- * Changes:
+ *
+ * Recent changes:
+ * - 2026-02-07: Switched Pages navigation to anchor href '/pages' in sidebar.
  * - 2026-02-01: Added Pages menu item with file-text icon
  * - 2026-02-01: Implemented collapsible Journals calendar with persistent state
  * - 2026-02-01: Implemented collapsible Pages list with persistent state
@@ -187,8 +192,8 @@ export default () => <>
       </li>
       <Calender />
       <li class="h-9">
-        <a class="flex items-center text-sm cursor-pointer">
-          <span onclick="location.href='/pages'">
+        <a class="flex items-center text-sm" href="/pages">
+          <span>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -198,7 +203,7 @@ export default () => <>
               <line x1="9" y1="17" x2="15" y2="17"></line>
             </svg>
           </span>
-          <span class="ml-2 flex-1" onclick="location.href='/pages'">Pages</span>
+          <span class="ml-2 flex-1">Pages</span>
           <span class="" onclick={toggle_pages_list}>
             <svg class="pages-caret icon icon-tabler icon-tabler-caret-down" style="transition: transform 0.2s ease;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

@@ -789,14 +789,14 @@ The app uses **standard HTML anchor tags** for navigation:
 
 ### 4. Programmatic Navigation
 
-Components can navigate programmatically using `window.location.href`:
+Components can navigate programmatically in code handlers using route events or `window.location.href`:
 
 **Example from Home Component Update Handler:**
 
 ```tsx
 update = {
   'enter-world': (state: HomeState, world: World): void => {
-    // Navigate to the world page
+    // Navigate to /World/:worldName
     window.location.href = '/World/' + world.name;
   }
 }
@@ -926,9 +926,10 @@ update = {
 **Navigation:**
 
 - ✅ Use `<a href="">` for simple links
-- ✅ Use `window.location.href` for programmatic navigation
+- ✅ Use route events like `app.run('/Route', param)` or `window.location.href` in code handlers
 - ✅ Include route parameters in the path: `/World/${name}`
 - ❌ Don't use client-side routing for external URLs
+- ❌ Don't use inline `onclick="location.href='...'"` for internal app routes
 
 **Component Registration:**
 
@@ -1026,7 +1027,7 @@ console.log(document.querySelector('#pages').innerHTML);
 ### Summary
 
 - **Registration**: `app.addComponents('#pages', { path: Component })`
-- **Navigation**: Use `<a href="">` or `window.location.href`
+- **Navigation**: Use `<a href="">`, `app.run('/route', ...)`, or `window.location.href` in code handlers
 - **Route Params**: Parsed from URL path in route handlers
 - **Component Pattern**: MVU (Model-View-Update)
 - **Events**: Local by default, can be made global with `is_global_event()`
