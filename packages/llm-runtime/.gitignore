@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+release/
+*.tgz
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+data/
+awesome-agent-world/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Coverage directory
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+.playwright-mcp/
+docs/plan/
+docs/requirements/
+docs/ideas/
+docs/done/
+public/
+awesome-agent-world
+
+# Local AI agent/skills artifacts
+.agent/
+.agents/
+.skill/
+.skills/
+skills-lock.json
+
+.tmp/
+test-results/
+test-data/
+
+# Electron packaging output
+electron/release/
+electron/builder-effective-config.yaml
+electron/.cache/
+electron/.electron-builder/

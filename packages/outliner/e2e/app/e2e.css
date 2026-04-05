@@ -1,0 +1,46 @@
+:root {
+  --background: #f6f8fb;
+  --foreground: #1f2937;
+  --muted: #eef2f7;
+  --muted-foreground: #4b5563;
+  --border: #cbd5e1;
+  --accent: #dbeafe;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  padding: 16px;
+}
+
+.outliner-editor {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.bullet {
+  width: 8px;
+  height: 8px;
+}
+
+.bullet-arrow {
+  border-radius: 4px;
+}
+
+.bullet-arrow:hover:not(:disabled) {
+  background: var(--muted);
+}

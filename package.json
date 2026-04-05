@@ -4,6 +4,9 @@
   "description": "A clone of Logseq in AppRun",
   "main": "main.js",
   "bin": "cli.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "test": "jest",
     "prestart": "npm run build",
@@ -12,7 +15,11 @@
     "watch": "vite build --sourcemap --watch",
     "dev": "vite dev --port 8080",
     "serve": "node cli docs",
-    "create-types": "tsc src/model/index.ts --declaration --emitDeclarationOnly --skipLibCheck"
+    "create-types": "tsc src/model/index.ts --declaration --emitDeclarationOnly --skipLibCheck",
+    "push:outliner": "git subtree push --prefix packages/outliner https://github.com/yysun/outliner.git main",
+    "push:llm-runtime": "git subtree push --prefix packages/llm-runtime https://github.com/yysun/llm-runtime.git main",
+    "pull:outliner": "git subtree pull --prefix packages/outliner https://github.com/yysun/outliner.git main --squash",
+    "pull:llm-runtime": "git subtree pull --prefix packages/llm-runtime https://github.com/yysun/llm-runtime.git main --squash"
   },
   "repository": "",
   "keywords": [],
@@ -29,8 +36,10 @@
     "fuse.js": "^7.3.0",
     "idb-keyval": "^6.2.2",
     "jest": "^30.3.0",
+    "llm-runtime": "workspace:*",
     "mark.js": "^8.11.1",
     "markdown-it": "^14.1.1",
+    "outliner": "workspace:*",
     "sanitize-filename": "^1.6.4",
     "tailwindcss": "^4.2.2",
     "ts-jest": "^29.4.9",

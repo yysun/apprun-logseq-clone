@@ -1,0 +1,36 @@
+{
+  "name": "llm-runtime",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "vitest run tests/llm",
+    "test:watch": "vitest tests/llm",
+    "test:e2e": "tsx tests/e2e/llm-package-showcase.ts",
+    "test:e2e:dry-run": "npm run test:e2e -- --dry-run",
+    "test:e2e:turn-loop": "tsx tests/e2e/llm-turn-loop-showcase.ts",
+    "test:e2e:turn-loop:dry-run": "npm run test:e2e:turn-loop -- --dry-run"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@google/generative-ai": "^0.24.1",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "fast-glob": "^3.3.3",
+    "openai": "^6.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "dotenv": "^17.3.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
