@@ -3,9 +3,15 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "exports": {
-    ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "peerDependencies": {
     "react": "^18.3.0"
@@ -23,6 +29,7 @@
     "vitest": "^4.1.2"
   },
   "scripts": {
+    "build": "vite build --config vite.build.config.ts && tsc -p tsconfig.build.json && cp src/styles.css dist/styles.css",
     "test": "vitest run --config vitest.config.ts",
     "dev:e2e": "vite --config vite.e2e.config.ts --host 127.0.0.1 --port 4179",
     "test:e2e": "playwright test -c playwright.config.ts"
