@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "jest",
+    "test": "vitest run",
     "prestart": "npm run build",
     "start": "electron .",
     "build": "vite build --sourcemap --minify",
@@ -28,25 +28,24 @@
   "devDependencies": {
     "@floating-ui/dom": "^1.7.6",
     "@tailwindcss/postcss": "^4.2.2",
-    "@types/jest": "^30.0.0",
     "apprun": "^3.38.0",
     "autoprefixer": "^10.4.27",
     "date-fns": "^4.1.0",
     "electron": "^41.1.1",
     "fuse.js": "^7.3.0",
     "idb-keyval": "^6.2.2",
-    "jest": "^30.3.0",
+    "jsdom": "^24.0.0",
     "llm-runtime": "workspace:*",
     "mark.js": "^8.11.1",
     "markdown-it": "^14.1.1",
     "outliner": "workspace:*",
     "sanitize-filename": "^1.6.4",
     "tailwindcss": "^4.2.2",
-    "ts-jest": "^29.4.9",
     "turndown": "^7.2.4",
     "typescript": "^6.0.2",
     "uuid": "^13.0.0",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "chalk": "^5.6.2",
