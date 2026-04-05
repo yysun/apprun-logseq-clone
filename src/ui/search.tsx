@@ -1,30 +1,34 @@
 import { app, Component } from 'apprun';
 import Mark from 'mark.js';
 import { search } from '../search';
-import { find_block_path } from '../model';
-import Block from './components/block-view';
-import Editor from './components/editor';
+import { find_block_path, data } from '../model';
+import OutlinerAdapter from './components/outliner-adapter';
+import type { OutlinerPage, OutlinerBlock } from 'outliner';
+import { applyOutlinerChanges } from './utils/outliner-adapter';
+import Log from '../logger';
 
-const toggle_block_list = e => {
-  const content_block = e.target.parentElement.querySelector('.block');
-  if (content_block.style.display === 'none') {
-    content_block.style.display = 'block';
-    e.target.classList.remove('arrow-right');
-    e.target.classList.add('arrow-down');
-  } else {
-    content_block.style.display = 'none';
-    content_block.classList.add('hidden');
-    e.target.classList.remove('arrow-down');
-    e.target.classList.add('arrow-right');
-  }
-}
+/**
+ * Convert a block path to an OutlinerPage for search results
+ */
+function blockPathToSearchPage(blocks: any[], blockId: string): OutlinerPage | null {
+  if (!blocks || blocks.length === 0) return null;
 
-const Hit = ({ hit }) => {
-  const blocks = find_block_path(hit);
-  return <li class="flex mb-4">
-    <div class="search-results-arrow arrow-down mt-2 mr-3" onclick={toggle_block_list}></div>
-    <Block blocks={blocks} editable={true} />
-  </li>
+  const rootBlock = blocks[0];
+  const lastBlock = blocks[blocks.length - 1];
+
+  return {
+    id: blockId,
+    title: rootBlock.content || 'Search Result',
+    blocks: [{
+      id: lastBlock.id,
+      content: lastBlock.content || '',
+      children: (lastBlock.children || []).map((child: any) => ({
+        id: child.id,
+        content: child.content || '',
+        children: []
+      }))
+    }]
+  };
 }
 
 let marker;
@@ -34,6 +38,21 @@ export default class extends Component {
   state = { hits: [], query: '' };
   view = ({ hits, query }) => {
     hits = hits || [];
+
+    const outlinerPages: OutlinerPage[] = hits
+      .map(hit => {
+        const blocks = find_block_path(hit);
+        return blocks ? blockPathToSearchPage(blocks, hit) : null;
+      })
+      .filter(Boolean) as OutlinerPage[];
+
+    const handlePagesChange = (pages: OutlinerPage[]) => {
+      Log.info('Search results changed', pages);
+      applyOutlinerChanges(pages, data);
+      pages.forEach(page => app.run('@save-file', page.title));
+      app.run('//refresh');
+    };
+
     return <div class="search-results">
       <div class="w-full flex items-center mb-4">
         <div class="flex-1">{`Found: ${hits.length}`}</div>
@@ -44,9 +63,12 @@ export default class extends Component {
           placeholder="search ..." value={query || ''}
           $oninput='search' />
       </div>
-      <ul class="search-results-blocks">
-        <Editor pages={() => hits.map(hit => <Hit hit={hit} />)} />
-      </ul>
+      <div class="search-results-blocks">
+        {outlinerPages.length > 0 && <OutlinerAdapter
+          pages={outlinerPages}
+          onPagesChange={handlePagesChange}
+        />}
+      </div>
     </div>
   };
   update = {

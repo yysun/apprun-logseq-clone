@@ -3,33 +3,49 @@
  * - Renders journal pages sorted by date and shows a total count.
  * - Ensures today's journal page exists when visiting the journals route.
  * Implementation notes:
- * - Uses the shared `Editor` wrapper for editable outline behavior.
- * - List content is produced by a page-rendering function.
+ * - Uses OutlinerAdapter with multiple pages for editable outline behavior.
  * Recent changes:
- * - Switched `Editor` usage from `pages` prop to JSX children function (`<Editor>{pages}</Editor>`).
+ * - Migrated from old Editor to OutlinerAdapter component.
  */
 import { app, Component } from 'apprun';
 import { format } from 'date-fns';
 import { data, add_page } from '../model';
-import Editor from './components/editor';
-import Page from './components/page-view';
+import OutlinerAdapter from './components/outliner-adapter';
+import { pageIndexToOutlinerPage, applyOutlinerChanges } from './utils/outliner-adapter';
+import type { OutlinerPage } from 'outliner';
+import Log from '../logger';
 
 export default class extends Component {
   is_global_event = () => true;
   state = data;
   view = (data) => {
-    const pages = () => data.pages?.filter(p => p.name.startsWith('journals/'))
-      .sort((a, b) => b.name.localeCompare(a.name))
-      .map(page => <Page page={page} editable={true} includePageName={true} />)
+    const journalPages = data.pages?.filter(p => p.name.startsWith('journals/'))
+      .sort((a, b) => b.name.localeCompare(a.name)) || [];
 
-    const total = pages().length;
-    return total > 0 ?
-      <div class="main-page px-3">
-        <h1 class="pb-4">Journals ({total})</h1>
-        <div class="page-list" >
-          <Editor>{pages}</Editor>
-        </div>
-      </div> : <div>No journals found</div>;
+    const total = journalPages.length;
+
+    if (total === 0) {
+      return <div>No journals found</div>;
+    }
+
+    const outlinerPages: OutlinerPage[] = journalPages.map(pageIndexToOutlinerPage);
+
+    const handlePagesChange = (pages: OutlinerPage[]) => {
+      Log.info('Journal pages changed', pages);
+      applyOutlinerChanges(pages, data);
+      pages.forEach(page => app.run('@save-file', page.title));
+      app.run('//refresh');
+    };
+
+    return <div class="main-page px-3">
+      <h1 class="pb-4">Journals ({total})</h1>
+      <div class="page-list" >
+        <OutlinerAdapter
+          pages={outlinerPages}
+          onPagesChange={handlePagesChange}
+        />
+      </div>
+    </div>;
   }
 
   update = {
