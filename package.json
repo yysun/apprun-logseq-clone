@@ -8,13 +8,17 @@
     "packages/*"
   ],
   "scripts": {
+    "pretest": "npm run build -w outliner",
     "test": "vitest run",
     "test:e2e": "npm run test:e2e -w outliner",
     "dev:e2e": "npm run dev:e2e -w outliner",
+    "prebuild": "npm run build -w outliner",
     "prestart": "npm run build",
     "start": "electron .",
     "build": "vite build --sourcemap --minify",
+    "prewatch": "npm run build -w outliner",
     "watch": "vite build --sourcemap --watch",
+    "predev": "npm run build -w outliner",
     "dev": "vite dev --port 8080",
     "serve": "node cli docs",
     "create-types": "tsc src/model/index.ts --declaration --emitDeclarationOnly --skipLibCheck",
