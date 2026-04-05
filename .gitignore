@@ -3,7 +3,7 @@ node_modules
 .DS_Store
 dist
 docs
-*.json
+docs/**/*.json
 coverage
 packages/*/node_modules
 packages/*/dist
