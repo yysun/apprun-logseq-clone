@@ -31,7 +31,7 @@ export type Data = {
 }
 //#endregion
 
-const CREATE_SPAN = '<span id="__caret"></span>';
+const CREATE_SPAN = '<span id="__caret">.</span>';
 export const data: Data = {
   blocks: [],
   pages: []
@@ -42,23 +42,24 @@ export const init_data = () => {
   data.pages = [];
 }
 
-export const remove_caret_span = text => text.replaceAll(CREATE_SPAN, '');
+export const remove_caret_span = (text: string) => text.replaceAll(CREATE_SPAN, '');
 
-export const find_page = (name: string): PageIndex => {
+export const find_page = (name: string): PageIndex | null => {
   const page_block = data.blocks.find(b => b.type === 'page' && b.page === name);
   if (!page_block) return null;
   const page = data.pages.find(p => p.id === page_block.id);
-  return page;
+  return page ?? null;
 }
 
-export const create_page_markdown = (page, level = 0) => {
+export const create_page_markdown = (page: any, level = 0): string => {
   const { id, children } = page;
   const block = data.blocks.find(b => b.id === id);
-  let list = children?.map(child => create_page_markdown(child, level + 1))
+  let list = children?.map((child: any) => create_page_markdown(child, level + 1))
     // .filter(c => !!c.trim())
     .join('\n');
 
-  if (block.type === 'page') return list;
+  if (block?.type === 'page') return list;
+  if (!block) return '';
   const leading_spaces = ' '.repeat((level - 1) * 2);
   const content_lines = block.content.split('\n')
     .map(line => remove_caret_span(line).trim());
@@ -81,13 +82,13 @@ export const create_page_markdown = (page, level = 0) => {
   return content;
 };
 
-export const get_page_markdown = (name) => {
+export const get_page_markdown = (name: string) => {
   const page = find_page(name);
   if (!page) return {}
   return create_page_markdown(page);
 }
 
-export function add_page(name, text, lastModified): PageIndex {
+export function add_page(name: string, text: string, lastModified: any): PageIndex {
   const blocks = parse_blocks(text);
   const { page, page_blocks } = parse_page(name, blocks, lastModified);
   data.blocks.push(...page_blocks);
@@ -95,7 +96,7 @@ export function add_page(name, text, lastModified): PageIndex {
   return page;
 }
 
-export function update_page(name, text, lastModified) {
+export function update_page(name: string, text: string, lastModified: any) {
   const blocks = parse_blocks(text);
   const old_blocks = data.blocks.filter(b => b.page === name);
   for (let block of blocks) {
@@ -103,7 +104,7 @@ export function update_page(name, text, lastModified) {
     if (old_block) {
       block.id = old_block.id;
     } else {
-      block.isNew = true;
+      block['isNew'] = true;
     }
   }
   const { page, page_blocks } = parse_page(blocks, name, lastModified);
@@ -112,12 +113,12 @@ export function update_page(name, text, lastModified) {
   for (let block of old_blocks) {
     const new_block = page_blocks.find(b => b.content === block.content);
     if (!new_block) {
-      block.isDeleted = true;
+      block['isDeleted'] = true;
     }
   }
-  data.blocks = data.blocks.filter(b => !b.isDeleted);
-  data.blocks.push(...page_blocks.filter(b => b.isNew).map(b => {
-    delete b.isNew;
+  data.blocks = data.blocks.filter(b => !(b as any)['isDeleted']);
+  data.blocks.push(...page_blocks.filter(b => (b as any)['isNew']).map(b => {
+    delete (b as any)['isNew'];
     return b;
   }));
 
@@ -128,7 +129,7 @@ export function update_page(name, text, lastModified) {
   data.pages.push(page);
 }
 
-export const delete_page = (name) => {
+export const delete_page = (name: string) => {
   data.blocks = data.blocks.filter(b => b.page !== name);
   data.pages = data.pages.filter(p => p.name !== name);
 }
@@ -136,7 +137,7 @@ export const delete_page = (name) => {
 //#region block functions
 
 export const find_block = (id: string): Block => {
-  return data.blocks.find(b => b.id === id);
+  return data.blocks.find(b => b.id === id)!;
 }
 
 export const create_block = (content: string, page: string): Block => {
@@ -152,7 +153,7 @@ export const delete_block = (id: string) => {
   const blockIndex = find_block_index(id);
   if (blockIndex) {
     const { parent, pos } = blockIndex
-    parent.children.splice(pos, 1);
+    parent.children!.splice(pos, 1);
   }
   data.blocks = data.blocks.filter(b => b.id !== id);
 }
@@ -168,17 +169,17 @@ export const update_block = (block: BlockId, content: string) => {
 
 //#region index functions
 
-const create_index = ({ id, children }): Index =>
+const create_index = ({ id, children }: any): Index =>
   children ? { id, children } : { id };
 
 const remove_from_parent = (index: BlockIndex): void => {
-  index.parent.children.splice(index.pos, 1);
+  index.parent.children!.splice(index.pos, 1);
 }
 const add_prev_sibling = (index: BlockIndex, new_index: Index): void => {
-  index.parent.children.splice(index.pos, 0, new_index);
+  index.parent.children!.splice(index.pos, 0, new_index);
 }
 const add_next_sibling = (index: BlockIndex, new_index: Index): void => {
-  index.parent.children.splice(index.pos + 1, 0, new_index);
+  index.parent.children!.splice(index.pos + 1, 0, new_index);
 }
 
 const insert_child = (index: Index, new_index: Index): void => {
@@ -189,12 +190,12 @@ const append_child = (index: Index, new_index: Index): void => {
   index.children = index.children || [];
   index.children.push(new_index);
 }
-const prev_index = (index: BlockIndex): Index => index.parent.children[index.pos - 1];
-const next_index = (index: BlockIndex): Index => index.parent.children[index.pos + 1];
+const prev_index = (index: BlockIndex): Index => index.parent.children![index.pos - 1];
+const next_index = (index: BlockIndex): Index => index.parent.children![index.pos + 1];
 
-const isTopLevel = ({ parent, page }) => parent.id === page.id;
-const isLast = ({ parent, pos }) => pos === parent.children.length - 1;
-const isFirst = ({ parent, pos }) => pos === 0 && !!parent;
+const isTopLevel = ({ parent, page }: any) => parent.id === page.id;
+const isLast = ({ parent, pos }: any) => pos === parent.children.length - 1;
+const isFirst = ({ parent, pos }: any) => pos === 0 && !!parent;
 
 export const get_block_id = (block: BlockId): string => {
   return typeof block === 'string' ? block : block.id;
@@ -206,21 +207,21 @@ export const find_page_name = (block: BlockId): string => {
     block.page;
 }
 
-export const find_page_index = (block: BlockId): PageIndex => {
+export const find_page_index = (block: BlockId): PageIndex | undefined => {
   const page = find_page_name(block);
   const page_index = data.pages.find(p => p.name === page);
   return page_index;
 }
 
-export const search_index = (parent: Index, id: string): BlockIndex => {
+export const search_index = (parent: Index, id: string): BlockIndex | null => {
   if (!parent?.children) return null;
   const pos = parent.children.findIndex(c => c.id === id);
   if (pos > -1) return {
     parent, pos, id,
-    get children() { return parent.children[pos].children },
-    set children(children) { parent.children[pos].children = children }
+    get children() { return parent.children![pos].children },
+    set children(children) { parent.children![pos].children = children }
   };
-  let found;
+  let found: BlockIndex | null = null;
   parent.children.every(child => {
     found = search_index(child, id);
     return !found;
@@ -228,17 +229,18 @@ export const search_index = (parent: Index, id: string): BlockIndex => {
   return found;
 }
 
-export const find_block_index = (block: BlockId): BlockIndex => {
+export const find_block_index = (block: BlockId): BlockIndex | null => {
   block = typeof block === 'string' ? find_block(block) : block;
   if (!block) return null;
   const page = find_page_index(block);
+  if (!page) return null;
   // if (block.id === page.id) return page; TODO: fix this
   let found = search_index(page, block.id);
   if (found) found.page = page;
   return found;
 }
 
-export const find_block_path = (id: BlockId): (Block & Index)[] => {
+export const find_block_path = (id: BlockId): (Block & Index)[] | null => {
   const block_id = get_block_id(id);
   const page_index = find_page_index(block_id);
   if (!page_index) return null;
@@ -247,48 +249,50 @@ export const find_block_path = (id: BlockId): (Block & Index)[] => {
     return [{ ...block, ...page_index }];
   }
   const index = find_block_index(block);
+  if (!index) return null;
   const parents = [{ ...block, children: index.children }];
-  let { parent } = index;
+  const { parent } = index;
+  let currentParent: Index | undefined = parent;
   do {
-    const p_block = find_block(parent.id);
+    const p_block = find_block(currentParent.id);
     parents.unshift({ ...p_block, children: [] });
-    parent = find_block_index(parent.id)?.parent
-  } while (parent)
+    currentParent = find_block_index(currentParent.id)?.parent
+  } while (currentParent)
   return parents;
 }
 
-export const indent_block = (id: string): boolean => {
-  const { parent, pos, page, children } = find_block_index(id);
+export const indent_block = (id: string): boolean | undefined => {
+  const { parent, pos, page, children } = find_block_index(id)!;
   if (pos > 0) {
-    const prev = parent.children[pos - 1];
+    const prev = parent.children![pos - 1];
     prev.children = prev.children || [];
     prev.children.push({ id, children });
-    parent.children.splice(pos, 1);
-    app.run('@save-file', page.name);
+    parent.children!.splice(pos, 1);
+    app.run('@save-file', page!.name);
     return true;
   }
 }
 
-export const outdent_block = (id: string): boolean => {
-  const blockIndex = find_block_index(id);
+export const outdent_block = (id: string): boolean | undefined => {
+  const blockIndex = find_block_index(id)!;
   const { parent, pos, page } = blockIndex;
-  if (parent.id !== page.id) {
-    const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id);
+  if (parent.id !== page!.id) {
+    const { parent: parent_parent, pos: parent_pos } = find_block_index(parent.id)!;
     const children = blockIndex.children || [];
-    const siblings = parent.children.slice(pos + 1);
+    const siblings = parent.children!.slice(pos + 1);
     if (siblings.length) children.push(...siblings);
-    parent_parent.children.splice(parent_pos + 1, 0, { id, children });
-    parent.children.splice(pos, siblings.length + 1);
-    app.run('@save-file', page.name);
+    parent_parent.children!.splice(parent_pos + 1, 0, { id, children });
+    parent.children!.splice(pos, siblings.length + 1);
+    app.run('@save-file', page!.name);
     return true;
   }
 }
 
-export const split_block = (id: string, part1: string, part2: string): boolean => {
+export const split_block = (id: string, part1: string, part2: string): string => {
   const old_block = find_block(id);
   part2 = remove_caret_span(part2);
-  const { parent, pos, page, children } = find_block_index(id);
-  const isTopLevel = parent.id === page.id;
+  const { parent, pos, page, children } = find_block_index(id)!;
+  const isTopLevel = parent.id === page!.id;
   const isEmpty = !part1 && !part2;
   let new_block;
 
@@ -297,31 +301,31 @@ export const split_block = (id: string, part1: string, part2: string): boolean =
     update_block(old_block, CREATE_SPAN);
     new_block = old_block;
   } else if (!part1) { // at beginning of block
-    new_block = create_block('', page.name);
-    parent.children.splice(pos, 0, { id: new_block.id });
-    new_block.page = page.name;
-    update_block(old_block, CREATE_SPAN + part2);
+    new_block = create_block(CREATE_SPAN, page!.name);
+    parent.children!.splice(pos, 0, { id: new_block.id });
+    new_block.page = page!.name;
+    update_block(old_block, part2);
   } else { // create new block
-    new_block = create_block(CREATE_SPAN + part2, page.name);
-    new_block.page = page.name;
+    new_block = create_block(CREATE_SPAN + part2, page!.name);
+    new_block.page = page!.name;
     update_block(old_block, part1);
     if (children && children.length) { // as child
-      parent.children[pos].children.unshift({ id: new_block.id });
+      parent.children![pos].children!.unshift({ id: new_block.id });
     } else { // as sibling
-      parent.children.splice(pos + 1, 0, { id: new_block.id });
+      parent.children!.splice(pos + 1, 0, { id: new_block.id });
     }
   }
 
-  app.run('@save-file', page.name);
+  app.run('@save-file', page!.name);
   return new_block.id;
 }
 
 export const merge_block = (id1: string, id2: string): string => {
   const blockIndex1 = find_block_index(id1);
   const blockIndex2 = find_block_index(id2);
-  if (blockIndex2.children) {
-    blockIndex1.children = blockIndex1.children || [];
-    blockIndex1.children.push(...blockIndex2.children);
+  if (blockIndex2?.children) {
+    blockIndex1!.children = blockIndex1!.children || [];
+    blockIndex1!.children.push(...blockIndex2.children);
   }
   const block1 = find_block(id1);
   const block2 = find_block(id2);
@@ -331,74 +335,74 @@ export const merge_block = (id1: string, id2: string): string => {
   return html;
 }
 
-const combine_block_id = page => {
-  let list = page.children?.map(child => combine_block_id(child)) || [];
+const combine_block_id = (page: any): string => {
+  let list = page.children?.map((child: any) => combine_block_id(child)) || [];
   return list.length ? page.id + '\n' + list.join('\n') : page.id;
 }
 export const find_prev = (id: string): string => {
-  const page = find_page_index(id);
+  const page = find_page_index(id)!;
   const blocks = combine_block_id(page).split('\n');
-  const pos = blocks.findIndex(b => b === id);
+  const pos = blocks.findIndex((b: string) => b === id);
   return blocks[pos - 1];
 }
 
 export const find_next = (id: string): string => {
-  const page = find_page_index(id);
+  const page = find_page_index(id)!;
   const blocks = combine_block_id(page).split('\n');
-  const pos = blocks.findIndex(b => b === id);
+  const pos = blocks.findIndex((b: string) => b === id);
   return blocks[pos + 1];
 }
 
-export const move_block_up = (id: string): boolean => {
-  const source = find_block_index(id);
+export const move_block_up = (id: string): boolean | undefined => {
+  const source = find_block_index(id)!;
   if (isTopLevel(source as any) && isFirst(source as any)) return;
   const new_index = create_index(source as any);
-  const prev = source.parent.children[source.pos - 1]?.id;
+  const prev = source.parent.children![source.pos - 1]?.id;
   if (prev) {
     const target = find_block_index(prev);
     if (!target) return;
     remove_from_parent(source);
     add_prev_sibling(target, new_index);
   } else {
-    const parentIndex = find_block_index(source.parent.id);
+    const parentIndex = find_block_index(source.parent.id)!;
     const target = prev_index(parentIndex);
     if (!target) return;
     remove_from_parent(source);
     append_child(target, new_index);
   }
-  app.run('@save-file', source.page.name);
+  app.run('@save-file', source.page!.name);
   return true;
 }
-export const move_block_down = (id: string): boolean => {
-  const source = find_block_index(id);
+export const move_block_down = (id: string): boolean | undefined => {
+  const source = find_block_index(id)!;
   if (isTopLevel(source as any) && isLast(source as any)) return;
   const new_index = create_index(source as any);
-  const next = source.parent.children[source.pos + 1]?.id;
+  const next = source.parent.children![source.pos + 1]?.id;
   if (next) {
     const target = find_block_index(next);
     if (!target) return;
     add_next_sibling(target, new_index);
     remove_from_parent(source);
   } else {
-    const parentIndex = find_block_index(source.parent.id);
+    const parentIndex = find_block_index(source.parent.id)!;
     const target = next_index(parentIndex);
     if (!target) return;
     insert_child(target, new_index);
     remove_from_parent(source);
   }
-  app.run('@save-file', source.page.name);
+  app.run('@save-file', source.page!.name);
   return true;
 }
 
 
-export const move_block_to = (sourceId: string, targetId: string): boolean => {
+export const move_block_to = (sourceId: string, targetId: string): boolean | undefined => {
   const source = find_block_index(sourceId);
   const target = find_block_index(targetId);
   if (!source || !target) return;
   const new_index = create_index(source as any);
   remove_from_parent(source);
   append_child(target, new_index);
-  app.run('@save-file', target.page.name);
+  app.run('@save-file', target.page!.name);
   return true;
 }
 

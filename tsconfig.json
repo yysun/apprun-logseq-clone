@@ -2,11 +2,14 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "jsxFactory": "app.h",
     "jsxFragmentFactory": "app.Fragment",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "dom",
+      "esnext"
+    ],
     "experimentalDecorators": true,
     "sourceMap": true,
     "esModuleInterop": true,

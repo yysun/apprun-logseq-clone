@@ -10,18 +10,19 @@ import Home from './ui/home';
 import Journals from './ui/journals';
 import Block from './ui/block';
 import Pages from './ui/pages';
-import Page from './ui/page';
+import PageWithOutliner from './ui/page-with-outliner';
 
 setLogLevel(LogLevel.Info);
 
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Root element not found');
 
-
-app.render(document.getElementById('root'), <Layout />);
+app.render(rootElement, <Layout />);
 app.addComponents('my-app', {
   '/': Home,
   '/journals': Journals,
   '/pages': Pages,
-  '/page': Page
+  '/page': PageWithOutliner
 });
 
 // Register right panel components
